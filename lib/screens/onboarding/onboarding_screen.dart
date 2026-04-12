@@ -16,74 +16,44 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen>
-    with SingleTickerProviderStateMixin {
-  int _page = 0;
-  late AnimationController _animController;
-  late Animation<double> _fadeAnim;
-  late Animation<double> _slideAnim;
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
 
-  final _slides = [
-    _OnboardingSlide(
-      icon: Icons.location_on_outlined,
-      color: Color(0xFF007A6E),
-      title: 'Find Any Room Instantly',
-      body:
-          'Bluetooth beacons inside Nicol Hall pinpoint your exact location — no GPS needed.',
+  final List<_OnboardingSlideData> _slides = [
+    _OnboardingSlideData(
+      icon: Icons.explore_rounded,
+      color: const Color(0xFF007A6E),
+      title: 'Locate Rooms',
+      body: 'Bluetooth beacons pinpoint your exact location inside Nicol Hall instantly.',
     ),
-    _OnboardingSlide(
-      icon: Icons.route_outlined,
-      color: Color(0xFF00BCD4),
-      title: 'AI-Powered Turn-by-Turn',
-      body:
-          'Smart AI guides you step by step through every corridor, junction, and stairway across Floors 4 and 5.',
+    _OnboardingSlideData(
+      icon: Icons.navigation_rounded,
+      color: const Color(0xFF028E7F),
+      title: 'Smart Navigation',
+      body: 'Get precise turn-by-turn directions across Floors 4 and 5 powered by AI.',
     ),
-    _OnboardingSlide(
-      icon: Icons.group_outlined,
-      color: Color(0xFF2E7D32),
-      title: 'Built for LAU Community',
-      body:
-          'Sign in with your @lau.edu.lb email. Exclusively for LAU students, faculty, and staff.',
+    _OnboardingSlideData(
+      icon: Icons.school_rounded,
+      color: const Color(0xFF2B5C2B),
+      title: 'LAU Community',
+      body: 'Exclusive access for LAU students and staff using your university email.',
     ),
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _animController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 350));
-    _fadeAnim = Tween<double>(begin: 0, end: 1).animate(_animController);
-    _slideAnim = Tween<double>(begin: 60, end: 0).animate(
-        CurvedAnimation(parent: _animController, curve: Curves.easeOut));
-    _animController.forward();
-  }
-
-  @override
   void dispose() {
-    _animController.dispose();
+    _pageController.dispose();
     super.dispose();
-  }
-
-  void _next() async {
-    if (_page < 2) {
-      _animController.reset();
-      setState(() => _page++);
-      _animController.forward();
-    } else {
-      widget.onGetStarted();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final slide = _slides[_page];
-
     return Scaffold(
-      backgroundColor: AppColors.card,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Stack(
           children: [
-            // Skip button
             Positioned(
               top: 12,
               right: 20,
@@ -91,84 +61,43 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 onPressed: widget.onLogin,
                 child: Text(
                   'Skip',
-                  style: AppTextStyles.bodyMedium(14,
-                      color: AppColors.mutedForeground),
+                  style: AppTextStyles.bodyMedium(14, color: AppColors.mutedForeground),
                 ),
               ),
             ),
 
             Column(
               children: [
-                const SizedBox(height: 60),
-
-                // Illustration area
+                const SizedBox(height: 40),
                 Expanded(
-                  child: AnimatedBuilder(
-                    animation: _animController,
-                    builder: (_, __) => Opacity(
-                      opacity: _fadeAnim.value,
-                      child: Transform.translate(
-                        offset: Offset(_slideAnim.value, 0),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Icon illustration
-                              Container(
-                                width: 160,
-                                height: 160,
-                                decoration: BoxDecoration(
-                                  color: slide.color.withOpacity(0.08),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  slide.icon,
-                                  size: 72,
-                                  color: slide.color,
-                                ),
-                              ),
-                              const SizedBox(height: 40),
-
-                              Text(
-                                slide.title,
-                                style: AppTextStyles.headingBold(26),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 16),
-
-                              Text(
-                                slide.body,
-                                style: AppTextStyles.bodyRegular(15,
-                                    color: AppColors.mutedForeground),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                  child: PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (int page) {
+                      setState(() {
+                        _currentPage = page;
+                      });
+                    },
+                    itemCount: _slides.length,
+                    itemBuilder: (context, index) {
+                      return _OnboardingSlide(data: _slides[index]);
+                    },
                   ),
                 ),
 
-                // Progress dots + buttons
                 Padding(
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
                   child: Column(
                     children: [
-                      // Dots
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(3, (i) {
+                        children: List.generate(_slides.length, (i) {
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.symmetric(horizontal: 4),
-                            width: i == _page ? 32 : 8,
+                            width: i == _currentPage ? 24 : 8,
                             height: 8,
                             decoration: BoxDecoration(
-                              color: i == _page
-                                  ? AppColors.accent
-                                  : AppColors.muted,
+                              color: i == _currentPage ? AppColors.primary : AppColors.muted,
                               borderRadius: BorderRadius.circular(9999),
                             ),
                           );
@@ -176,8 +105,16 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                       ),
                       const SizedBox(height: 32),
 
-                      if (_page < 2) ...[
-                        GradientButton(label: 'Next →', onPressed: _next),
+                      if (_currentPage < _slides.length - 1) ...[
+                        GradientButton(
+                          label: 'Next', 
+                          onPressed: () {
+                            _pageController.nextPage(
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.easeInOut,
+                            );
+                          }
+                        ),
                       ] else ...[
                         AccentButton(
                           label: 'Get Started',
@@ -189,13 +126,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           child: RichText(
                             text: TextSpan(
                               text: 'Already have an account? ',
-                              style: AppTextStyles.bodyRegular(14,
-                                  color: AppColors.mutedForeground),
+                              style: AppTextStyles.bodyRegular(14, color: AppColors.mutedForeground),
                               children: [
                                 TextSpan(
                                   text: 'Login',
-                                  style: AppTextStyles.bodySemiBold(14,
-                                      color: AppColors.primary),
+                                  style: AppTextStyles.bodySemiBold(14, color: AppColors.primary),
                                 ),
                               ],
                             ),
@@ -214,16 +149,58 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 }
 
-class _OnboardingSlide {
+class _OnboardingSlideData {
   final IconData icon;
   final Color color;
   final String title;
   final String body;
 
-  const _OnboardingSlide({
+  const _OnboardingSlideData({
     required this.icon,
     required this.color,
     required this.title,
     required this.body,
   });
+}
+
+class _OnboardingSlide extends StatelessWidget {
+  final _OnboardingSlideData data;
+
+  const _OnboardingSlide({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: data.color.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              data.icon,
+              size: 80,
+              color: data.color,
+            ),
+          ),
+          const SizedBox(height: 48),
+          Text(
+            data.title,
+            style: AppTextStyles.headingBold(22, color: AppColors.foreground),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            data.body,
+            style: AppTextStyles.bodyRegular(15, color: AppColors.mutedForeground),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
 }

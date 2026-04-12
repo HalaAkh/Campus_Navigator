@@ -11,91 +11,76 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  late AnimationController _pinController;
-  late Animation<double> _pinY;
-  late Animation<double> _pinScale;
-  late Animation<double> _shadowScale;
+  late AnimationController _logoController;
+  late Animation<double> _logoScale;
+  late Animation<double> _logoAlpha;
 
-  late AnimationController _textController;
-  late Animation<double> _textOpacity;
-  late Animation<double> _textY;
-  late Animation<double> _taglineOpacity;
+  late AnimationController _nameController;
+  late Animation<double> _nameAlpha;
+  late Animation<double> _nameY;
 
-  late AnimationController _pulseController;
-  late Animation<double> _pulseRadius;
-  late Animation<double> _pulseOpacity;
-
-  late AnimationController _bounceController;
-  late Animation<double> _bounceAnim;
+  late AnimationController _taglineController;
+  late Animation<double> _taglineAlpha;
+  late Animation<double> _taglineY;
 
   @override
   void initState() {
     super.initState();
 
-    _pinController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1000));
-    _pinY = Tween<double>(begin: -250.0, end: 0.0).animate(
-        CurvedAnimation(parent: _pinController, curve: Curves.bounceOut));
-    _pinScale = Tween<double>(begin: 0.5, end: 1.0).animate(
-        CurvedAnimation(
-            parent: _pinController,
-            curve: const Interval(0.0, 0.6, curve: Curves.easeOut)));
-    _shadowScale = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(
-            parent: _pinController,
-            curve: const Interval(0.6, 1.0, curve: Curves.easeOut)));
+    // Logo: alpha + scale (0.5 to 1.0) for 600ms
+    _logoController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 600));
+    _logoAlpha = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _logoController, curve: Curves.easeIn));
+    _logoScale = Tween<double>(begin: 0.5, end: 1.0).animate(
+        CurvedAnimation(parent: _logoController, curve: Curves.easeOut));
 
-    _textController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 700));
-    _textOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _textController, curve: Curves.easeIn));
-    _textY = Tween<double>(begin: 28.0, end: 0.0).animate(
-        CurvedAnimation(parent: _textController, curve: Curves.easeOut));
-    _taglineOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(
-            parent: _textController,
-            curve: const Interval(0.5, 1.0)));
+    // App name: alpha + translateY (20px to 0px) for 500ms, starts at 300ms
+    _nameController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    _nameAlpha = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _nameController, curve: Curves.easeIn));
+    _nameY = Tween<double>(begin: 20.0, end: 0.0).animate(
+        CurvedAnimation(parent: _nameController, curve: Curves.easeOut));
 
-    _pulseController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1800))
-      ..repeat();
-    _pulseRadius = Tween<double>(begin: 0.9, end: 1.5).animate(
-        CurvedAnimation(parent: _pulseController, curve: Curves.easeOut));
-    _pulseOpacity = Tween<double>(begin: 0.3, end: 0.0).animate(
-        CurvedAnimation(parent: _pulseController, curve: Curves.easeOut));
-
-    // Continuous bounce after drop
-    _bounceController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1100))
-      ..repeat(reverse: true);
-    _bounceAnim = Tween<double>(begin: -10, end: 10).animate(
-        CurvedAnimation(parent: _bounceController, curve: Curves.easeInOut));
+    // Tagline: alpha + translateY (10px to 0px) for 500ms, starts at 600ms
+    _taglineController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    _taglineAlpha = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _taglineController, curve: Curves.easeIn));
+    _taglineY = Tween<double>(begin: 10.0, end: 0.0).animate(
+        CurvedAnimation(parent: _taglineController, curve: Curves.easeOut));
 
     _runSequence();
   }
 
   void _runSequence() async {
+    // Logo starts immediately (0ms)
+    _logoController.forward();
+
+    // App name starts at 300ms delay
     await Future.delayed(const Duration(milliseconds: 300));
-    _pinController.forward();
-    await Future.delayed(const Duration(milliseconds: 900));
-    _textController.forward();
-    await Future.delayed(const Duration(milliseconds: 2000));
+    _nameController.forward();
+
+    // Tagline starts at 600ms delay
+    await Future.delayed(const Duration(milliseconds: 300));
+    _taglineController.forward();
+
+    // Navigate after 2200ms total
+    await Future.delayed(const Duration(milliseconds: 1600));
     if (mounted) widget.onComplete();
   }
 
   @override
   void dispose() {
-    _pinController.dispose();
-    _textController.dispose();
-    _pulseController.dispose();
-    _bounceController.dispose();
+    _logoController.dispose();
+    _nameController.dispose();
+    _taglineController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -105,159 +90,95 @@ class _SplashScreenState extends State<SplashScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF003D35),
-              Color(0xFF006B5F),
-              Color(0xFF00838F),
-              Color(0xFF00BCD4),
+              Color(0xFF114C44),
+              Color(0xFF249C8F),
+              Color(0xFF4DD0E1),
             ],
-            stops: [0.0, 0.35, 0.7, 1.0],
           ),
         ),
-        child: Stack(
+
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Decorative circles
-            Positioned(
-              top: -100, right: -100,
-              child: Container(
-                width: 300, height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.04),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -140, left: -80,
-              child: Container(
-                width: 380, height: 380,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.03),
-                ),
-              ),
-            ),
-
-            // Building silhouette
-            Positioned(
-              bottom: 0, left: 0, right: 0,
-              child: Opacity(
-                opacity: 0.07,
-                child: CustomPaint(
-                  size: Size(size.width, 110),
-                  painter: _BuildingSilhouettePainter(),
-                ),
-              ),
-            ),
-
-            // Main content
-            SafeArea(
-              child: Column(
-                children: [
-                  const Spacer(flex: 3),
-
-                  // Animated pin — drops in then bounces
-                  AnimatedBuilder(
-                    animation: Listenable.merge([_pinController, _bounceController]),
-                    builder: (_, __) {
-                      // After drop animation completes, add continuous bounce
-                      final dropDone = _pinController.isCompleted;
-                      return Transform.translate(
-                        offset: Offset(0, _pinY.value + (dropDone ? _bounceAnim.value : 0)),
-                        child: Transform.scale(
-                          scale: _pinScale.value,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/images/pin.png',
-                                width: 110,
-                                height: 110,
-                                fit: BoxFit.contain,
-                                errorBuilder: (_, __, ___) => const Icon(
-                                    Icons.location_on,
-                                    size: 80,
-                                    color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+            // Logo: alpha + scale animation
+            AnimatedBuilder(
+              animation: Listenable.merge([_logoController]),
+              builder: (_, __) {
+                return Opacity(
+                  opacity: _logoAlpha.value,
+                  child: Transform.scale(
+                    scale: _logoScale.value,
+                    child: Image.asset(
+                      'assets/images/pin.png',
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.high,
+                      isAntiAlias: true,
+                      semanticLabel: 'Campus Navigator Pin',
+                    ),
                   ),
+                );
+              },
+            ),
 
+            const SizedBox(height: 8),
 
-                  const SizedBox(height: 44),
-
-                  // Title + subtitle
-                  AnimatedBuilder(
-                    animation: _textController,
-                    builder: (_, __) => Opacity(
-                      opacity: _textOpacity.value,
-                      child: Transform.translate(
-                        offset: Offset(0, _textY.value),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Campus Navigator',
-                              style: GoogleFonts.poppins(
-                                fontSize: 30,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                letterSpacing: -0.3,
-                                height: 1.1,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'LAU Edition',
-                              style: GoogleFonts.poppins(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white.withValues(alpha: 0.80),
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                          ],
-                        ),
+            // App name: alpha + translate Y
+            AnimatedBuilder(
+              animation: _nameController,
+              builder: (_, __) {
+                return Opacity(
+                  opacity: _nameAlpha.value,
+                  child: Transform.translate(
+                    offset: Offset(0, _nameY.value),
+                    child: Text(
+                      'Campus Navigator',
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-
-                  const Spacer(flex: 3),
-
-                  AnimatedBuilder(
-                    animation: _taglineOpacity,
-                    builder: (_, __) => Opacity(
-                      opacity: _taglineOpacity.value,
-                      child: const _BouncingDots(),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  AnimatedBuilder(
-                    animation: _taglineOpacity,
-                    builder: (_, __) => Opacity(
-                      opacity: _taglineOpacity.value,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 52),
-                        child: Text(
-                          'Find your way, always!',
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white.withValues(alpha: 0.70),
-                            letterSpacing: 0.3,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
+
+            const SizedBox(height: 5),
+
+            // Tagline: alpha + translate Y
+            AnimatedBuilder(
+              animation: _taglineController,
+              builder: (_, __) {
+                return Opacity(
+                  opacity: _taglineAlpha.value,
+                  child: Transform.translate(
+                    offset: Offset(0, _taglineY.value),
+                    child: Text(
+                      'Find your way, always!',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFFCFE3DE),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
+            ),
+
+            const SizedBox(height: 48),
+
+            // Bouncing dots
+            const _BouncingDots(),
+
+            const SizedBox(height: 48),
+
           ],
         ),
       ),
@@ -265,7 +186,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-// ── Bouncing dots ──────────────────────────────────────
+// ── Bouncing dots (3 dots, staggered animation) ────────
 class _BouncingDots extends StatefulWidget {
   const _BouncingDots();
 
@@ -276,32 +197,37 @@ class _BouncingDots extends StatefulWidget {
 class _BouncingDotsState extends State<_BouncingDots>
     with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
-  late List<Animation<double>> _anims;
+  late List<Animation<double>> _animations;
 
   @override
   void initState() {
     super.initState();
     _controllers = List.generate(
       3,
-          (_) => AnimationController(
-          vsync: this, duration: const Duration(milliseconds: 500))
-        ..repeat(reverse: true),
+      (_) => AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 600),
+      )..repeat(reverse: true),
     );
+
+    // Stagger the animations
     for (int i = 0; i < 3; i++) {
-      Future.delayed(Duration(milliseconds: i * 160), () {
+      Future.delayed(Duration(milliseconds: i * 150), () {
         if (mounted) _controllers[i].repeat(reverse: true);
       });
     }
-    _anims = _controllers
-        .map((c) => Tween<double>(begin: 0, end: -8).animate(
-      CurvedAnimation(parent: c, curve: Curves.easeInOut),
-    ))
+
+    _animations = _controllers
+        .map((controller) => Tween<double>(begin: 0, end: -8).animate(
+            CurvedAnimation(parent: controller, curve: Curves.easeInOut)))
         .toList();
   }
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -311,15 +237,16 @@ class _BouncingDotsState extends State<_BouncingDots>
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(
         3,
-            (i) => AnimatedBuilder(
-          animation: _anims[i],
+        (index) => AnimatedBuilder(
+          animation: _animations[index],
           builder: (_, __) => Transform.translate(
-            offset: Offset(0, _anims[i].value),
+            offset: Offset(0, _animations[index].value),
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: 5, height: 5,
+              margin: const EdgeInsets.symmetric(horizontal: 5),
+              width: 8,
+              height: 8,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.65),
+                color: Colors.white.withValues(alpha: 0.7),
                 shape: BoxShape.circle,
               ),
             ),
@@ -328,34 +255,4 @@ class _BouncingDotsState extends State<_BouncingDots>
       ),
     );
   }
-}
-
-// ── Building silhouette painter ────────────────────────
-class _BuildingSilhouettePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.white;
-    final w = size.width;
-    final buildings = [
-      [0.00, 0.65, 0.12, 0.35],
-      [0.13, 0.40, 0.10, 0.60],
-      [0.24, 0.58, 0.09, 0.42],
-      [0.34, 0.20, 0.14, 0.80],
-      [0.49, 0.45, 0.09, 0.55],
-      [0.59, 0.62, 0.08, 0.38],
-      [0.68, 0.28, 0.13, 0.72],
-      [0.82, 0.50, 0.10, 0.50],
-      [0.93, 0.60, 0.07, 0.40],
-    ];
-    for (final b in buildings) {
-      canvas.drawRect(
-        Rect.fromLTWH(
-            b[0] * w, b[1] * size.height, b[2] * w, b[3] * size.height),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(_) => false;
 }

@@ -68,14 +68,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.location_on, size: 44, color: Colors.white),
+                      Image.asset(
+                        'assets/images/logo.png',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.contain,
+                        filterQuality: FilterQuality.high,
+                        isAntiAlias: true,
+                        errorBuilder: (_, __, ___) => const Icon(
+                            Icons.location_on,
+                            size: 100,
+                            color: Color(0xFF007A6E)),
                       ),
                       const SizedBox(height: 12),
                       Text('Campus Navigator',
@@ -99,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Welcome back 👋', style: AppTextStyles.headingBold(24)),
+                    Text('Welcome back!', style: AppTextStyles.headingBold(24)),
                     const SizedBox(height: 6),
                     Text('Sign in to your LAU account',
                         style: AppTextStyles.bodyRegular(14,
@@ -126,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: AppDecorations.inputDecoration(
-                        hint: 'your.name@lau.edu.lb',
+                        hint: 'your.name@lau.edu',
                         prefixIcon: const Icon(Icons.mail_outline, size: 18,
                             color: AppColors.mutedForeground),
                       ),
@@ -194,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     Center(
                       child: Text(
-                        'Restricted to @lau.edu.lb accounts only',
+                        'Restricted to @lau.edu & @lau.edu.lb accounts only',
                         style: AppTextStyles.bodyRegular(11,
                             color: AppColors.mutedForeground),
                       ),

@@ -86,6 +86,10 @@ class _AppNavigatorState extends State<AppNavigator> {
 
       if (isRegistered) {
         if (_authService.isEmailVerified) {
+          // Show permission dialogs for existing signed-in users
+          if (mounted) {
+            await PermissionDialogs.showPermissionDialogs(context);
+          }
           _goto(AppRoute.home);
         } else {
           // show verify screen (provider already has name/email)
@@ -96,6 +100,10 @@ class _AppNavigatorState extends State<AppNavigator> {
         if (_authService.isEmailVerified) {
           // create Firestore profile and go home
           await _authService.createUserProfile(user.displayName ?? '', user.email ?? '');
+          // Show permission dialogs for new users
+          if (mounted) {
+            await PermissionDialogs.showPermissionDialogs(context);
+          }
           _goto(AppRoute.home);
         } else {
           // show verify screen
@@ -195,7 +203,14 @@ class _AppNavigatorState extends State<AppNavigator> {
       case AppRoute.onboarding:
         return OnboardingScreen(
           key: const ValueKey('onboarding'),
-          onGetStarted: () => _goto(AppRoute.permissions),
+          onGetStarted: () async {
+            // Show permission dialogs after onboarding
+            if (mounted) {
+              await PermissionDialogs.showPermissionDialogs(context);
+            }
+            // Then go to sign up
+            _goto(AppRoute.signUp);
+          },
           onLogin: () => _goto(AppRoute.login),
         );
 
@@ -205,12 +220,6 @@ class _AppNavigatorState extends State<AppNavigator> {
           onLoginSuccess: _handleInitialRoute,
           onSignUp: () => _goto(AppRoute.signUp),
           onForgotPassword: () => _goto(AppRoute.forgotPassword),
-        );
-
-      case AppRoute.permissions:
-        return MandatoryPermissionsScreen(
-          key: const ValueKey('mandatory_perms'),
-          onPermissionsEnabled: () => _goto(AppRoute.signUp),
         );
 
       case AppRoute.signUp:
@@ -230,7 +239,13 @@ class _AppNavigatorState extends State<AppNavigator> {
         return VerifyEmailScreen(
           key: const ValueKey('verify'),
           email: _userEmail,
-          onVerified: () => _goto(AppRoute.home),
+          onVerified: () async {
+            // Show permission dialogs after email verification
+            if (mounted) {
+              await PermissionDialogs.showPermissionDialogs(context);
+            }
+            _goto(AppRoute.home);
+          },
           onBack: () {
             _authService.signOut();
             _clearUser();
@@ -238,6 +253,12 @@ class _AppNavigatorState extends State<AppNavigator> {
           },
         );
 
+      case AppRoute.permissions:
+        return PermissionsScreen(
+          key: const ValueKey('perms'),
+          onPermissionsGranted: () => _goto(AppRoute.home),
+          onSkip: () => _goto(AppRoute.home),
+        );
 
       // ─── MAIN SCREENS ───
       case AppRoute.home:

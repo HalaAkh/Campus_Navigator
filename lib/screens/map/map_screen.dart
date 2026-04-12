@@ -65,36 +65,64 @@ class _MapScreenState extends State<MapScreen> {
             child: const _BuildingBadge(name: 'Irwin Hall'),
           ),
 
-          // Floating search bar
+          // Floating search bar with logo
           Positioned(
             top: MediaQuery.of(context).padding.top + 12,
             left: 16,
             right: 16,
-            child: GestureDetector(
-              onTap: widget.onSearchTap,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                decoration: BoxDecoration(
-                  color: AppColors.card,
-                  borderRadius: BorderRadius.circular(9999),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
+            child: Row(
+              children: [
+                // Logo
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: AppColors.card,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    fit: BoxFit.scaleDown,
+                    filterQuality: FilterQuality.high,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: widget.onSearchTap,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                      decoration: BoxDecoration(
+                        color: AppColors.card,
+                        borderRadius: BorderRadius.circular(9999),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 16,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.search, color: AppColors.mutedForeground, size: 18),
+                          const SizedBox(width: 10),
+                          Text('Search buildings...',
+                              style: AppTextStyles.bodyRegular(14,
+                                  color: AppColors.mutedForeground)),
+                        ],
+                      ),
                     ),
-                  ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.search, color: AppColors.mutedForeground, size: 18),
-                    const SizedBox(width: 10),
-                    Text('Search buildings...',
-                        style: AppTextStyles.bodyRegular(14,
-                            color: AppColors.mutedForeground)),
-                  ],
-                ),
-              ),
+              ],
             ),
           ),
 

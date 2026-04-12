@@ -22,7 +22,7 @@
     <application
         android:label="Campus Navigator"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/pin"
         android:theme="@style/LaunchTheme"
         android:usesCleartextTraffic="false" >
 

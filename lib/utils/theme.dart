@@ -61,38 +61,36 @@ class AppColors {
 }
 
 class AppTextStyles {
-  // Heading font: Fraunces (serif, warm)
+  // Primary font: Poppins
   static TextStyle headingBold(double size, {Color color = AppColors.foreground}) =>
-      GoogleFonts.fraunces(fontSize: size, fontWeight: FontWeight.w700, color: color);
+      GoogleFonts.poppins(fontSize: size, fontWeight: FontWeight.w700, color: color);
 
   static TextStyle headingMedium(double size, {Color color = AppColors.foreground}) =>
-      GoogleFonts.fraunces(fontSize: size, fontWeight: FontWeight.w500, color: color);
+      GoogleFonts.poppins(fontSize: size, fontWeight: FontWeight.w500, color: color);
 
   static TextStyle headingRegular(double size, {Color color = AppColors.foreground}) =>
-      GoogleFonts.fraunces(fontSize: size, fontWeight: FontWeight.w400, color: color);
+      GoogleFonts.poppins(fontSize: size, fontWeight: FontWeight.w400, color: color);
 
   static TextStyle headingItalic(double size, {Color color = AppColors.foreground}) =>
-      GoogleFonts.fraunces(fontSize: size, fontWeight: FontWeight.w400, fontStyle: FontStyle.italic, color: color);
+      GoogleFonts.poppins(fontSize: size, fontWeight: FontWeight.w400, fontStyle: FontStyle.italic, color: color);
 
-  // Body font: Plus Jakarta Sans
   static TextStyle bodyBold(double size, {Color color = AppColors.foreground}) =>
-      GoogleFonts.plusJakartaSans(fontSize: size, fontWeight: FontWeight.w700, color: color);
+      GoogleFonts.poppins(fontSize: size, fontWeight: FontWeight.w700, color: color);
 
   static TextStyle bodySemiBold(double size, {Color color = AppColors.foreground}) =>
-      GoogleFonts.plusJakartaSans(fontSize: size, fontWeight: FontWeight.w600, color: color);
+      GoogleFonts.poppins(fontSize: size, fontWeight: FontWeight.w600, color: color);
 
   static TextStyle bodyMedium(double size, {Color color = AppColors.foreground}) =>
-      GoogleFonts.plusJakartaSans(fontSize: size, fontWeight: FontWeight.w500, color: color);
+      GoogleFonts.poppins(fontSize: size, fontWeight: FontWeight.w500, color: color);
 
   static TextStyle bodyRegular(double size, {Color color = AppColors.foreground}) =>
-      GoogleFonts.plusJakartaSans(fontSize: size, fontWeight: FontWeight.w400, color: color);
+      GoogleFonts.poppins(fontSize: size, fontWeight: FontWeight.w400, color: color);
 
   static TextStyle mono(double size, {Color color = AppColors.mutedForeground}) =>
-      TextStyle(fontFamily: 'monospace', fontSize: size, color: color);
+      GoogleFonts.firaCode(fontSize: size, color: color);
 }
 
 class AppDecorations {
-  // Card shadow - warm teal tinted
   static BoxDecoration cardDecoration = BoxDecoration(
     color: AppColors.card,
     borderRadius: BorderRadius.circular(20),
@@ -105,7 +103,6 @@ class AppDecorations {
     ],
   );
 
-  // Elevated card shadow
   static BoxDecoration elevatedDecoration = BoxDecoration(
     color: AppColors.card,
     borderRadius: BorderRadius.circular(20),
@@ -118,13 +115,11 @@ class AppDecorations {
     ],
   );
 
-  // Gradient container
   static BoxDecoration gradientDecoration({double radius = 0}) => BoxDecoration(
         gradient: AppColors.primaryGradient,
         borderRadius: BorderRadius.circular(radius),
       );
 
-  // Input decoration
   static InputDecoration inputDecoration({
     required String hint,
     Widget? prefixIcon,
@@ -192,7 +187,7 @@ class AppTheme {
           error: AppColors.destructive,
         ),
         scaffoldBackgroundColor: AppColors.background,
-        fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+        fontFamily: GoogleFonts.poppins().fontFamily,
         appBarTheme: AppBarTheme(
           backgroundColor: AppColors.card,
           elevation: 0,

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/campus_navigator.iml" filepath="$PROJECT_DIR$/.idea/campus_navigator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/campus_navigator_android.iml" filepath="$PROJECT_DIR$/android/campus_navigator_android.iml" />
     </modules>
   </component>
 </project>

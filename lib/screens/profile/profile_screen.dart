@@ -63,14 +63,34 @@ class ProfileScreen extends StatelessWidget {
                           left: 20,
                           right: 20,
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-                            Text(state.userName,
-                                style: AppTextStyles.headingBold(18, color: Colors.white)),
-                            Text(state.userEmail,
-                                style: AppTextStyles.bodyRegular(12,
-                                    color: Colors.white.withOpacity(0.7))),
+                            // Logo
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                              ),
+                              child: Image.asset(
+                                'assets/images/logo.png',
+                                fit: BoxFit.scaleDown,
+                                filterQuality: FilterQuality.high,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(state.userName,
+                                    style: AppTextStyles.headingBold(18, color: Colors.white)),
+                                Text(state.userEmail,
+                                    style: AppTextStyles.bodyRegular(12,
+                                        color: Colors.white.withOpacity(0.7))),
+                              ],
+                            ),
                           ],
                         ),
                       ),

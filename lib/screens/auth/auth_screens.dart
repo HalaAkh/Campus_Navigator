@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:location/location.dart' as loc;
 
-import 'package:provider/provider.dart';
 import '../../utils/theme.dart';
 import '../../widgets/common/widgets.dart';
 import '../../services/auth_service.dart';
@@ -66,7 +68,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.location_on, size: 48, color: Colors.white),
+                      Image.asset(
+                        'assets/images/logo.png',
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.contain,
+                        filterQuality: FilterQuality.high,
+                        isAntiAlias: true,
+                      ),
                       Text('Campus Navigator',
                           style: AppTextStyles.headingBold(18, color: Colors.white)),
                     ],
@@ -85,7 +94,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Create Account ✨', style: AppTextStyles.headingBold(24)),
+                    Text('Create Account', style: AppTextStyles.headingBold(24)),
                     const SizedBox(height: 24),
                     if (_error != null) ...[
                       Container(
@@ -100,7 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ],
                     _buildField(_nameController, 'Full Name', Icons.person_outline),
                     const SizedBox(height: 12),
-                    _buildField(_emailController, 'your.name@lau.edu.lb', Icons.mail_outline,
+                    _buildField(_emailController, 'your.name@lau.edu', Icons.mail_outline,
                         keyboardType: TextInputType.emailAddress),
                     const SizedBox(height: 12),
                     _buildField(_passwordController, 'Password', Icons.lock_outline, obscure: true),
@@ -394,7 +403,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
 // ============================================
 // PERMISSIONS SCREEN
-// Requests real Bluetooth + Location from device
+// Simplified to trigger native OS dialogs directly
 // ============================================
 class PermissionsScreen extends StatefulWidget {
   final VoidCallback onPermissionsGranted;
@@ -411,588 +420,85 @@ class PermissionsScreen extends StatefulWidget {
 }
 
 class _PermissionsScreenState extends State<PermissionsScreen> {
-  bool _btGranted = false;
-  bool _locGranted = false;
   bool _isRequesting = false;
-  String? _statusMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    // Check if already granted
-    _checkExistingPermissions();
-  }
-
-  Future<void> _checkExistingPermissions() async {
-    final bt = await Permission.bluetoothScan.status;
-    final loc = await Permission.locationWhenInUse.status;
-    if (mounted) {
-      setState(() {
-        _btGranted = bt.isGranted;
-        _locGranted = loc.isGranted;
-      });
-      // Auto-proceed if both already granted
-      if (_btGranted && _locGranted) {
-        await Future.delayed(const Duration(milliseconds: 500));
-        if (mounted) widget.onPermissionsGranted();
-      }
-    }
-  }
 
   Future<void> _requestPermissions() async {
-    setState(() { _isRequesting = true; _statusMessage = null; });
+    if (_isRequesting) return;
+    setState(() => _isRequesting = true);
 
     try {
-      // Step 1: Request Location first (required for BLE on Android)
-      final locStatus = await Permission.locationWhenInUse.request();
-      if (mounted) setState(() => _locGranted = locStatus.isGranted);
+      // 1. Request Location Permission (Native System Dialog)
+      await Permission.locationWhenInUse.request();
 
-      // Step 2: Request Bluetooth permissions
-      final btScan = await Permission.bluetoothScan.request();
-      final btConnect = await Permission.bluetoothConnect.request();
-      if (mounted) setState(() => _btGranted = btScan.isGranted && btConnect.isGranted);
+      // 2. Request Bluetooth Permissions (Native System Dialogs)
+      await [
+        Permission.bluetoothScan,
+        Permission.bluetoothConnect,
+      ].request();
 
-      // Step 3: Check and enable Bluetooth hardware
-      if (_btGranted) {
+      // 3. Turn on Bluetooth Hardware (Native System Dialog on Android)
+      if (Platform.isAndroid) {
         try {
-          // Check current Bluetooth state
-          final btState = await FlutterBluePlus.adapterState.first;
-
-          if (btState != BluetoothAdapterState.on) {
-            // Bluetooth is off, try to turn it on
-            try {
-              await FlutterBluePlus.turnOn();
-              await Future.delayed(const Duration(milliseconds: 800));
-              if (mounted) setState(() => _statusMessage = '✓ Bluetooth enabled');
-            } catch (e) {
-              // Fallback: Show message to enable manually
-              if (mounted) {
-                setState(() => _statusMessage = 'Please enable Bluetooth in Settings. We cannot do it automatically on your device.');
-              }
-            }
-          } else {
-            if (mounted) setState(() => _statusMessage = '✓ Bluetooth is already enabled');
-          }
+          await FlutterBluePlus.turnOn();
         } catch (e) {
-          debugPrint('BT state check failed: $e');
+          debugPrint('BT turnOn failed: $e');
         }
       }
 
-      // Step 4: Check location service
-      if (_locGranted) {
-        try {
-          final isLocationServiceEnabled = await Permission.location.serviceStatus.isEnabled;
-          if (!isLocationServiceEnabled) {
-            if (mounted) {
-              setState(() => _statusMessage = '⚠️ Location service is off. Enabling from Settings...');
-            }
-            // Try to open location settings
-            await openAppSettings();
-          } else {
-            if (mounted) setState(() => _statusMessage = '✓ Location is enabled');
-          }
-        } catch (e) {
-          debugPrint('Location check failed: $e');
-        }
+      // 4. Trigger Native Location Service ON Dialog (GPS)
+      // Using the 'location' package to trigger the specific system popup
+      loc.Location location = loc.Location();
+      bool serviceEnabled = await location.serviceEnabled();
+      if (!serviceEnabled) {
+        // This triggers the native OS "Turn on Location" dialog
+        await location.requestService();
       }
     } catch (e) {
-      debugPrint('Permission request failed: $e');
+      debugPrint('Permission error: $e');
     }
-
-    setState(() => _isRequesting = false);
-
-    // Check final status and retry or proceed
-    await Future.delayed(const Duration(milliseconds: 1000));
 
     if (mounted) {
-      final btState = await FlutterBluePlus.adapterState.first;
-      final btEnabled = btState == BluetoothAdapterState.on;
-      final locEnabled = await Permission.locationWhenInUse.status.then((s) => s.isGranted);
-
-      setState(() {
-        _btGranted = _btGranted && btEnabled;
-        _locGranted = _locGranted && locEnabled;
-      });
-
-      // Check final status
-      if (_btGranted && _locGranted && btEnabled && locEnabled) {
-        await Future.delayed(const Duration(milliseconds: 600));
-        if (mounted) widget.onPermissionsGranted();
-      } else {
-        // Show what's still missing
-        if (mounted) {
-          final missing = [];
-          if (!btEnabled) missing.add('Bluetooth');
-          if (!locEnabled) missing.add('Location');
-          setState(() => _statusMessage =
-            '❌ ${missing.join(' & ')} still disabled. Please manually enable in phone Settings.');
-        }
-      }
+      setState(() => _isRequesting = false);
+      // Proceed to the next screen
+      widget.onPermissionsGranted();
     }
-  }
-
-  Future<void> _openSettings() async {
-    await openAppSettings();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bothGranted = _btGranted && _locGranted;
-
     return Scaffold(
-      backgroundColor: AppColors.card,
-      body: SafeArea(
-          child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                // Icon
-                Container(
-                width: 88, height: 88,
-                decoration: const BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.bluetooth_searching, size: 44, color: Colors.white),
-              ),
-              const SizedBox(height: 24),
-
-              Text('Enable Access', style: AppTextStyles.headingBold(26)),
-              const SizedBox(height: 8),
-              Text(
-                'We need to enable Bluetooth and Location to detect beacons and find your position inside Nicol Hall. Tap "Enable Permissions" below.',
-                style: AppTextStyles.bodyRegular(14, color: AppColors.mutedForeground),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-
-              // Why Location? explanation
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: AppColors.accent.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.info_outline, size: 18, color: AppColors.accent),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        'Android requires Location permission to scan for Bluetooth beacons. Your location is NOT shared or stored.',
-                        style: AppTextStyles.bodyRegular(12, color: AppColors.foreground),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 28),
-
-              // Permission rows
-              _PermissionRow(
-                icon: Icons.bluetooth,
-                label: 'Bluetooth',
-                desc: 'Detect MOKO BLE beacons nearby',
-                granted: _btGranted,
-              ),
-              const SizedBox(height: 10),
-              _PermissionRow(
-                icon: Icons.location_on_outlined,
-                label: 'Location',
-                desc: 'Required by Android for BLE scanning',
-                granted: _locGranted,
-              ),
-              const SizedBox(height: 28),
-
-              // Status message
-              if (_statusMessage != null) ...[
-      Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.destructive.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(_statusMessage!,
-          style: AppTextStyles.bodyRegular(12, color: AppColors.destructive),
-          textAlign: TextAlign.center),
-    ),
-    const SizedBox(height: 12),
-    // Open settings button
-    OutlinedPillButton(
-    label: 'Open Phone Settings',
-    onPressed: _openSettings,
-    borderColor: AppColors.primary,
-    textColor: AppColors.primary,
-    ),
-    const SizedBox(height: 12),
-    ],
-
-    // Main button
-    if (_isRequesting)
-    const CircularProgressIndicator(color: AppColors.primary)
-    else if (bothGranted)
-    GradientButton(
-    label: '✓ All Set — Continue',
-    onPressed: widget.onPermissionsGranted,
-    )
-    else
-    AccentButton(
-    label: 'Enable Permissions',
-    onPressed: _requestPermissions,
-    ),
-
-    const SizedBox(height: 12),
-    TextButton(
-    onPressed: widget.onSkip,
-    child: Text(
-    'Skip for now (navigation won\'t work)',
-    style: AppTextStyles.bodyMedium(13, color: AppColors.mutedForeground),
-    ),
-    ),
-    ],
-    ),
-    ),
-    ));
-    }
-}
-
-
-class _PermissionRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String desc;
-  final bool granted;
-
-  const _PermissionRow({
-    required this.icon,
-    required this.label,
-    required this.desc,
-    required this.granted,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: granted ? AppColors.success.withValues(alpha: 0.4) : AppColors.border,
-          width: 1.5,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 42, height: 42,
-            decoration: BoxDecoration(
-              color: granted
-                  ? AppColors.success.withValues(alpha: 0.1)
-                  : AppColors.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, size: 20,
-                color: granted ? AppColors.success : AppColors.primary),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: AppTextStyles.bodySemiBold(14)),
-                Text(desc, style: AppTextStyles.bodyRegular(11, color: AppColors.mutedForeground)),
-              ],
-            ),
-          ),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: granted
-                ? Container(
-              key: const ValueKey('granted'),
-              width: 28, height: 28,
-              decoration: const BoxDecoration(
-                  color: AppColors.success, shape: BoxShape.circle),
-              child: const Icon(Icons.check, size: 16, color: Colors.white),
-            )
-                : Container(
-              key: const ValueKey('pending'),
-              width: 28, height: 28,
-              decoration: BoxDecoration(
-                border: Border.all(color: AppColors.muted, width: 2),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ============================================
-// MANDATORY PERMISSIONS SCREEN
-// Shows on app startup - user MUST enable or app closes
-// ============================================
-class MandatoryPermissionsScreen extends StatefulWidget {
-  final VoidCallback onPermissionsEnabled;
-
-  const MandatoryPermissionsScreen({
-    super.key,
-    required this.onPermissionsEnabled,
-  });
-
-  @override
-  State<MandatoryPermissionsScreen> createState() => _MandatoryPermissionsScreenState();
-}
-
-class _MandatoryPermissionsScreenState extends State<MandatoryPermissionsScreen> {
-  bool _btGranted = false;
-  bool _locGranted = false;
-  bool _isRequesting = false;
-  String? _statusMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkExistingPermissions();
-  }
-
-  Future<void> _checkExistingPermissions() async {
-    final bt = await Permission.bluetoothScan.status;
-    final loc = await Permission.locationWhenInUse.status;
-    if (mounted) {
-      setState(() {
-        _btGranted = bt.isGranted;
-        _locGranted = loc.isGranted;
-      });
-      // Auto-proceed if both already granted
-      if (_btGranted && _locGranted) {
-        await Future.delayed(const Duration(milliseconds: 500));
-        if (mounted) {
-          _verifyAndProceed();
-        }
-      }
-    }
-  }
-
-  Future<void> _requestPermissions() async {
-    setState(() { _isRequesting = true; _statusMessage = null; });
-
-    try {
-      // Step 1: Request Location first (required for BLE on Android)
-      final locStatus = await Permission.locationWhenInUse.request();
-      if (mounted) setState(() => _locGranted = locStatus.isGranted);
-
-      // Step 2: Request Bluetooth permissions
-      final btScan = await Permission.bluetoothScan.request();
-      final btConnect = await Permission.bluetoothConnect.request();
-      if (mounted) setState(() => _btGranted = btScan.isGranted && btConnect.isGranted);
-
-      // Step 3: Check and enable Bluetooth hardware
-      if (_btGranted) {
-        try {
-          final btState = await FlutterBluePlus.adapterState.first;
-          if (btState != BluetoothAdapterState.on) {
-            try {
-              await FlutterBluePlus.turnOn();
-              await Future.delayed(const Duration(milliseconds: 800));
-              if (mounted) setState(() => _statusMessage = '✓ Bluetooth enabled');
-            } catch (e) {
-              if (mounted) {
-                setState(() => _statusMessage = '⚠️ Please manually enable Bluetooth in Settings');
-              }
-            }
-          } else {
-            if (mounted) setState(() => _statusMessage = '✓ Bluetooth is enabled');
-          }
-        } catch (e) {
-          debugPrint('BT state check failed: $e');
-        }
-      }
-
-      // Step 4: Verify location service
-      if (_locGranted) {
-        try {
-          final isLocationServiceEnabled = await Permission.location.serviceStatus.isEnabled;
-          if (!isLocationServiceEnabled) {
-            if (mounted) {
-              setState(() => _statusMessage = '⚠️ Please enable Location in Settings');
-            }
-            await openAppSettings();
-          } else {
-            if (mounted) setState(() => _statusMessage = '✓ Location is enabled');
-          }
-        } catch (e) {
-          debugPrint('Location check failed: $e');
-        }
-      }
-    } catch (e) {
-      debugPrint('Permission request failed: $e');
-    }
-
-    setState(() => _isRequesting = false);
-
-    // Verify everything is actually enabled
-    await Future.delayed(const Duration(milliseconds: 1200));
-    if (mounted) {
-      await _verifyAndProceed();
-    }
-  }
-
-  Future<void> _verifyAndProceed() async {
-    try {
-      final btState = await FlutterBluePlus.adapterState.first;
-      final btEnabled = btState == BluetoothAdapterState.on;
-      final locEnabled = await Permission.locationWhenInUse.status.then((s) => s.isGranted);
-
-      setState(() {
-        _btGranted = btEnabled;
-        _locGranted = locEnabled;
-      });
-
-      if (btEnabled && locEnabled) {
-        // Everything enabled - proceed to app
-        widget.onPermissionsEnabled();
-      } else {
-        // Missing something
-        final missing = [];
-        if (!btEnabled) missing.add('Bluetooth');
-        if (!locEnabled) missing.add('Location');
-        setState(() => _statusMessage =
-          '❌ ${missing.join(' & ')} NOT enabled. Please enable in Settings to use the app.');
-      }
-    } catch (e) {
-      debugPrint('Verification failed: $e');
-      setState(() => _statusMessage = '⚠️ Permission check failed. Please try again.');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final bothGranted = _btGranted && _locGranted;
-
-    return Scaffold(
-      backgroundColor: AppColors.card,
-      body: SafeArea(
+      backgroundColor: Colors.white,
+      body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(32),
+          padding: const EdgeInsets.all(40),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Header icon
-              Container(
-                width: 88,
-                height: 88,
-                decoration: const BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.bluetooth_searching, size: 44, color: Colors.white),
-              ),
-              const SizedBox(height: 24),
-
-              // Title
-              Text('Enable Bluetooth & Location', style: AppTextStyles.headingBold(26)),
-              const SizedBox(height: 8),
+              Icon(Icons.bluetooth_audio_rounded, size: 80, color: AppColors.primary),
+              const SizedBox(height: 32),
               Text(
-                'Campus Navigator requires Bluetooth and Location to work. These are REQUIRED to use this app.',
-                style: AppTextStyles.bodyRegular(14, color: AppColors.mutedForeground),
+                'Enable Bluetooth & Location',
+                style: AppTextStyles.headingBold(22),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
-
-              // Info box
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: AppColors.accent.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.info_outline, size: 18, color: AppColors.accent),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        'Location is needed for Bluetooth beacon scanning only. Your location data is NOT shared.',
-                        style: AppTextStyles.bodyRegular(12, color: AppColors.foreground),
-                      ),
-                    ),
-                  ],
-                ),
+              const SizedBox(height: 16),
+              Text(
+                'Campus Navigator needs these to find your location inside Nicol Hall.',
+                style: AppTextStyles.bodyRegular(15, color: AppColors.mutedForeground),
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 28),
-
-              // Permission status rows
-              _PermissionRow(
-                icon: Icons.bluetooth,
-                label: 'Bluetooth',
-                desc: 'Required for indoor navigation',
-                granted: _btGranted,
-              ),
-              const SizedBox(height: 10),
-              _PermissionRow(
-                icon: Icons.location_on_outlined,
-                label: 'Location',
-                desc: 'Required for beacon detection',
-                granted: _locGranted,
-              ),
-              const SizedBox(height: 28),
-
-              // Status message
-              if (_statusMessage != null) ...[
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: _statusMessage!.contains('✓')
-                        ? AppColors.success.withValues(alpha: 0.08)
-                        : AppColors.destructive.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    _statusMessage!,
-                    style: AppTextStyles.bodyRegular(
-                      12,
-                      color: _statusMessage!.contains('✓') ? AppColors.success : AppColors.destructive,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                const SizedBox(height: 12),
-              ],
-
-              // Main button
+              const SizedBox(height: 48),
               if (_isRequesting)
                 const CircularProgressIndicator(color: AppColors.primary)
-              else if (bothGranted)
-                GradientButton(
-                  label: '✓ Permissions Enabled — Enter App',
-                  onPressed: widget.onPermissionsEnabled,
-                )
               else
                 AccentButton(
-                  label: 'Enable Permissions',
+                  label: 'Grant Access',
                   onPressed: _requestPermissions,
                 ),
-
-              const SizedBox(height: 24),
-
-              // Warning about closing the app
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.destructive.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '⚠️ Bluetooth and Location are REQUIRED. If you do not enable them, the app will not function.',
-                  style: AppTextStyles.bodyRegular(11, color: AppColors.destructive),
-                  textAlign: TextAlign.center,
-                ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () => SystemNavigator.pop(), // Per user request: Exit app if skip
+                child: Text('Exit App', style: AppTextStyles.bodyMedium(14, color: AppColors.mutedForeground)),
               ),
             ],
           ),
@@ -1002,3 +508,35 @@ class _MandatoryPermissionsScreenState extends State<MandatoryPermissionsScreen>
   }
 }
 
+// ============================================
+// SYSTEM PERMISSION TRIGGERS
+// ============================================
+class PermissionDialogs {
+  /// Directly triggers native OS prompts
+  static Future<void> showPermissionDialogs(BuildContext context) async {
+    // Request Location Permission
+    await Permission.locationWhenInUse.request();
+    
+    // Request Bluetooth permissions
+    await [
+      Permission.bluetoothScan,
+      Permission.bluetoothConnect,
+    ].request();
+
+    // Trigger Bluetooth Power ON
+    if (Platform.isAndroid) {
+      try {
+        await FlutterBluePlus.turnOn();
+      } catch (e) {
+        debugPrint('BT turnOn error: $e');
+      }
+    }
+
+    // Trigger Native Location Service Dialog
+    loc.Location location = loc.Location();
+    bool serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      await location.requestService();
+    }
+  }
+}

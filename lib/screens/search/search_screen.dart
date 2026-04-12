@@ -62,6 +62,21 @@ class _SearchScreenState extends State<SearchScreen> {
                       icon: const Icon(Icons.arrow_back, color: AppColors.foreground),
                       padding: EdgeInsets.zero,
                     ),
+                    const SizedBox(width: 4),
+                    // Logo
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.scaleDown,
+                        filterQuality: FilterQuality.high,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: TextField(
