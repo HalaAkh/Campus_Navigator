@@ -1,375 +1,186 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../services/auth_service.dart';
-import '../utils/app_state.dart';
-import '../screens/splash/splash_screen.dart';
-import '../screens/onboarding/onboarding_screen.dart';
-import '../screens/auth/login_screen.dart';
-import '../screens/auth/auth_screens.dart';
-import '../screens/home/home_screen.dart';
-import '../screens/search/search_screen.dart';
-import '../screens/navigation/room_detail_screen.dart';
-import '../screens/navigation/active_navigation_screen.dart';
-import '../screens/navigation/navigation_screens.dart';
-import '../screens/map/map_screen.dart';
-import '../screens/profile/profile_screen.dart';
-import '../screens/settings/settings_screens.dart';
+import '/services/auth_service.dart';
+import '/utils/app_state.dart';
+import '/screens/splash/splash_screen.dart';
+import '/screens/onboarding/onboarding_screen.dart';
+import '/screens/auth/login_screen.dart';
+import '/screens/auth/auth_screens.dart';
+import '/screens/home/home_screen.dart';
+import '/screens/search/search_screen.dart';
+import '/screens/navigation/navigate_search_screen.dart';
+import '/screens/navigation/navigation_screens.dart';
+import '/screens/profile/profile_screen.dart';
+import '/screens/settings/settings_screens.dart';
 
 enum AppRoute {
-  splash,
-  onboarding,
-  login,
-  signUp,
-  forgotPassword,
-  verifyEmail,
-  permissions,
+  splash, onboarding, login, signUp, forgotPassword, verifyEmail, permissions,
   home,
-  search,
-  roomDetail,
-  navigation,
-  floorTransition,
-  arrived,
-  beaconLost,
-  map,
-  profile,
-  settings,
-  savedRooms,
-  help,
-  feedback,
-  about,
+  search,          // Google Maps "Search here" — simple search
+  navigateSearch,  // Directions search — origin + destination fields
+  navigate,        // Active navigation
+  profile, settings, savedRooms, help, feedback, about,
 }
 
 class AppNavigator extends StatefulWidget {
   const AppNavigator({super.key});
-
   @override
   State<AppNavigator> createState() => _AppNavigatorState();
 }
 
 class _AppNavigatorState extends State<AppNavigator> {
-  AppRoute _currentRoute = AppRoute.splash;
+  AppRoute _route = AppRoute.splash;
   String? _selectedRoom;
   String _userEmail = '';
   String _userName = '';
-  final _authService = AuthService();
+  final _auth = AuthService();
 
-  void _goto(AppRoute route) => setState(() => _currentRoute = route);
+  void _goto(AppRoute r) => setState(() => _route = r);
 
-  void _setUserFromFirebase(User user) {
-    final appState = context.read<AppState>();
-    appState.setUserFromAuth(user);
-    setState(() {
-      _userEmail = user.email ?? '';
-      _userName = user.displayName ?? '';
-    });
+  void _setUser(User user) {
+    context.read<AppState>().setUserFromAuth(user);
+    setState(() { _userEmail = user.email ?? ''; _userName = user.displayName ?? ''; });
   }
 
   void _clearUser() {
-    final appState = context.read<AppState>();
-    appState.clearUser();
-    setState(() {
-      _userEmail = '';
-      _userName = '';
-    });
+    context.read<AppState>().clearUser();
+    setState(() { _userEmail = ''; _userName = ''; });
   }
 
-  Future<void> _handleInitialRoute() async {
-    // Called from splash when app starts or after login/signup flows
-    final user = _authService.currentUser;
-
+  Future<void> _handleInitial() async {
+    final user = _auth.currentUser;
     if (user != null) {
-      // populate provider and local fields
-      _setUserFromFirebase(user);
-
-      final isRegistered = await _authService.isUserRegistered(user.uid);
-
-      if (isRegistered) {
-        if (_authService.isEmailVerified) {
-          // Show permission dialogs for existing signed-in users
-          if (mounted) {
-            await PermissionDialogs.showPermissionDialogs(context);
-          }
+      _setUser(user);
+      final reg = await _auth.isUserRegistered(user.uid);
+      if (reg) {
+        if (_auth.isEmailVerified) {
+          if (mounted) await PermissionDialogs.showPermissionDialogs(context);
           _goto(AppRoute.home);
-        } else {
-          // show verify screen (provider already has name/email)
-          setState(() => _currentRoute = AppRoute.verifyEmail);
-        }
+        } else { _goto(AppRoute.verifyEmail); }
       } else {
-        // Auth exists but Firestore doesn't
-        if (_authService.isEmailVerified) {
-          // create Firestore profile and go home
-          await _authService.createUserProfile(user.displayName ?? '', user.email ?? '');
-          // Show permission dialogs for new users
-          if (mounted) {
-            await PermissionDialogs.showPermissionDialogs(context);
-          }
+        if (_auth.isEmailVerified) {
+          await _auth.createUserProfile(user.displayName ?? '', user.email ?? '');
+          if (mounted) await PermissionDialogs.showPermissionDialogs(context);
           _goto(AppRoute.home);
-        } else {
-          // show verify screen
-          setState(() => _currentRoute = AppRoute.verifyEmail);
-        }
+        } else { _goto(AppRoute.verifyEmail); }
       }
-    } else {
-      _goto(AppRoute.onboarding);
-    }
+    } else { _goto(AppRoute.onboarding); }
   }
 
   void _onSignUpSuccess() {
-    // SignUpScreen expects a VoidCallback; read the signed-up user's info from AuthService
-    final user = _authService.currentUser;
-    final appState = context.read<AppState>();
-
+    final user = _auth.currentUser;
     if (user != null) {
-      final name = user.displayName ?? '';
-      final email = user.email ?? '';
-      appState.setUser(name, email);
-      setState(() {
-        _userName = name;
-        _userEmail = email;
-        _currentRoute = AppRoute.verifyEmail;
-      });
+      context.read<AppState>().setUser(user.displayName ?? '', user.email ?? '');
+      setState(() { _userName = user.displayName ?? ''; _userEmail = user.email ?? ''; _route = AppRoute.verifyEmail; });
     } else {
-      // fallback: clear and go to verify (or show error in real app)
-      appState.clearUser();
-      setState(() {
-        _userName = '';
-        _userEmail = '';
-        _currentRoute = AppRoute.verifyEmail;
-      });
+      context.read<AppState>().clearUser();
+      setState(() { _route = AppRoute.verifyEmail; });
     }
   }
 
-  void _onSignOut() {
-    _authService.signOut();
-    _clearUser();
-    _goto(AppRoute.login);
+  void _signOut() { _auth.signOut(); _clearUser(); _goto(AppRoute.login); }
+
+  // Search tap → select room → show on home map (or navigate directly)
+  void _onSearchRoomSelected(String num) {
+    // Go to navigate search with room pre-filled
+    setState(() { _selectedRoom = num; _route = AppRoute.navigateSearch; });
   }
 
-  void _gotoRoom(String roomNumber) {
-    setState(() {
-      _selectedRoom = roomNumber;
-      _currentRoute = AppRoute.roomDetail;
-    });
+  // Navigate search → start navigation
+  void _startNavigation(String num) {
+    setState(() { _selectedRoom = num; _route = AppRoute.navigate; });
   }
 
-  void _gotoNavigation(String roomNumber) {
-    setState(() {
-      _selectedRoom = roomNumber;
-      _currentRoute = AppRoute.navigation;
-    });
-  }
-
-  void _onTabChange(int index) {
-    setState(() {
-      switch (index) {
-        case 0:
-          _currentRoute = AppRoute.home;
-          break;
-        case 1:
-          _currentRoute = AppRoute.search;
-          break;
-        case 2:
-          _currentRoute = AppRoute.map;
-          break;
-        case 3:
-          _currentRoute = AppRoute.profile;
-          break;
-      }
-    });
+  // Home room tap (from map pin card) → go to navigate
+  void _onHomeRoomNavigate(String num) {
+    setState(() { _selectedRoom = num; _route = AppRoute.navigate; });
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
-      transitionBuilder: (child, animation) => FadeTransition(
-        opacity: animation,
-        child: child,
-      ),
-      child: _buildCurrentScreen(),
+      transitionBuilder: (c, a) => FadeTransition(opacity: a, child: c),
+      child: _build(),
     );
   }
 
-  Widget _buildCurrentScreen() {
-    switch (_currentRoute) {
-      // ─── ENTRY FLOW ───
+  Widget _build() {
+    switch (_route) {
+    // Auth
       case AppRoute.splash:
-        return SplashScreen(
-          key: const ValueKey('splash'),
-          onComplete: _handleInitialRoute,
-        );
-
+        return SplashScreen(key: const ValueKey('splash'), onComplete: _handleInitial);
       case AppRoute.onboarding:
-        return OnboardingScreen(
-          key: const ValueKey('onboarding'),
-          onGetStarted: () async {
-            // Show permission dialogs after onboarding
-            if (mounted) {
-              await PermissionDialogs.showPermissionDialogs(context);
-            }
-            // Then go to sign up
-            _goto(AppRoute.signUp);
-          },
-          onLogin: () => _goto(AppRoute.login),
-        );
-
+        return OnboardingScreen(key: const ValueKey('onboarding'),
+            onGetStarted: () async { if (mounted) await PermissionDialogs.showPermissionDialogs(context); _goto(AppRoute.signUp); },
+            onLogin: () => _goto(AppRoute.login));
       case AppRoute.login:
-        return LoginScreen(
-          key: const ValueKey('login'),
-          onLoginSuccess: _handleInitialRoute,
-          onSignUp: () => _goto(AppRoute.signUp),
-          onForgotPassword: () => _goto(AppRoute.forgotPassword),
-        );
-
+        return LoginScreen(key: const ValueKey('login'), onLoginSuccess: _handleInitial, onSignUp: () => _goto(AppRoute.signUp), onForgotPassword: () => _goto(AppRoute.forgotPassword));
       case AppRoute.signUp:
-        return SignUpScreen(
-          key: const ValueKey('signup'),
-          onSignUpSuccess: _onSignUpSuccess,
-          onLogin: () => _goto(AppRoute.login),
-        );
-
+        return SignUpScreen(key: const ValueKey('signup'), onSignUpSuccess: _onSignUpSuccess, onLogin: () => _goto(AppRoute.login));
       case AppRoute.forgotPassword:
-        return ForgotPasswordScreen(
-          key: const ValueKey('forgotpw'),
-          onBack: () => _goto(AppRoute.login),
-        );
-
+        return ForgotPasswordScreen(key: const ValueKey('forgotpw'), onBack: () => _goto(AppRoute.login));
       case AppRoute.verifyEmail:
-        return VerifyEmailScreen(
-          key: const ValueKey('verify'),
-          email: _userEmail,
-          onVerified: () async {
-            // Show permission dialogs after email verification
-            if (mounted) {
-              await PermissionDialogs.showPermissionDialogs(context);
-            }
-            _goto(AppRoute.home);
-          },
-          onBack: () {
-            _authService.signOut();
-            _clearUser();
-            _goto(AppRoute.signUp);
-          },
-        );
-
+        return VerifyEmailScreen(key: const ValueKey('verify'), email: _userEmail,
+            onVerified: () async { if (mounted) await PermissionDialogs.showPermissionDialogs(context); _goto(AppRoute.home); },
+            onBack: () { _auth.signOut(); _clearUser(); _goto(AppRoute.signUp); });
       case AppRoute.permissions:
-        return PermissionsScreen(
-          key: const ValueKey('perms'),
-          onPermissionsGranted: () => _goto(AppRoute.home),
-          onSkip: () => _goto(AppRoute.home),
-        );
+        return PermissionsScreen(key: const ValueKey('perms'), onPermissionsGranted: () => _goto(AppRoute.home), onSkip: () => _goto(AppRoute.home));
 
-      // ─── MAIN SCREENS ───
+    // ─── MAIN ───
       case AppRoute.home:
         return HomeScreen(
           key: const ValueKey('home'),
-          onTabChange: _onTabChange,
-          onRoomTap: _gotoRoom,
-          onSearchTap: () => _goto(AppRoute.search),
-          onMapTap: () => _goto(AppRoute.map),
+          onSearchTap: () => _goto(AppRoute.search),           // "Search here" → simple search
+          onNavigateTap: () => _goto(AppRoute.navigateSearch), // Directions FAB → navigate search
+          onProfileTap: () => _goto(AppRoute.profile),
+          onNavigateToRoom: _onHomeRoomNavigate,               // Pin card → navigate directly
         );
 
       case AppRoute.search:
         return SearchScreen(
           key: const ValueKey('search'),
-          onRoomSelected: _gotoRoom,
+          onRoomSelected: _onSearchRoomSelected,
           onBack: () => _goto(AppRoute.home),
         );
 
-      case AppRoute.map:
-        return MapScreen(
-          key: const ValueKey('map'),
-          onTabChange: _onTabChange,
-          onSearchTap: () => _goto(AppRoute.search),
+      case AppRoute.navigateSearch:
+        return NavigateSearchScreen(
+          key: const ValueKey('navsearch'),
+          prefilledRoom: _selectedRoom,
+          onStartNavigation: _startNavigation,
+          onBack: () => _goto(AppRoute.home),
         );
 
-      case AppRoute.profile:
-        return ProfileScreen(
-          key: const ValueKey('profile'),
-          onTabChange: _onTabChange,
-          onSettings: () => _goto(AppRoute.settings),
-          onSavedRooms: () => _goto(AppRoute.savedRooms),
-          onAbout: () => _goto(AppRoute.about),
-          onHelp: () => _goto(AppRoute.help),
-          onFeedback: () => _goto(AppRoute.feedback),
-          onSignOut: _onSignOut,
-        );
-
-      // ─── ROOM / NAVIGATION ───
-      case AppRoute.roomDetail:
-        return RoomDetailScreen(
-          key: ValueKey('room_$_selectedRoom'),
-          roomNumber: _selectedRoom ?? '408',
-          onNavigate: () => _gotoNavigation(_selectedRoom ?? '408'),
-          onBack: () => _goto(AppRoute.search),
-        );
-
-      case AppRoute.navigation:
-        return ActiveNavigationScreen(
+      case AppRoute.navigate:
+        return NavigationScreen(
           key: ValueKey('nav_$_selectedRoom'),
           roomNumber: _selectedRoom ?? '408',
-          onArrived: () => _goto(AppRoute.arrived),
-          onEnd: () => _goto(AppRoute.home),
+          onClose: () => _goto(AppRoute.home),
+          onNewDestination: () => _goto(AppRoute.navigateSearch),
         );
 
-      case AppRoute.arrived:
-        return ArrivedScreen(
-          key: ValueKey('arrived_$_selectedRoom'),
-          roomNumber: _selectedRoom ?? '408',
-          onNavigateAgain: () => _goto(AppRoute.search),
-          onHome: () => _goto(AppRoute.home),
-        );
-
-      case AppRoute.floorTransition:
-        return FloorTransitionScreen(
-          key: const ValueKey('floortrans'),
-          fromFloor: 4,
-          toFloor: 5,
-          currentBeaconMac: 'C6:2A:90:A1:99:CB',
-          onContinueMainStairs: () => _goto(AppRoute.navigation),
-          onContinueBackStairs: () => _goto(AppRoute.navigation),
-        );
-
-      case AppRoute.beaconLost:
-        return BeaconLostScreen(
-          key: const ValueKey('beaconlost'),
-          onRetry: () => _goto(AppRoute.home),
-          onManualSelect: () => _goto(AppRoute.home),
-        );
-
-      // ─── SUPPORT SCREENS ───
+    // Profile
+      case AppRoute.profile:
+        return ProfileScreen(key: const ValueKey('profile'),
+            onTabChange: (_) => _goto(AppRoute.home),
+            onSettings: () => _goto(AppRoute.settings),
+            onSavedRooms: () => _goto(AppRoute.savedRooms),
+            onAbout: () => _goto(AppRoute.about),
+            onHelp: () => _goto(AppRoute.help),
+            onFeedback: () => _goto(AppRoute.feedback),
+            onSignOut: _signOut);
       case AppRoute.settings:
-        return SettingsScreen(
-          key: const ValueKey('settings'),
-          onBack: () => _goto(AppRoute.profile),
-        );
-
+        return SettingsScreen(key: const ValueKey('settings'), onBack: () => _goto(AppRoute.profile));
       case AppRoute.savedRooms:
-        return SavedRoomsScreen(
-          key: const ValueKey('saved'),
-          onBack: () => _goto(AppRoute.profile),
-          onNavigate: _gotoNavigation,
-        );
-
+        return SavedRoomsScreen(key: const ValueKey('saved'), onBack: () => _goto(AppRoute.profile), onNavigate: _startNavigation);
       case AppRoute.help:
-        return HelpScreen(
-          key: const ValueKey('help'),
-          onBack: () => _goto(AppRoute.profile),
-        );
-
+        return HelpScreen(key: const ValueKey('help'), onBack: () => _goto(AppRoute.profile));
       case AppRoute.feedback:
-        return FeedbackScreen(
-          key: const ValueKey('feedback'),
-          onBack: () => _goto(AppRoute.profile),
-          onHome: () => _goto(AppRoute.home),
-        );
-
+        return FeedbackScreen(key: const ValueKey('feedback'), onBack: () => _goto(AppRoute.profile), onHome: () => _goto(AppRoute.home));
       case AppRoute.about:
-        return AboutScreen(
-          key: const ValueKey('about'),
-          onBack: () => _goto(AppRoute.profile),
-        );
+        return AboutScreen(key: const ValueKey('about'), onBack: () => _goto(AppRoute.profile));
     }
   }
 }

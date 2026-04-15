@@ -111,8 +111,8 @@ class _SplashScreenState extends State<SplashScreen>
                     scale: _logoScale.value,
                     child: Image.asset(
                       'assets/images/pin.png',
-                      width: 200,
-                      height: 200,
+                      width: 120,
+                      height: 120,
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.high,
                       isAntiAlias: true,
@@ -136,7 +136,7 @@ class _SplashScreenState extends State<SplashScreen>
                     child: Text(
                       'Campus Navigator',
                       style: GoogleFonts.poppins(
-                        fontSize: 20,
+                        fontSize: 23,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -160,7 +160,7 @@ class _SplashScreenState extends State<SplashScreen>
                     child: Text(
                       'Find your way, always!',
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 14,
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.w400,
                         color: const Color(0xFFCFE3DE),

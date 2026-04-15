@@ -1,211 +1,248 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../utils/theme.dart';
-import '../../widgets/common/widgets.dart';
-import '../../data/rooms.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../utils/app_state.dart';
+import '../../data/rooms.dart';
 
-class RoomDetailScreen extends StatelessWidget {
+const _teal = Color(0xFF1ABC9C);
+const _tealDk = Color(0xFF16A085);
+const _pinRed = Color(0xFFE74C3C);
+const _routeBlue = Color(0xFF4A90D9);
+const _textDk = Color(0xFF2C3E50);
+const _textMd = Color(0xFF6B7B7A);
+const _textLt = Color(0xFFBDC3C7);
+
+class RoomDetailScreen extends StatefulWidget {
   final String roomNumber;
   final VoidCallback onNavigate;
   final VoidCallback onBack;
+  const RoomDetailScreen({super.key, required this.roomNumber, required this.onNavigate, required this.onBack});
+  @override
+  State<RoomDetailScreen> createState() => _RoomDetailScreenState();
+}
 
-  const RoomDetailScreen({
-    super.key,
-    required this.roomNumber,
-    required this.onNavigate,
-    required this.onBack,
-  });
+class _RoomDetailScreenState extends State<RoomDetailScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _routeCtrl;
+  late Animation<double> _routeAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _routeCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+    _routeAnim = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _routeCtrl, curve: Curves.easeInOut));
+    _routeCtrl.forward();
+  }
+
+  @override
+  void dispose() { _routeCtrl.dispose(); super.dispose(); }
 
   @override
   Widget build(BuildContext context) {
-    final room = getRoomByNumber(roomNumber);
+    final room = getRoomByNumber(widget.roomNumber);
     final state = context.watch<AppState>();
-
-    if (room == null) {
-      return Scaffold(
-        body: Center(child: Text('Room not found', style: AppTextStyles.bodyRegular(16))),
-      );
-    }
-
-    final details = [
-      _DetailRow(icon: Icons.business_outlined, label: 'Building', value: 'Nicol Hall'),
-      _DetailRow(icon: Icons.layers_outlined, label: 'Floor', value: '${room.floor}'),
-      _DetailRow(icon: Icons.location_on_outlined, label: 'Location', value: 'Main Corridor — Room ${room.number} Area'),
-      _DetailRow(icon: Icons.sensors_outlined, label: 'Nearest Beacon', value: room.beaconMac),
-      _DetailRow(icon: Icons.people_outline, label: 'Category', value: room.category),
-    ];
-
-    final isSaved = state.isRoomSaved(room.number);
+    final size = MediaQuery.of(context).size;
+    final isSaved = state.isRoomSaved(widget.roomNumber);
+    final floorNum = room?.floor ?? (widget.roomNumber.startsWith('5') ? 5 : 4);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // Hero
+      backgroundColor: Colors.white,
+      body: Column(children: [
+        // ── MAP (top 52%) ───────────────────────────────
+        SizedBox(height: size.height * 0.52,
+            child: Stack(children: [
+              Positioned.fill(child: Image.asset('assets/images/campus_map.png', fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(color: const Color(0xFFEDF2F7)))),
+              Positioned.fill(child: Container(color: Colors.white.withValues(alpha: 0.08))),
+
+              // Route line
+              Positioned.fill(child: AnimatedBuilder(animation: _routeAnim,
+                  builder: (_, __) => CustomPaint(painter: _PreviewRoutePainter(progress: _routeAnim.value)))),
+
+              // Origin dot
+              Positioned(left: size.width * 0.32 - 10, top: size.height * 0.52 * 0.40,
+                  child: Container(width: 20, height: 20, decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white, border: Border.all(color: _teal, width: 2.5), boxShadow: [BoxShadow(color: _teal.withValues(alpha: 0.3), blurRadius: 8)]),
+                      child: Center(child: Container(width: 7, height: 7, decoration: const BoxDecoration(shape: BoxShape.circle, color: _teal))))),
+
+              // Destination pin with room number
+              Positioned(left: size.width * 0.68 - 16, top: size.height * 0.52 * 0.55 - 36,
+                  child: TweenAnimationBuilder<double>(tween: Tween(begin: 0, end: 1), duration: const Duration(milliseconds: 500), curve: Curves.bounceOut,
+                      builder: (_, v, __) => Transform.scale(scale: v, alignment: Alignment.bottomCenter,
+                          child: Column(mainAxisSize: MainAxisSize.min, children: [
+                            Container(width: 32, height: 32,
+                                decoration: BoxDecoration(color: _pinRed, shape: BoxShape.circle,
+                                    boxShadow: [BoxShadow(color: _pinRed.withValues(alpha: 0.45), blurRadius: 10, offset: const Offset(0, 4))]),
+                                child: Center(child: Text(widget.roomNumber, style: GoogleFonts.poppins(fontSize: 8, fontWeight: FontWeight.w700, color: Colors.white)))),
+                            Container(width: 2, height: 10, decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [_pinRed, _pinRed.withValues(alpha: 0.2)]))),
+                            Container(width: 8, height: 3, decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(9999))),
+                          ])))),
+
+              // Top bar
+              Positioned(top: 0, left: 0, right: 0,
+                  child: SafeArea(child: Padding(padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+                      child: Row(children: [
+                        _CircleBtn(icon: Icons.arrow_back_ios_new_rounded, onTap: widget.onBack),
+                        const SizedBox(width: 10),
+                        Expanded(child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14),
+                                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 12)]),
+                            child: Row(children: [
+                              const Icon(Icons.my_location_rounded, color: _teal, size: 14), const SizedBox(width: 6),
+                              Expanded(child: Text(state.currentLocationLabel.isNotEmpty ? state.currentLocationLabel : 'My current location',
+                                  style: GoogleFonts.poppins(fontSize: 11, color: _textDk, fontWeight: FontWeight.w500), overflow: TextOverflow.ellipsis)),
+                            ]))),
+                        const SizedBox(width: 8),
+                        _CircleBtn(icon: isSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded, onTap: () {
+                          if (room != null) { isSaved ? state.removeRoom(widget.roomNumber) : state.saveRoom(room); }
+                        }, color: isSaved ? _teal : null),
+                      ])))),
+
+              // Bottom chips
+              Positioned(bottom: 14, left: 0, right: 0,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    _Chip(icon: Icons.straighten_rounded, label: '~30m'),
+                    const SizedBox(width: 8),
+                    _Chip(icon: Icons.access_time_rounded, label: '~2 min'),
+                    const SizedBox(width: 8),
+                    _Chip(icon: Icons.stairs_rounded, label: 'Floor $floorNum'),
+                  ])),
+            ])),
+
+        // ── ROOM INFO (bottom 48%) ──────────────────────
+        Expanded(child: Container(color: Colors.white,
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              // Room header
+              Row(children: [
+                Container(width: 50, height: 50,
+                    decoration: BoxDecoration(color: _teal.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(14)),
+                    child: Center(child: Text(widget.roomNumber, style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w700, color: _teal)))),
+                const SizedBox(width: 14),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(room?.name ?? 'Room ${widget.roomNumber}', style: GoogleFonts.poppins(fontSize: 17, fontWeight: FontWeight.w700, color: _textDk)),
+                  const SizedBox(height: 2),
+                  Text('Floor $floorNum · Nicol Hall · ${room?.category ?? 'Office'}', style: GoogleFonts.poppins(fontSize: 11, color: _textMd)),
+                ])),
+              ]),
+
+              const SizedBox(height: 18),
+              Divider(height: 1, color: Colors.grey.withValues(alpha: 0.1)),
+              const SizedBox(height: 14),
+
+              // Route info rows
+              _DetailRow(icon: Icons.straighten_rounded, label: 'Distance', value: '~30 meters'),
+              const SizedBox(height: 10),
+              _DetailRow(icon: Icons.access_time_rounded, label: 'Walking time', value: '~2 minutes'),
+              const SizedBox(height: 10),
+              _DetailRow(icon: Icons.bluetooth_rounded, label: 'Navigation', value: 'BLE Beacon Guided'),
+
+              const SizedBox(height: 18),
+
+              // Navigation option card
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                    color: _teal.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: _teal.withValues(alpha: 0.15))),
+                child: Row(children: [
+                  Container(width: 42, height: 42,
+                      decoration: BoxDecoration(color: _teal.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+                      child: const Icon(Icons.navigation_rounded, color: _teal, size: 22)),
+                  const SizedBox(width: 12),
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('Indoor Navigation', style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w700, color: _textDk)),
+                    Text('Turn-by-turn beacon guidance', style: GoogleFonts.poppins(fontSize: 11, color: _textMd)),
+                  ])),
                   Container(
-                    decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
-                    padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).padding.top + 12, 20, 32),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        IconButton(
-                          onPressed: onBack,
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
-                          padding: EdgeInsets.zero,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(room.number, style: AppTextStyles.headingBold(64, color: Colors.white)),
-                        Text(room.name,
-                            style: AppTextStyles.bodyMedium(18,
-                                color: Colors.white.withOpacity(0.8))),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: AppColors.accent,
-                                borderRadius: BorderRadius.circular(9999),
-                              ),
-                              child: Text('Floor ${room.floor}',
-                                  style: AppTextStyles.bodyBold(12, color: Colors.white)),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(9999),
-                              ),
-                              child: Text('Nicol Hall',
-                                  style: AppTextStyles.bodySemiBold(12,
-                                      color: Colors.white)),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Details
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
-                    child: Column(
-                      children: [
-                        ...details.map((d) => Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: AppCard(
-                            padding: const EdgeInsets.all(14),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 36,
-                                  height: 36,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary.withOpacity(0.1),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(d.icon, size: 18, color: AppColors.primary),
-                                ),
-                                const SizedBox(width: 12),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(d.label,
-                                        style: AppTextStyles.bodyRegular(11,
-                                            color: AppColors.mutedForeground)),
-                                    Text(d.value, style: AppTextStyles.bodySemiBold(13)),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        )),
-
-                        // Beacon indicator
-                        AppCard(
-                          padding: const EdgeInsets.all(14),
-                          child: Row(
-                            children: [
-                              Stack(
-                                children: [
-                                  const Icon(Icons.sensors_outlined,
-                                      size: 20, color: AppColors.primary),
-                                  Positioned(
-                                    top: 0,
-                                    right: 0,
-                                    child: Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
-                                        color: AppColors.success,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(width: 12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Beacon ${room.beacon} detected',
-                                      style: AppTextStyles.bodySemiBold(13)),
-                                  Text('Signal: Strong',
-                                      style: AppTextStyles.bodyRegular(11,
-                                          color: AppColors.mutedForeground)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-
-                        // Save button
-                        OutlinedPillButton(
-                          label: isSaved ? '❤️ Saved' : '♡ Save Room',
-                          onPressed: () {
-                            if (isSaved) {
-                              state.removeRoom(room.number);
-                            } else {
-                              state.saveRoom(room);
-                            }
-                          },
-                          borderColor: AppColors.accent,
-                          textColor: AppColors.accent,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(color: _teal, borderRadius: BorderRadius.circular(9999)),
+                      child: Text('Free', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white))),
+                ]),
               ),
-            ),
-          ),
-        ],
-      ),
 
-      // Fixed bottom CTA
-      bottomSheet: Container(
-        color: AppColors.card,
-        padding: EdgeInsets.fromLTRB(20, 16, 20,
-            MediaQuery.of(context).padding.bottom + 16),
-        child: GradientButton(
-          label: 'Navigate Here →',
-          onPressed: onNavigate,
-        ),
-      ),
+              const Spacer(),
+
+              // Navigate button
+              GestureDetector(onTap: widget.onNavigate,
+                  child: Container(width: double.infinity, height: 52,
+                      decoration: BoxDecoration(color: _teal, borderRadius: BorderRadius.circular(14),
+                          boxShadow: [BoxShadow(color: _teal.withValues(alpha: 0.4), blurRadius: 14, offset: const Offset(0, 5))]),
+                      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                        const Icon(Icons.navigation_rounded, color: Colors.white, size: 18),
+                        const SizedBox(width: 8),
+                        Text('Start', style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white)),
+                      ]))),
+              const SizedBox(height: 16),
+            ]))),
+      ]),
     );
   }
 }
 
-class _DetailRow {
-  final IconData icon;
-  final String label;
-  final String value;
+class _DetailRow extends StatelessWidget {
+  final IconData icon; final String label; final String value;
   const _DetailRow({required this.icon, required this.label, required this.value});
+  @override
+  Widget build(BuildContext context) => Row(children: [
+    Icon(icon, size: 16, color: _teal),
+    const SizedBox(width: 10),
+    Text(label, style: GoogleFonts.poppins(fontSize: 13, color: _textMd)),
+    const Spacer(),
+    Text(value, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600, color: _textDk)),
+  ]);
+}
+
+class _CircleBtn extends StatelessWidget {
+  final IconData icon; final VoidCallback onTap; final Color? color;
+  const _CircleBtn({required this.icon, required this.onTap, this.color});
+  @override
+  Widget build(BuildContext context) => GestureDetector(onTap: onTap,
+      child: Container(width: 40, height: 40,
+          decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle,
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.09), blurRadius: 8)]),
+          child: Icon(icon, size: 18, color: color ?? _textDk)));
+}
+
+class _Chip extends StatelessWidget {
+  final IconData icon; final String label;
+  const _Chip({required this.icon, required this.label});
+  @override
+  Widget build(BuildContext context) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(9999),
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 8)]),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, size: 13, color: _teal), const SizedBox(width: 4),
+        Text(label, style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w600, color: _textDk)),
+      ]));
+}
+
+class _PreviewRoutePainter extends CustomPainter {
+  final double progress;
+  const _PreviewRoutePainter({required this.progress});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final shadowPaint = Paint()..color = _routeBlue.withValues(alpha: 0.12)..strokeWidth = 10..strokeCap = StrokeCap.round..style = PaintingStyle.stroke;
+    final paint = Paint()..color = _routeBlue..strokeWidth = 4..strokeCap = StrokeCap.round..strokeJoin = StrokeJoin.round..style = PaintingStyle.stroke;
+
+    final sx = size.width * 0.32; final sy = size.height * 0.42;
+    final ex = size.width * 0.68; final ey = size.height * 0.57;
+
+    final path = Path()..moveTo(sx, sy)..cubicTo(sx, sy + (ey - sy) * 0.6, ex - 40, ey, ex, ey);
+    final metrics = path.computeMetrics().toList();
+    if (metrics.isEmpty) return;
+    final extracted = metrics.first.extractPath(0, metrics.first.length * progress);
+
+    canvas.drawPath(extracted, shadowPaint);
+    canvas.drawPath(extracted, paint);
+
+    // Route dots
+    for (double t = 0.15; t < progress; t += 0.18) {
+      final pos = metrics.first.getTangentForOffset(metrics.first.length * t);
+      if (pos != null) { canvas.drawCircle(pos.position, 3, Paint()..color = Colors.white); canvas.drawCircle(pos.position, 1.8, Paint()..color = _routeBlue); }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_PreviewRoutePainter old) => old.progress != progress;
 }

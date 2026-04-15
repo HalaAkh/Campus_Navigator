@@ -120,15 +120,15 @@ BEACON LOCATIONS:
 FLOOR 5 LAYOUT:
 From Elevator Junction:
   Turn LEFT: Rooms 526, 527, 528, 529 (all on RIGHT).
-  Rotate RIGHT straight: 525, 524, 523 on LEFT. Room 522 at END on RIGHT.
+  Rotate RIGHT straight: 525, 524, 523 on LEFT. Room 522 at END on LEFT.
   Turn RIGHT at 522 into main corridor:
     On RIGHT: 501 (Computer Lab, FIRST), 502, 503
     On LEFT: 520 (Computer Lab, 2 doors), Men\'s Toilet
     FACING END: Room 511 (JUNCTION)
 AT ROOM 511:
   STRAIGHT (back): returns through 503, 502, 520, 501, 522, elevator (Left/Right REVERSED)
-  Turn LEFT: Back Stairs, Women\'s Toilet, Offices 504, 510, 509, 505, 506, 508, 507
-  Turn RIGHT: Offices 512, 519, 513, 514, 518, 517, 515, Room 516 (Journalism Lab)
+  Turn RIGHT: Back Stairs, Women\'s Toilet, Offices 504, 510, 509, 505, 506, 508, 507
+  Turn LEFT: Offices 512, 519, 513, 514, 518, 517, 515, Room 516 (Journalism Lab)
 
 CRITICAL: Room 522 is the CORNER/GATEWAY between main corridor and elevator path.
 DO NOT route through elevator if destination is reachable directly.

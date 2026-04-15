@@ -23,6 +23,9 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
+bool _showPassword = false;
+bool _showConfirm = false;
+
 class _SignUpScreenState extends State<SignUpScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -32,16 +35,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? _error;
   final _authService = AuthService();
 
+  // Password validation rule
+  bool _isPasswordValid(String password) {
+    // Rules: At least 8 characters, 1 uppercase letter, 1 number, and 1 special character (!@#$&*~)
+    final regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+    return regex.hasMatch(password);
+  }
+
   Future<void> _handleSignUp() async {
-    if (_passwordController.text != _confirmController.text) {
+    final password = _passwordController.text;
+    final confirm = _confirmController.text;
+
+    // Validation checks
+    if (!_isPasswordValid(password)) {
+      setState(() => _error = 'Password must be at least 8 characters long and include an uppercase letter, a number, and a special character (!@#\$&*~).');
+      return;
+    }
+
+    if (password != confirm) {
       setState(() => _error = 'Passwords do not match.');
       return;
     }
+
     setState(() { _isLoading = true; _error = null; });
     final result = await _authService.signUp(
       _nameController.text,
       _emailController.text,
-      _passwordController.text,
+      password,
     );
     if (mounted) {
       setState(() => _isLoading = false);
@@ -56,7 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.card,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -68,81 +88,82 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      const SizedBox(height: 40),
                       Image.asset(
-                        'assets/images/logo.png',
-                        width: 200,
-                        height: 200,
+                        'assets/images/pin.png',
+                        width: 100,
+                        height: 100,
                         fit: BoxFit.contain,
                         filterQuality: FilterQuality.high,
                         isAntiAlias: true,
                       ),
-                      Text('Campus Navigator',
-                          style: AppTextStyles.headingBold(18, color: Colors.white)),
+                      const SizedBox(height: 12),
+                      Text('Create Account',
+                          style: AppTextStyles.headingBold(22, color: Colors.white)),
+                      const SizedBox(height: 10),
+                      Text('Join Campus Navigator - LAU Edition',
+                          style: AppTextStyles.bodyRegular(13, color: Colors.white.withOpacity(0.8))),
+                      const SizedBox(height: 40),
                     ],
                   ),
                 ),
               ),
             ),
-            Transform.translate(
-              offset: const Offset(0, -32),
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: AppColors.card,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-                ),
-                padding: const EdgeInsets.fromLTRB(24, 32, 24, 48),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Create Account', style: AppTextStyles.headingBold(24)),
-                    const SizedBox(height: 24),
-                    if (_error != null) ...[
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppColors.destructive.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(_error!, style: AppTextStyles.bodyMedium(13, color: AppColors.destructive)),
+            Container(
+              decoration: const BoxDecoration(
+                color: AppColors.card,
+              ),
+              padding: const EdgeInsets.fromLTRB(24, 32, 24, 48),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_error != null) ...[
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.destructive.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      const SizedBox(height: 16),
-                    ],
-                    _buildField(_nameController, 'Full Name', Icons.person_outline),
-                    const SizedBox(height: 12),
-                    _buildField(_emailController, 'your.name@lau.edu', Icons.mail_outline,
-                        keyboardType: TextInputType.emailAddress),
-                    const SizedBox(height: 12),
-                    _buildField(_passwordController, 'Password', Icons.lock_outline, obscure: true),
-                    const SizedBox(height: 12),
-                    _buildField(_confirmController, 'Confirm Password', Icons.shield_outlined, obscure: true),
-                    const SizedBox(height: 24),
-                    _isLoading
-                        ? const Center(child: CircularProgressIndicator(color: AppColors.accent))
-                        : AccentButton(label: 'Sign Up', onPressed: _handleSignUp),
+                      child: Text(_error!, style: AppTextStyles.bodyMedium(13, color: AppColors.destructive)),
+                    ),
                     const SizedBox(height: 16),
-                    Center(
-                      child: GestureDetector(
-                        onTap: widget.onLogin,
-                        child: RichText(
-                          text: TextSpan(
-                            text: 'Already have an account? ',
-                            style: AppTextStyles.bodyRegular(14, color: AppColors.mutedForeground),
-                            children: [
-                              TextSpan(text: 'Sign In',
-                                  style: AppTextStyles.bodySemiBold(14, color: AppColors.primary)),
-                            ],
-                          ),
+                  ],
+                  _buildField(_nameController, 'Full Name', Icons.person_outline),
+                  const SizedBox(height: 12),
+                  _buildField(_emailController, 'your.name@lau.edu', Icons.mail_outline,
+                      keyboardType: TextInputType.emailAddress),
+                  const SizedBox(height: 12),
+                  _buildField(_passwordController, 'Password', Icons.lock_outline, obscure: true),
+                  const SizedBox(height: 12),
+                  _buildField(_confirmController, 'Confirm Password', Icons.shield_outlined, obscure: true),
+                  const SizedBox(height: 24),
+                  _isLoading
+                      ? const Center(child: CircularProgressIndicator(color: AppColors.accent))
+                      : AccentButton(label: 'Sign Up', onPressed: _handleSignUp),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: GestureDetector(
+                      onTap: widget.onLogin,
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Already have an account? ',
+                          style: AppTextStyles.bodyRegular(14, color: AppColors.mutedForeground),
+                          children: [
+                            TextSpan(text: 'Sign In',
+                                style: AppTextStyles.bodySemiBold(14, color: AppColors.primary)),
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Center(
-                      child: Text('By signing up, you agree to our Terms of Service.',
-                          style: AppTextStyles.bodyRegular(10, color: AppColors.mutedForeground),
-                          textAlign: TextAlign.center),
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 8),
+                  Center(
+                    child: Text('By signing up, you agree to our Terms of Service.',
+                        style: AppTextStyles.bodyRegular(10, color: AppColors.mutedForeground),
+                        textAlign: TextAlign.center),
+                  ),
+                ],
               ),
             ),
           ],
@@ -153,13 +174,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget _buildField(TextEditingController ctrl, String hint, IconData icon,
       {bool obscure = false, TextInputType? keyboardType}) {
+
+    // Determine which toggle to use based on hint
+    final isPasswordField = hint == 'Password';
+    final isConfirmField = hint == 'Confirm Password';
+    final isVisible = isPasswordField ? _showPassword : _showConfirm;
+
     return TextField(
       controller: ctrl,
-      obscureText: obscure,
+      obscureText: obscure ? !isVisible : false,
       keyboardType: keyboardType,
+      style: AppTextStyles.bodyMedium(15),
       decoration: AppDecorations.inputDecoration(
         hint: hint,
         prefixIcon: Icon(icon, size: 18, color: AppColors.mutedForeground),
+        suffixIcon: obscure
+            ? IconButton(
+          icon: Icon(
+            isVisible
+                ? Icons.visibility_outlined      // eye open = password visible
+                : Icons.visibility_off_outlined, // eye closed = password hidden
+            size: 18,
+            color: AppColors.mutedForeground,
+          ),
+          onPressed: () => setState(() {
+            if (isPasswordField) _showPassword = !_showPassword;
+            if (isConfirmField) _showConfirm = !_showConfirm;
+          }),
+        )
+            : null,
       ),
     );
   }
@@ -247,7 +290,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.success.withValues(alpha: 0.1),
+                    color: AppColors.success.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
@@ -446,7 +489,6 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
       }
 
       // 4. Trigger Native Location Service ON Dialog (GPS)
-      // Using the 'location' package to trigger the specific system popup
       loc.Location location = loc.Location();
       bool serviceEnabled = await location.serviceEnabled();
       if (!serviceEnabled) {
@@ -497,8 +539,8 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
                 ),
               const SizedBox(height: 16),
               TextButton(
-                onPressed: () => SystemNavigator.pop(), // Per user request: Exit app if skip
-                child: Text('Exit App', style: AppTextStyles.bodyMedium(14, color: AppColors.mutedForeground)),
+                onPressed: widget.onSkip,
+                child: Text('Skip', style: AppTextStyles.bodyMedium(14, color: AppColors.mutedForeground)),
               ),
             ],
           ),

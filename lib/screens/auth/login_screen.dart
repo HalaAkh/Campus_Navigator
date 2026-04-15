@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.card,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -68,8 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      const SizedBox(height: 40),
                       Image.asset(
-                        'assets/images/logo.png',
+                        'assets/images/pin.png',
                         width: 100,
                         height: 100,
                         fit: BoxFit.contain,
@@ -81,8 +82,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: Color(0xFF007A6E)),
                       ),
                       const SizedBox(height: 12),
-                      Text('Campus Navigator',
-                          style: AppTextStyles.headingBold(20, color: Colors.white)),
+                      Text('Welcome Back!',
+                          style: AppTextStyles.headingBold(22, color: Colors.white)),
+                      const SizedBox(height: 10),
+                      Text('Sign in to start navigation',
+                          style: AppTextStyles.bodyRegular(13, color: Colors.white.withValues(alpha: 0.8))),
+                      const SizedBox(height: 40),
                     ],
                   ),
                 ),
@@ -91,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             // Card
             Transform.translate(
-              offset: const Offset(0, -32),
+              offset: const Offset(0, 0),
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 0),
                 decoration: const BoxDecoration(
@@ -102,13 +107,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Welcome back!', style: AppTextStyles.headingBold(24)),
-                    const SizedBox(height: 6),
-                    Text('Sign in to your LAU account',
-                        style: AppTextStyles.bodyRegular(14,
-                            color: AppColors.mutedForeground)),
-                    const SizedBox(height: 28),
-
                     // Error
                     if (_error != null) ...[
                       Container(
@@ -146,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: AppColors.mutedForeground),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _showPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                            _showPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                             size: 18,
                             color: AppColors.mutedForeground,
                           ),
