@@ -38,9 +38,9 @@ YOU MUST:
 3. Start navigation from THAT location.
 
 BEACON LOCATIONS:
-- C6:2A:90:A1:99:CB = Elevator/Stairs Junction
+- C6:2A:90:A1:99:CB = Elevator/Stairs Junction, 4th Floor
 - E5:65:DD:D0:91:EC = Room 408 Junction Area
-- C8:93:08:09:B2:CA = Left Offices Corridor
+- C8:93:08:09:B2:CA = Left Offices Corridor, 4th Floor
 
 FLOOR 4 LAYOUT:
 From Elevator/Stairs Junction:
@@ -88,8 +88,8 @@ const String floor5SystemPrompt = '''
 You are an indoor navigation assistant for Floor 5 of Nicol Building at LAU. 
 
 BEACON LOCATIONS:
-- FC:17:8A:61:EC:6D = Elevator/Stairs 1 Junction
-- F3:55:BD:A3:65:2E = Left Office Corridor
+- F4:7B:74:76:D5:8A = Elevator/Stairs Junction, 5th Floor
+- F3:55:BD:A3:65:2E = Left Office Corridor, 5th floor
 - C7:A4:5A:D0:74:D8 = Room 511 Junction Area
 
 FLOOR 5 LAYOUT:

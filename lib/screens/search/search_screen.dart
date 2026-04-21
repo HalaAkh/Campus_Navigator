@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '/data/rooms.dart';
+import '/services/rooms_service.dart';
+import '/utils/app_state.dart';
 
-/// SEARCH — Opens when tapping "Search here" on home.
-/// Search bar matches home's pill bar (same position, same style).
-/// Below: recent searches, then filtered room list.
 class SearchScreen extends StatefulWidget {
   final ValueChanged<String> onRoomSelected;
   final VoidCallback onBack;
@@ -22,12 +22,10 @@ class _SearchScreenState extends State<SearchScreen> {
   static const _border = Color(0xFFE5EBEB);
   static const _primary = Color(0xFF007A6E);
 
-  static const _recent = ['408', '516', '522', '501', '406'];
-
   List<RoomModel> get _filtered {
     if (_query.isEmpty) return [];
     final q = _query.toLowerCase();
-    return allRooms.where((r) =>
+    return RoomsService().allRooms.where((r) =>
     r.number.contains(q) ||
         r.name.toLowerCase().contains(q) ||
         r.category.toLowerCase().contains(q)).toList();
@@ -94,8 +92,6 @@ class _SearchScreenState extends State<SearchScreen> {
                     onTap: () { _ctrl.clear(); setState(() => _query = ''); },
                     child: const Icon(Icons.close_rounded, color: _muted, size: 20),
                   )
-                else
-                  const Icon(Icons.mic_none_rounded, color: _muted, size: 22),
               ]),
             ),
           ),
@@ -113,22 +109,28 @@ class _SearchScreenState extends State<SearchScreen> {
 
   // ── RECENT ────────────────────────────────────────────
   Widget _buildRecent() {
+    final recent = context.watch<AppState>().navigationHistory;
+    if (recent.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 40),
+          child: Text('No recents', style: GoogleFonts.poppins(fontSize: 14, color: _muted)),
+        ),
+      );
+    }
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        // Recent header
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
           child: Row(children: [
-            Text('Recent', style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: _text)),
+            Text('Recent', style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: _text)),
             const Spacer(),
             Icon(Icons.info_outline_rounded, size: 18, color: _border),
           ]),
         ),
-
-        // Recent items with dividers
-        ..._recent.map((num) {
-          final room = getRoomByNumber(num);
+        ...recent.take(5).map((num) {
+          final room = RoomsService().getRoomByNumber(num);
           return Column(children: [
             GestureDetector(
               onTap: () => widget.onRoomSelected(num),
@@ -136,54 +138,21 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 child: Row(children: [
-                  // Clock icon
-                  Container(
-                    width: 40, height: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFFF0F4F3),
-                    ),
-                    child: const Icon(Icons.access_time_rounded, size: 18, color: _muted),
-                  ),
+                  Container(width: 40, height: 40,
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: const Color(0xFFF0F4F3)),
+                      child: const Icon(Icons.access_time_rounded, size: 18, color: _muted)),
                   const SizedBox(width: 14),
-                  // Room info
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          room?.name ?? 'Room $num',
-                          style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w500, color: _text),
-                        ),
-                        if (room != null)
-                          Text(
-                            'Room $num · Floor ${room.floor} · Nicol Hall',
-                            style: GoogleFonts.poppins(fontSize: 12, color: _muted),
-                          ),
-                      ],
-                    ),
-                  ),
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(room?.name ?? 'Room $num', style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w500, color: _text)),
+                    Text('Room $num · Floor ${room?.floor ?? (num.startsWith('5') ? 5 : 4)} · ${room?.building ?? 'Nicol Hall'}',
+                        style: GoogleFonts.poppins(fontSize: 12, color: _muted)),
+                  ])),
                 ]),
               ),
             ),
-            // Divider
-            Padding(
-              padding: const EdgeInsets.only(left: 74),
-              child: Container(height: 0.5, color: _border),
-            ),
+            Padding(padding: const EdgeInsets.only(left: 74), child: Container(height: 0.5, color: _border)),
           ]);
         }),
-
-        // More from recent history
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Center(
-            child: Text(
-              'More from recent history',
-              style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w500, color: _primary),
-            ),
-          ),
-        ),
       ],
     );
   }

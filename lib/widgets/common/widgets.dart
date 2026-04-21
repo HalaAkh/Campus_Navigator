@@ -396,10 +396,9 @@ class AppBottomTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tabs = [
-      {'icon': Icons.home_outlined, 'activeIcon': Icons.home, 'label': 'Home'},
-      {'icon': Icons.explore_outlined, 'activeIcon': Icons.explore, 'label': 'Navigate'},
-      {'icon': Icons.map_outlined, 'activeIcon': Icons.map, 'label': 'Map'},
-      {'icon': Icons.person_outline, 'activeIcon': Icons.person, 'label': 'Profile'},
+      {'icon': Icons.explore_outlined, 'activeIcon': Icons.explore_rounded, 'label': 'Navigate'},
+      {'icon': Icons.bookmark_outline_rounded, 'activeIcon': Icons.bookmark_rounded, 'label': 'Saved'},
+      {'icon': Icons.person_outline_rounded, 'activeIcon': Icons.person_rounded, 'label': 'Profile'},
     ];
 
     return Container(

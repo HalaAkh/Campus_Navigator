@@ -5,6 +5,8 @@ import '../../services/beacon_service.dart';
 import '../../services/navigation_service.dart';
 import '../../utils/app_state.dart';
 import '../../data/rooms.dart';
+import '/services/rooms_service.dart';
+
 
 const _teal = Color(0xFF1ABC9C);
 const _tealDk = Color(0xFF16A085);
@@ -75,7 +77,7 @@ class _ActiveNavigationScreenState extends State<ActiveNavigationScreen> with Ti
   @override
   Widget build(BuildContext context) {
     final beaconSvc = context.watch<BeaconService>();
-    final room = getRoomByNumber(widget.roomNumber);
+    final room = RoomsService().getRoomByNumber(widget.roomNumber);
     final size = MediaQuery.of(context).size;
 
     final hasSteps = _result != null && _result!.success && _result!.path.isNotEmpty;

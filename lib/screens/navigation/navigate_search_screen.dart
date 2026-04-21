@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../utils/app_state.dart';
 import '/services/beacon_service.dart';
 import '/data/rooms.dart';
+import '/services/rooms_service.dart';
 
-/// NAVIGATE SEARCH — Origin + Destination fields.
-/// Appears when pressing the directions FAB or selecting a room from search.
-/// This is the "plan your route" screen before navigation starts.
+
 class NavigateSearchScreen extends StatefulWidget {
   final String? prefilledRoom;
   final ValueChanged<String> onStartNavigation;
@@ -26,21 +26,19 @@ class _NavigateSearchScreenState extends State<NavigateSearchScreen> {
   static const _border = Color(0xFFE5EBEB);
   static const _red = Color(0xFFEF4444);
 
-  static const _recent = ['408', '516', '522', '501'];
-
   @override
   void initState() {
     super.initState();
     if (widget.prefilledRoom != null) {
-      final room = getRoomByNumber(widget.prefilledRoom!);
+      final room = RoomsService().getRoomByNumber(widget.prefilledRoom!);
       _ctrl.text = room?.name ?? 'Room ${widget.prefilledRoom}';
       _query = _ctrl.text;
     }
   }
 
   List<RoomModel> get _filtered {
-    final rooms = allRooms;
-    if (_query.isEmpty) return rooms;
+    final rooms = RoomsService().allRooms;
+    if (_query.isEmpty) return [];
     final q = _query.toLowerCase();
     return rooms.where((r) =>
     r.number.contains(q) ||
@@ -60,7 +58,7 @@ class _NavigateSearchScreenState extends State<NavigateSearchScreen> {
     final f5 = rooms.where((r) => r.floor == 5).toList();
 
     // If prefilled, show the "Start" button
-    final prefilledRoom = widget.prefilledRoom != null ? getRoomByNumber(widget.prefilledRoom!) : null;
+    final prefilledRoom = widget.prefilledRoom != null ? RoomsService().getRoomByNumber(widget.prefilledRoom!) : null;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -132,18 +130,6 @@ class _NavigateSearchScreenState extends State<NavigateSearchScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            // Mode chips
-            Container(
-              height: 40, padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(children: [
-                _ModeChip(Icons.directions_walk_rounded, 'Walk', true),
-                const SizedBox(width: 8),
-                _ModeChip(Icons.stairs_rounded, 'Stairs', false),
-                const SizedBox(width: 8),
-                _ModeChip(Icons.accessible_rounded, 'Accessible', false),
-              ]),
-            ),
-            const SizedBox(height: 6),
             Container(height: 1, color: _border),
           ]),
         ),
@@ -177,19 +163,31 @@ class _NavigateSearchScreenState extends State<NavigateSearchScreen> {
             children: [
               // Recent
               if (_query.isEmpty) ...[
-                Padding(padding: const EdgeInsets.only(top: 4, bottom: 10),
-                    child: Text('Recent', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w600, color: _muted, letterSpacing: 0.5))),
-                ..._recent.map((num) {
-                  final room = getRoomByNumber(num);
-                  return _RecentRow(
-                    name: room?.name ?? 'Room $num',
-                    sub: 'Room $num · Floor ${num.startsWith('5') ? 5 : 4}',
-                    onTap: () => widget.onStartNavigation(num),
-                  );
+                Builder(builder: (context) {
+                  final recent = context.watch<AppState>().navigationHistory;
+                  if (recent.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 40),
+                      child: Center(child: Text('No recents',
+                          style: GoogleFonts.poppins(fontSize: 14, color: _muted))),
+                    );
+                  }
+                  return Column(children: [
+                    Padding(padding: const EdgeInsets.only(top: 4, bottom: 10),
+                        child: Text('Recent', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w600, color: _muted, letterSpacing: 0.5))),
+                    ...recent.take(5).map((num) {
+                      final room = RoomsService().getRoomByNumber(num);
+                      return _RecentRow(
+                        name: room?.name ?? 'Room $num',
+                        sub: 'Room $num · Floor ${room?.floor ?? (num.startsWith('5') ? 5 : 4)}',
+                        onTap: () => widget.onStartNavigation(num),
+                      );
+                    }),
+                    const SizedBox(height: 8),
+                    Divider(height: 1, color: _border),
+                    const SizedBox(height: 8),
+                  ]);
                 }),
-                const SizedBox(height: 8),
-                Divider(height: 1, color: _border),
-                const SizedBox(height: 8),
               ],
 
               if (f4.isNotEmpty) ...[

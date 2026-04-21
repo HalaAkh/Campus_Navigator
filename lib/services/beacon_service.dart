@@ -26,15 +26,15 @@ class DetectedBeacon {
 
 class AppBeacons {
   static const List<BeaconModel> floor4 = [
-    BeaconModel(mac: 'C6:2A:90:A1:99:CB', location: 'Floor 4 - Elevator/Stairs Junction', floor: 4, type: 'elevator', connections: ['E5:65:DD:D0:91:EC', 'C8:93:08:09:B2:CA']),
+    BeaconModel(mac: 'C6:2A:90:A1:99:CB', location: 'Floor 4 - Elevator/Stairs Junction- 4th Floor', floor: 4, type: 'elevator', connections: ['E5:65:DD:D0:91:EC', 'C8:93:08:09:B2:CA']),
     BeaconModel(mac: 'E5:65:DD:D0:91:EC', location: 'Floor 4 - Room 408 Junction Area', floor: 4, type: 'corridor', connections: ['C6:2A:90:A1:99:CB']),
-    BeaconModel(mac: 'C8:93:08:09:B2:CA', location: 'Floor 4 - Left Offices Corridor', floor: 4, type: 'corridor', connections: ['C6:2A:90:A1:99:CB']),
+    BeaconModel(mac: 'C8:93:08:09:B2:CA', location: 'Floor 4 - Left Offices Corridor- 4th Floor', floor: 4, type: 'corridor', connections: ['C6:2A:90:A1:99:CB']),
   ];
 
   static const List<BeaconModel> floor5 = [
-    BeaconModel(mac: 'FC:17:8A:61:EC:6D', location: 'Floor 5 - Elevator/Stairs 1 Junction', floor: 5, type: 'elevator', connections: ['F3:55:BD:A3:65:2E', 'C7:A4:5A:D0:74:D8']),
-    BeaconModel(mac: 'F3:55:BD:A3:65:2E', location: 'Floor 5 - Left Office Corridor', floor: 5, type: 'corridor', connections: ['FC:17:8A:61:EC:6D']),
-    BeaconModel(mac: 'C7:A4:5A:D0:74:D8', location: 'Floor 5 - Room 511 Junction Area', floor: 5, type: 'corridor', connections: ['FC:17:8A:61:EC:6D']),
+    BeaconModel(mac: 'F4:7B:74:76:D5:8A', location: 'Floor 5 - Elevator/Stairs Junction- 5th Floor', floor: 5, type: 'elevator', connections: ['F3:55:BD:A3:65:2E', 'C7:A4:5A:D0:74:D8']),
+    BeaconModel(mac: 'F3:55:BD:A3:65:2E', location: 'Floor 5 - Left Office Corridor- 5th Floor', floor: 5, type: 'corridor', connections: ['F4:7B:74:76:D5:8A']),
+    BeaconModel(mac: 'C7:A4:5A:D0:74:D8', location: 'Floor 5 - Room 511 Junction Area', floor: 5, type: 'corridor', connections: ['F4:7B:74:76:D5:8A']),
   ];
 
   static List<BeaconModel> get all => [...floor4, ...floor5];
@@ -53,7 +53,7 @@ class StairConnections {
   static const Map<String, dynamic> primary = {
     'name': 'Main Stairs (Elevator Area)',
     'floor4_beacon': 'C6:2A:90:A1:99:CB',
-    'floor5_beacon': 'FC:17:8A:61:EC:6D',
+    'floor5_beacon': 'F4:7B:74:76:D5:8A',
   };
   static const Map<String, dynamic> secondary = {
     'name': 'Back Stairs (Stairs 2)',
@@ -72,6 +72,8 @@ class BeaconService extends ChangeNotifier {
   int _signalStrength = 0;
   List<DetectedBeacon> _nearbyBeacons = [];
   Timer? _continuousTimer;
+  int? _currentRssi;
+  int? get currentRssi => _currentRssi;
 
   BeaconModel? get currentBeacon => _currentBeacon;
   bool get isScanning => _isScanning;
@@ -125,6 +127,7 @@ class BeaconService extends ChangeNotifier {
     final closest = detected.first;
     _currentBeacon = closest.beacon;
     _signalStrength = closest.rssi;
+    _currentRssi = closest.rssi;
     _nearbyBeacons = detected;
     notifyListeners();
     return _currentBeacon;
@@ -132,8 +135,11 @@ class BeaconService extends ChangeNotifier {
 
   void startContinuousScanning() {
     stopContinuousScanning();
-    _continuousTimer = Timer.periodic(const Duration(seconds: 10), (_) async {
-      if (!_isScanning) await detectCurrentLocation(durationSeconds: 4);
+    // Scan immediately first
+    detectCurrentLocation(durationSeconds: 3);
+    // Then scan every 5 seconds
+    _continuousTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+      if (!_isScanning) await detectCurrentLocation(durationSeconds: 3);
     });
   }
 

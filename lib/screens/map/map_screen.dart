@@ -5,6 +5,7 @@ import '../../utils/theme.dart';
 import '../../widgets/common/widgets.dart';
 import '../../data/rooms.dart';
 import '../../services/beacon_service.dart';
+import '/services/rooms_service.dart';
 
 const _teal = Color(0xFF1ABC9C);
 const _tealDk = Color(0xFF16A085);
@@ -521,7 +522,7 @@ class _RoomDetailSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fullRoom = getRoomByNumber(room.number);
+    final fullRoom = RoomsService().getRoomByNumber(room.number);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 14),

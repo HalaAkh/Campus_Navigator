@@ -7,6 +7,7 @@ import 'utils/app_state.dart';
 import 'utils/app_navigator.dart';
 import 'firebase_options.dart';
 import 'services/beacon_service.dart';
+import '/services/rooms_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,7 @@ void main() async {
     // Firebase not configured or timed out — app will still run in demo mode
     debugPrint('Firebase init failed or timed out: $e');
   }
+  await RoomsService().loadRooms();
 
   runApp(const CampusNavigatorApp());
 }

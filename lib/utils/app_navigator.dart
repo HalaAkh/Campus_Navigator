@@ -13,13 +13,15 @@ import '/screens/navigation/navigate_search_screen.dart';
 import '/screens/navigation/navigation_screens.dart';
 import '/screens/profile/profile_screen.dart';
 import '/screens/settings/settings_screens.dart';
+import '/screens/saved_rooms/saved_rooms_screen.dart';
 
 enum AppRoute {
   splash, onboarding, login, signUp, forgotPassword, verifyEmail, permissions,
   home,
   search,          // Google Maps "Search here" — simple search
   navigateSearch,  // Directions search — origin + destination fields
-  navigate,        // Active navigation
+  navigate,
+  savedRoomsNav,
   profile, settings, savedRooms, help, feedback, about,
 }
 
@@ -52,6 +54,8 @@ class _AppNavigatorState extends State<AppNavigator> {
     final user = _auth.currentUser;
     if (user != null) {
       _setUser(user);
+      context.read<AppState>().loadSavedRoomsFromFirebase();
+      context.read<AppState>().loadNavigationHistoryFromFirebase();
       final reg = await _auth.isUserRegistered(user.uid);
       if (reg) {
         if (_auth.isEmailVerified) {
@@ -89,6 +93,7 @@ class _AppNavigatorState extends State<AppNavigator> {
 
   // Navigate search → start navigation
   void _startNavigation(String num) {
+    context.read<AppState>().addToNavigationHistory(num);
     setState(() { _selectedRoom = num; _route = AppRoute.navigate; });
   }
 
@@ -132,10 +137,11 @@ class _AppNavigatorState extends State<AppNavigator> {
       case AppRoute.home:
         return HomeScreen(
           key: const ValueKey('home'),
-          onSearchTap: () => _goto(AppRoute.search),           // "Search here" → simple search
-          onNavigateTap: () => _goto(AppRoute.navigateSearch), // Directions FAB → navigate search
+          onSearchTap: () => _goto(AppRoute.search),
+          onNavigateTap: () => _goto(AppRoute.navigateSearch),
+          onSavedTap: () => _goto(AppRoute.savedRoomsNav),
           onProfileTap: () => _goto(AppRoute.profile),
-          onNavigateToRoom: _onHomeRoomNavigate,               // Pin card → navigate directly
+          onNavigateToRoom: _onHomeRoomNavigate,
         );
 
       case AppRoute.search:
@@ -161,10 +167,23 @@ class _AppNavigatorState extends State<AppNavigator> {
           onNewDestination: () => _goto(AppRoute.navigateSearch),
         );
 
+      case AppRoute.savedRoomsNav:
+        return SavedRoomsNavScreen(
+          key: const ValueKey('savedNav'),
+          onTabChange: (i) {
+            if (i == 0) _goto(AppRoute.home);
+            if (i == 2) _goto(AppRoute.profile);
+          },
+          onNavigateToRoom: _startNavigation,
+        );
+
     // Profile
       case AppRoute.profile:
         return ProfileScreen(key: const ValueKey('profile'),
-            onTabChange: (_) => _goto(AppRoute.home),
+            onTabChange: (i) {
+              if (i == 0) _goto(AppRoute.home);
+              if (i == 1) _goto(AppRoute.savedRoomsNav);
+            },
             onSettings: () => _goto(AppRoute.settings),
             onSavedRooms: () => _goto(AppRoute.savedRooms),
             onAbout: () => _goto(AppRoute.about),

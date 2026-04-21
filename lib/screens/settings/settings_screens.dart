@@ -267,7 +267,7 @@ class SavedRoomsScreen extends StatelessWidget {
                   onPressed: onBack,
                   icon: const Icon(Icons.arrow_back, color: AppColors.foreground),
                 ),
-                Text('Saved Rooms ❤️', style: AppTextStyles.headingBold(18)),
+                Text('Saved Rooms', style: AppTextStyles.headingBold(18)),
               ],
             ),
           ),

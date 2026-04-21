@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../data/rooms.dart';
 import '../services/beacon_service.dart';
 import '../services/navigation_service.dart';
+import '/services/rooms_service.dart';
 
 class AppState extends ChangeNotifier {
   // Auth
@@ -91,6 +93,92 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleSavedRoom(String roomNumber) {
+    if (_savedRooms.any((r) => r.number == roomNumber)) {
+      _savedRooms = _savedRooms.where((r) => r.number != roomNumber).toList();
+    } else {
+      final room = RoomsService().getRoomByNumber(roomNumber);
+      if (room != null) _savedRooms = [..._savedRooms, room];
+    }
+    notifyListeners();
+    _syncSavedRoomsToFirebase();
+  }
+
+  Future<void> _syncSavedRoomsToFirebase() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+        'savedRooms': _savedRooms.map((r) => r.number).toList(),
+      });
+    }
+  }
+
+  Future<void> loadSavedRoomsFromFirebase() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    try {
+      final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      final data = doc.data();
+      if (data != null && data['savedRooms'] != null) {
+        final numbers = List<String>.from(data['savedRooms']);
+        _savedRooms = numbers
+            .map((n) => RoomsService().getRoomByNumber(n))
+            .where((r) => r != null)
+            .cast<RoomModel>()
+            .toList();
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Failed to load saved rooms: $e');
+    }
+  }
+
+  // Navigation History
+  List<String> _navigationHistory = [];
+  List<String> get navigationHistory => _navigationHistory;
+
+  void addToNavigationHistory(String roomNumber) {
+    // Remove if already exists (move to top)
+    _navigationHistory.remove(roomNumber);
+    // Add to beginning
+    _navigationHistory.insert(0, roomNumber);
+    // Keep only last 10
+    if (_navigationHistory.length > 10) {
+      _navigationHistory = _navigationHistory.sublist(0, 10);
+    }
+    _navigationCount++;
+    notifyListeners();
+    _syncHistoryToFirebase();
+  }
+
+  Future<void> _syncHistoryToFirebase() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+        'navigations': _navigationCount,
+        'navigationHistory': _navigationHistory,
+      });
+    }
+  }
+
+  Future<void> loadNavigationHistoryFromFirebase() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    try {
+      final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      final data = doc.data();
+      if (data != null) {
+        _navigationCount = data['navigations'] is int ? data['navigations'] as int : 0;
+        _navigationHistory = data['navigationHistory'] is List
+            ? List<String>.from(data['navigationHistory'])
+            : [];
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Failed to load history: $e');
+    }
+  }
+
   bool get isLastStep =>
       _currentRoute != null && _currentStep >= _currentRoute!.path.length - 1;
 
@@ -106,12 +194,7 @@ class AppState extends ChangeNotifier {
   }
 
   // Saved Rooms
-  List<RoomModel> _savedRooms = [
-    getRoomByNumber('408')!,
-    getRoomByNumber('516')!,
-    getRoomByNumber('522')!,
-  ];
-
+  List<RoomModel> _savedRooms = [];
   List<RoomModel> get savedRooms => _savedRooms;
 
   void saveRoom(RoomModel room) {
@@ -154,7 +237,7 @@ class AppState extends ChangeNotifier {
   void setReducedMotion(bool v) { _reducedMotion = v; notifyListeners(); }
 
   // Stats
-  int _navigationCount = 12;
+  int _navigationCount = 0;
   int get navigationCount => _navigationCount;
   void incrementNavigationCount() { _navigationCount++; notifyListeners(); }
 }

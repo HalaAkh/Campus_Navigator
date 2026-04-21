@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../utils/app_state.dart';
 import '../../data/rooms.dart';
+import '/services/rooms_service.dart';
 
 const _teal = Color(0xFF1ABC9C);
 const _tealDk = Color(0xFF16A085);
@@ -38,7 +39,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
-    final room = getRoomByNumber(widget.roomNumber);
+    final room = RoomsService().getRoomByNumber(widget.roomNumber);
     final state = context.watch<AppState>();
     final size = MediaQuery.of(context).size;
     final isSaved = state.isRoomSaved(widget.roomNumber);

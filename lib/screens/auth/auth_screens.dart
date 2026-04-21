@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:location/location.dart' as loc;
-
 import '../../utils/theme.dart';
 import '../../widgets/common/widgets.dart';
 import '../../services/auth_service.dart';
@@ -23,22 +22,22 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-bool _showPassword = false;
-bool _showConfirm = false;
-
 class _SignUpScreenState extends State<SignUpScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
+  
   bool _isLoading = false;
+  bool _showPassword = false;
+  bool _showConfirm = false;
   String? _error;
   final _authService = AuthService();
 
-  // Password validation rule
-  bool _isPasswordValid(String password) {
-    // Rules: At least 8 characters, 1 uppercase letter, 1 number, and 1 special character (!@#$&*~)
-    final regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+  // Password rule validation
+  bool _isPasswordComplex(String password) {
+    // Regex for: At least 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
+    final regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
     return regex.hasMatch(password);
   }
 
@@ -46,9 +45,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final password = _passwordController.text;
     final confirm = _confirmController.text;
 
-    // Validation checks
-    if (!_isPasswordValid(password)) {
-      setState(() => _error = 'Password must be at least 8 characters long and include an uppercase letter, a number, and a special character (!@#\$&*~).');
+    if (!_isPasswordComplex(password)) {
+      setState(() => _error = 'Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (!@#\$&*~).');
       return;
     }
 
@@ -134,9 +132,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   _buildField(_emailController, 'your.name@lau.edu', Icons.mail_outline,
                       keyboardType: TextInputType.emailAddress),
                   const SizedBox(height: 12),
-                  _buildField(_passwordController, 'Password', Icons.lock_outline, obscure: true),
+                  _buildField(_passwordController, 'Password', Icons.lock_outline, isPassword: true),
                   const SizedBox(height: 12),
-                  _buildField(_confirmController, 'Confirm Password', Icons.shield_outlined, obscure: true),
+                  _buildField(_confirmController, 'Confirm Password', Icons.shield_outlined, isConfirm: true),
                   const SizedBox(height: 24),
                   _isLoading
                       ? const Center(child: CircularProgressIndicator(color: AppColors.accent))
@@ -173,33 +171,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget _buildField(TextEditingController ctrl, String hint, IconData icon,
-      {bool obscure = false, TextInputType? keyboardType}) {
+      {bool isPassword = false, bool isConfirm = false, TextInputType? keyboardType}) {
 
-    // Determine which toggle to use based on hint
-    final isPasswordField = hint == 'Password';
-    final isConfirmField = hint == 'Confirm Password';
-    final isVisible = isPasswordField ? _showPassword : _showConfirm;
+    final isVisible = isPassword ? _showPassword : (isConfirm ? _showConfirm : false);
+    final obscure = (isPassword || isConfirm) && !isVisible;
 
     return TextField(
       controller: ctrl,
-      obscureText: obscure ? !isVisible : false,
+      obscureText: obscure,
       keyboardType: keyboardType,
       style: AppTextStyles.bodyMedium(15),
       decoration: AppDecorations.inputDecoration(
         hint: hint,
         prefixIcon: Icon(icon, size: 18, color: AppColors.mutedForeground),
-        suffixIcon: obscure
+        suffixIcon: (isPassword || isConfirm)
             ? IconButton(
           icon: Icon(
-            isVisible
-                ? Icons.visibility_outlined      // eye open = password visible
-                : Icons.visibility_off_outlined, // eye closed = password hidden
+            isVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
             size: 18,
             color: AppColors.mutedForeground,
           ),
           onPressed: () => setState(() {
-            if (isPasswordField) _showPassword = !_showPassword;
-            if (isConfirmField) _showConfirm = !_showConfirm;
+            if (isPassword) _showPassword = !_showPassword;
+            if (isConfirm) _showConfirm = !_showConfirm;
           }),
         )
             : null,
@@ -471,20 +465,46 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
 
     try {
       // 1. Request Location Permission (Native System Dialog)
-      await Permission.locationWhenInUse.request();
+      // Request Location Permission
+      PermissionStatus locStatus = await Permission.locationWhenInUse.request();
+      if (locStatus != PermissionStatus.granted) {
+        exit(0);
+        return;
+      }
+// Request precise/fine location (triggers Precise/Approximate dialog on Android 12+)
+      PermissionStatus preciseStatus = await Permission.location.request();
+      if (preciseStatus != PermissionStatus.granted) {
+        exit(0);
+        return;
+      }
 
       // 2. Request Bluetooth Permissions (Native System Dialogs)
-      await [
+      // 2. Request Bluetooth Permissions (Native System Dialogs)
+      Map<Permission, PermissionStatus> btStatuses = await [
         Permission.bluetoothScan,
         Permission.bluetoothConnect,
       ].request();
+
+      // IF DENIED -> EXIT
+      if (btStatuses[Permission.bluetoothScan] != PermissionStatus.granted ||
+          btStatuses[Permission.bluetoothConnect] != PermissionStatus.granted) {
+        exit(0);
+      }
 
       // 3. Turn on Bluetooth Hardware (Native System Dialog on Android)
       if (Platform.isAndroid) {
         try {
           await FlutterBluePlus.turnOn();
+          // Small delay to allow the adapter state to update
+          await Future.delayed(const Duration(milliseconds: 500));
+
+          // IF USER CANCELS THE "TURN ON" DIALOG -> EXIT
+          if (await FlutterBluePlus.adapterState.first != BluetoothAdapterState.on) {
+            exit(0);
+          }
         } catch (e) {
-          debugPrint('BT turnOn failed: $e');
+          // If the OS prevents turning on BT programmatically
+          exit(0);
         }
       }
 
@@ -492,8 +512,11 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
       loc.Location location = loc.Location();
       bool serviceEnabled = await location.serviceEnabled();
       if (!serviceEnabled) {
-        // This triggers the native OS "Turn on Location" dialog
-        await location.requestService();
+        serviceEnabled = await location.requestService();
+        if (!serviceEnabled) {
+          exit(0);
+          return;
+        }
       }
     } catch (e) {
       debugPrint('Permission error: $e');
@@ -519,13 +542,13 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
               Icon(Icons.bluetooth_audio_rounded, size: 80, color: AppColors.primary),
               const SizedBox(height: 32),
               Text(
-                'Enable Bluetooth & Location',
+                'Access Required',
                 style: AppTextStyles.headingBold(22),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Text(
-                'Campus Navigator needs these to find your location inside Nicol Hall.',
+                'This app uses your location and Bluetooth to navigate you accurately inside Nicol Hall. Navigation is not possible without these permissions.',
                 style: AppTextStyles.bodyRegular(15, color: AppColors.mutedForeground),
                 textAlign: TextAlign.center,
               ),
@@ -539,8 +562,8 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
                 ),
               const SizedBox(height: 16),
               TextButton(
-                onPressed: widget.onSkip,
-                child: Text('Skip', style: AppTextStyles.bodyMedium(14, color: AppColors.mutedForeground)),
+                onPressed: () => exit(0),
+                child: Text('Exit App', style: AppTextStyles.bodyMedium(14, color: AppColors.mutedForeground)),
               ),
             ],
           ),
@@ -557,28 +580,54 @@ class PermissionDialogs {
   /// Directly triggers native OS prompts
   static Future<void> showPermissionDialogs(BuildContext context) async {
     // Request Location Permission
-    await Permission.locationWhenInUse.request();
-    
-    // Request Bluetooth permissions
-    await [
-      Permission.bluetoothScan,
-      Permission.bluetoothConnect,
-    ].request();
-
-    // Trigger Bluetooth Power ON
-    if (Platform.isAndroid) {
-      try {
-        await FlutterBluePlus.turnOn();
-      } catch (e) {
-        debugPrint('BT turnOn error: $e');
-      }
+    // Request Location Permission
+    PermissionStatus locStatus = await Permission.locationWhenInUse.request();
+    if (locStatus != PermissionStatus.granted) {
+      exit(0);
+      return;
+    }
+// Request precise/fine location (triggers Precise/Approximate dialog on Android 12+)
+    PermissionStatus preciseStatus = await Permission.location.request();
+    if (preciseStatus != PermissionStatus.granted) {
+      exit(0);
+      return;
     }
 
+    // Request Bluetooth permissions
+    Map<Permission, PermissionStatus> btStatuses = await [
+    Permission.bluetoothScan,
+    Permission.bluetoothConnect,
+    ].request();
+
+    // EXIT IF BLUETOOTH PERMISSION DENIED
+    if (btStatuses[Permission.bluetoothScan] != PermissionStatus.granted ||
+    btStatuses[Permission.bluetoothConnect] != PermissionStatus.granted) {
+    exit(0);
+    }
+
+    if (Platform.isAndroid) {
+    try {
+    await FlutterBluePlus.turnOn();
+    // Wait briefly for hardware state change
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // EXIT IF BLUETOOTH HARDWARE NOT TURNED ON
+    if (await FlutterBluePlus.adapterState.first != BluetoothAdapterState.on) {
+    exit(0);
+    }
+    } catch (e) {
+    exit(0);
+    }
+    }
     // Trigger Native Location Service Dialog
     loc.Location location = loc.Location();
     bool serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
-      await location.requestService();
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        exit(0);
+        return;
+      }
     }
   }
 }

@@ -57,7 +57,7 @@ class ProfileScreen extends StatelessWidget {
                       Container(
                         height: 140,
                         width: double.infinity,
-                        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
+                        decoration: const BoxDecoration(gradient: AppColors.primaryGradient2),
                         padding: EdgeInsets.only(
                           top: MediaQuery.of(context).padding.top + 12,
                           left: 20,
@@ -69,13 +69,8 @@ class ProfileScreen extends StatelessWidget {
                             Container(
                               width: 36,
                               height: 36,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
-                              ),
                               child: Image.asset(
-                                'assets/images/logo.png',
+                                'assets/images/pin1.png',
                                 fit: BoxFit.scaleDown,
                                 filterQuality: FilterQuality.high,
                               ),
@@ -193,7 +188,10 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: AppBottomTabBar(currentIndex: 3, onTap: onTabChange),
+      bottomNavigationBar: AppBottomTabBar(currentIndex: 2, onTap: (i) {
+        if (i == 0) onTabChange(0);
+        if (i == 1) onTabChange(1);  // ← This triggers savedRoomsNav in navigator
+      }),
     );
   }
 }
