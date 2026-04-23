@@ -159,16 +159,24 @@ class BeaconService extends ChangeNotifier {
     return 30;
   }
 
-  String chooseBestStairs(String currentMac, int floor) {
-    final primaryBeacon = floor == 4
+  String chooseBestStairs(String currentBeaconMac, int currentFloor) {
+    final primaryBeacon = currentFloor == 4
         ? StairConnections.primary['floor4_beacon'] as String
         : StairConnections.primary['floor5_beacon'] as String;
-    final secondaryBeacon = floor == 4
+    final secondaryBeacon = currentFloor == 4
         ? StairConnections.secondary['floor4_beacon'] as String
         : StairConnections.secondary['floor5_beacon'] as String;
-    final dPrimary = calculateDistanceToStairs(currentMac, primaryBeacon, floor);
-    final dSecondary = calculateDistanceToStairs(currentMac, secondaryBeacon, floor);
-    return dPrimary <= dSecondary ? 'primary' : 'secondary';
+
+    // If already at a stairs beacon, use that one directly
+    if (currentBeaconMac.toUpperCase() == primaryBeacon.toUpperCase()) return 'primary';
+    if (currentBeaconMac.toUpperCase() == secondaryBeacon.toUpperCase()) return 'secondary';
+
+    // Otherwise pick based on which beacon the user is closest to
+    // Primary (elevator area) is closer from elevator beacon
+    // Secondary (408/511) is closer from junction beacons
+    const elevatorBeacons = ['C6:2A:90:A1:99:CB', 'F4:7B:74:76:D5:8A'];
+    if (elevatorBeacons.contains(currentBeaconMac.toUpperCase())) return 'primary';
+    return 'secondary';
   }
 
   void setMockBeacon(BeaconModel beacon) {

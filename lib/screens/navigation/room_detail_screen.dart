@@ -51,7 +51,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> with SingleTickerPr
         // ── MAP (top 52%) ───────────────────────────────
         SizedBox(height: size.height * 0.52,
             child: Stack(children: [
-              Positioned.fill(child: Image.asset('assets/images/campus_map.png', fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(color: const Color(0xFFEDF2F7)))),
+              Positioned.fill(child: Image.asset('assets/images/map.png', fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(color: const Color(0xFFEDF2F7)))),
               Positioned.fill(child: Container(color: Colors.white.withValues(alpha: 0.08))),
 
               // Route line

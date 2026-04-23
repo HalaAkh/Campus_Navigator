@@ -149,6 +149,8 @@ class _AppNavigatorState extends State<AppNavigator> {
           key: const ValueKey('search'),
           onRoomSelected: _onSearchRoomSelected,
           onBack: () => _goto(AppRoute.home),
+          onSavedTap: () => _goto(AppRoute.savedRoomsNav),
+          onProfileTap: () => _goto(AppRoute.profile),
         );
 
       case AppRoute.navigateSearch:
@@ -172,7 +174,8 @@ class _AppNavigatorState extends State<AppNavigator> {
           key: const ValueKey('savedNav'),
           onTabChange: (i) {
             if (i == 0) _goto(AppRoute.home);
-            if (i == 2) _goto(AppRoute.profile);
+            if (i == 1) _goto(AppRoute.search);
+            if (i == 3) _goto(AppRoute.profile);
           },
           onNavigateToRoom: _startNavigation,
         );
@@ -182,14 +185,16 @@ class _AppNavigatorState extends State<AppNavigator> {
         return ProfileScreen(key: const ValueKey('profile'),
             onTabChange: (i) {
               if (i == 0) _goto(AppRoute.home);
-              if (i == 1) _goto(AppRoute.savedRoomsNav);
+              if (i == 1) _goto(AppRoute.search);
+              if (i == 2) _goto(AppRoute.savedRoomsNav);
             },
             onSettings: () => _goto(AppRoute.settings),
             onSavedRooms: () => _goto(AppRoute.savedRooms),
             onAbout: () => _goto(AppRoute.about),
             onHelp: () => _goto(AppRoute.help),
             onFeedback: () => _goto(AppRoute.feedback),
-            onSignOut: _signOut);
+            onSignOut: _signOut,
+            onNavigateToRoom: _startNavigation);
       case AppRoute.settings:
         return SettingsScreen(key: const ValueKey('settings'), onBack: () => _goto(AppRoute.profile));
       case AppRoute.savedRooms:

@@ -106,8 +106,7 @@ class _NavigateSearchScreenState extends State<NavigateSearchScreen> {
                             color: const Color(0xFFF7FAFA), borderRadius: BorderRadius.circular(8),
                             border: Border.all(color: _query.isNotEmpty ? _primary : _border)),
                         child: Row(children: [
-                          Icon(Icons.location_on_rounded, size: 14, color: _query.isNotEmpty ? _red : _muted),
-                          const SizedBox(width: 8),
+                          Image.asset('assets/images/pin1.png', width: 18, height: 18, fit: BoxFit.contain),                           const SizedBox(width: 8),
                           Expanded(
                             child: TextField(
                               controller: _ctrl,

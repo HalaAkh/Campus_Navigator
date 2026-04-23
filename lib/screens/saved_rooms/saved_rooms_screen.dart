@@ -58,7 +58,11 @@ class SavedRoomsNavScreen extends StatelessWidget {
           ),
         ),
       ]),
-      bottomNavigationBar: AppBottomTabBar(currentIndex: 1, onTap: onTabChange),
+      bottomNavigationBar: AppBottomTabBar(currentIndex: 2, onTap: (i) {
+        if (i == 0) onTabChange(0);
+        if (i == 1) onTabChange(1); // Search
+        if (i == 3) onTabChange(3); // Profile
+      }),
     );
   }
 

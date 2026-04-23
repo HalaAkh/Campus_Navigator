@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '/utils/theme.dart';
 
 // ============================================
@@ -383,75 +384,71 @@ class SettingsRow extends StatelessWidget {
 // ============================================
 // BOTTOM TAB BAR
 // ============================================
+// REPLACE your AppBottomTabBar with this updated version:
 class AppBottomTabBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
+  const AppBottomTabBar({super.key, required this.currentIndex, required this.onTap});
 
-  const AppBottomTabBar({
-    super.key,
-    required this.currentIndex,
-    required this.onTap,
-  });
+  static const _primary = Color(0xFF007A6E);
+  static const _muted = Color(0xFF6B7B7A);
 
   @override
   Widget build(BuildContext context) {
-    final tabs = [
-      {'icon': Icons.explore_outlined, 'activeIcon': Icons.explore_rounded, 'label': 'Navigate'},
-      {'icon': Icons.bookmark_outline_rounded, 'activeIcon': Icons.bookmark_rounded, 'label': 'Saved'},
-      {'icon': Icons.person_outline_rounded, 'activeIcon': Icons.person_rounded, 'label': 'Profile'},
-    ];
-
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.card,
-        border: Border(top: BorderSide(color: AppColors.border, width: 1)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, -4),
-          ),
-        ],
+        color: Colors.white,
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 16, offset: const Offset(0, -4))],
       ),
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 64,
+          height: 56,
           child: Row(
-            children: List.generate(tabs.length, (i) {
-              final isActive = i == currentIndex;
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () => onTap(i),
-                  behavior: HitTestBehavior.opaque,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        isActive
-                            ? tabs[i]['activeIcon'] as IconData
-                            : tabs[i]['icon'] as IconData,
-                        color: isActive ? AppColors.primary : AppColors.mutedForeground,
-                        size: 22,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        tabs[i]['label'] as String,
-                        style: AppTextStyles.bodyMedium(
-                          10,
-                          color: isActive ? AppColors.primary : AppColors.mutedForeground,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
+            children: [
+              _Tab(icon: Icons.map_outlined, activeIcon: Icons.map_rounded,
+                  label: 'Map', active: currentIndex == 0, onTap: () => onTap(0)),
+              _Tab(icon: Icons.search_outlined, activeIcon: Icons.search_rounded,
+                  label: 'Search', active: currentIndex == 1, onTap: () => onTap(1)),
+              _Tab(icon: Icons.bookmark_outline_rounded, activeIcon: Icons.bookmark_rounded,
+                  label: 'Saved', active: currentIndex == 2, onTap: () => onTap(2)),
+              _Tab(icon: Icons.person_outline_rounded, activeIcon: Icons.person_rounded,
+                  label: 'Profile', active: currentIndex == 3, onTap: () => onTap(3)),
+            ],
           ),
         ),
       ),
     );
   }
+}
+
+class _Tab extends StatelessWidget {
+  final IconData icon, activeIcon;
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+  const _Tab({required this.icon, required this.activeIcon, required this.label,
+    required this.active, required this.onTap});
+
+  static const _primary = Color(0xFF007A6E);
+  static const _muted = Color(0xFF6B7B7A);
+
+  @override
+  Widget build(BuildContext context) => Expanded(
+    child: GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Icon(active ? activeIcon : icon,
+            size: 22, color: active ? _primary : _muted),
+        const SizedBox(height: 3),
+        Text(label, style: GoogleFonts.poppins(
+            fontSize: 10,
+            fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+            color: active ? _primary : _muted)),
+      ]),
+    ),
+  );
 }
 
 // ============================================
