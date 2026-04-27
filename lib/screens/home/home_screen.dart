@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../utils/app_state.dart';
 import '../../widgets/common/widgets.dart';
 import '/services/beacon_service.dart';
@@ -210,13 +211,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         // ── LOCATION PIN — centered on beacon position ────
         if (beacon != null)
           Positioned(
-            left: size.width * pos.dx - 16,
-            top: size.height * pos.dy - 16,
+            left: size.width * pos.dx - 20,
+            top: size.height * pos.dy - 38,
             child: AnimatedBuilder(animation: _pulseAnim,
                 builder: (_, __) => Stack(alignment: Alignment.center, clipBehavior: Clip.none, children: [
                   Transform.scale(scale: _pulseAnim.value,
                       child: Container(width: 32, height: 32, decoration: BoxDecoration(shape: BoxShape.circle, color: _primary.withValues(alpha: 0.10)))),
-                  Image.asset('assets/images/pin1.png', width: 32, height: 32, fit: BoxFit.contain,
+                  Image.asset('assets/images/pin1.png', width: 35, height: 35, fit: BoxFit.contain,
                       errorBuilder: (_, __, ___) => Container(width: 16, height: 16,
                           decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white, border: Border.all(color: _primary, width: 3)))),
                 ])),
@@ -261,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
         // ── CATEGORY CHIPS ──────────────────────────────
         if (_activeCategory == null)
-          Positioned(top: 10, left: 0, right: 5,
+          Positioned(top: 10, left: 0, right: 0,
               child: SafeArea(bottom: false,
                   child: Padding(padding: const EdgeInsets.only(top: 60),
                       child: SizedBox(height: 36,
@@ -336,27 +337,99 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final dx = roomPos.dx - userPos.dx;
     final dy = roomPos.dy - userPos.dy;
     final distanceInMeters = (math.sqrt(dx * dx + dy * dy) * 100).toStringAsFixed(0);
+    final hasProfInfo = room.hasProfessorInfo;
 
     return Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16),
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 20, offset: const Offset(0, 4))]),
-        child: Row(children: [
-          Container(width: 46, height: 46,
-              decoration: BoxDecoration(color: _primary.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(12)),
-              child: Center(child: Text(room.number, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w700, color: _primary)))),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [BoxShadow(
+              color: Colors.black.withValues(alpha: 0.12),
+              blurRadius: 20,
+              offset: const Offset(0, 4))]),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+
+        // ── TOP ROW ─────────────────────────────────────────────────────
+        Row(children: [
+          Container(
+              width: 46, height: 46,
+              decoration: BoxDecoration(
+                  color: _primary.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(12)),
+              child: Center(child: Text(
+                  room.number,
+                  style: GoogleFonts.poppins(
+                      fontSize: 13, fontWeight: FontWeight.w700, color: _primary)))),
           const SizedBox(width: 12),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-            Text(room.name, style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: _text)),
-            Text('${room.category} · Floor ${room.floor} · $distanceInMeters m',
-                style: GoogleFonts.poppins(fontSize: 11, color: _muted)),
-          ])),
-          GestureDetector(onTap: () { _closeSheet(); widget.onNavigateToRoom(room.number); },
-              child: Container(width: 40, height: 40,
-                  decoration: BoxDecoration(color: _primary, borderRadius: BorderRadius.circular(10)),
-                  child: const Icon(Icons.directions_rounded, color: Colors.white, size: 20))),
-        ]));
+          Expanded(child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(room.name,
+                    style: GoogleFonts.poppins(
+                        fontSize: 14, fontWeight: FontWeight.w600, color: _text)),
+                Text(
+                  hasProfInfo && room.professorsName != null
+                      ? '${room.professorsName} · Floor ${room.floor}'
+                      : '${room.category} · Floor ${room.floor} · ${distanceInMeters}m',
+                  style: GoogleFonts.poppins(
+                      fontSize: 11,
+                      color: hasProfInfo && room.professorsName != null
+                          ? _primary
+                          : _muted),
+                ),
+              ])),
+          GestureDetector(
+              onTap: () { _closeSheet(); widget.onNavigateToRoom(room.number); },
+              child: Container(
+                  width: 40, height: 40,
+                  decoration: BoxDecoration(
+                      color: _primary, borderRadius: BorderRadius.circular(10)),
+                  child: const Icon(Icons.directions_rounded,
+                      color: Colors.white, size: 20))),
+        ]),
+
+        // ── PROFESSOR DETAILS ────────────────────────────────────────────
+        if (hasProfInfo) ...[
+          const SizedBox(height: 12),
+          Container(height: 0.5, color: _border),
+          const SizedBox(height: 10),
+
+          if (room.professorsName != null)
+            _pinInfoRow(Icons.person_outline_rounded, room.professorsName!),
+
+          if (room.professorTitle != null)
+            _pinInfoRow(Icons.school_outlined, room.professorTitle!),
+
+          if (room.officeHours != null)
+            _pinInfoRow(Icons.schedule_outlined, 'Office hours: ${room.officeHours!}'),
+
+          if (room.professorEmail != null)
+            _pinInfoRow(Icons.mail_outline_rounded, room.professorEmail!,
+                isEmail: true),
+        ],
+      ]),
+    );
   }
+
+  Widget _pinInfoRow(IconData icon, String value, {bool isEmail = false}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: Row(children: [
+        Icon(icon, size: 14, color: _muted),
+        const SizedBox(width: 8),
+        Expanded(child: Text(
+            value,
+            style: GoogleFonts.poppins(
+                fontSize: 11,
+                color: isEmail ? _primary : _muted,
+                decoration: isEmail ? TextDecoration.underline : null),
+            overflow: TextOverflow.ellipsis)),
+      ]),
+    );
+  }
+
 
   // 1. Add this key to your _HomeScreenState variables at the top  final GlobalKey _sheetKey = GlobalKey();
 
@@ -529,31 +602,134 @@ class _CategoryRoomCard extends StatefulWidget {
 
 class _CategoryRoomCardState extends State<_CategoryRoomCard> {
   bool _isShareActive = false;
+
+  static const _primary = Color(0xFF007A6E);
+  static const _text    = Color(0xFF1C2B2A);
+  static const _muted   = Color(0xFF6B7B7A);
+  static const _border  = Color(0xFFE5EBEB);
+
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) {
+    final room        = widget.room;
+    final hasProfInfo = room.hasProfessorInfo;
+
+    return Container(
       margin: const EdgeInsets.only(bottom: 15),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(widget.room.name, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: const Color(0xFF1C2B2A))),
+
+        Text(room.name,
+            style: GoogleFonts.poppins(
+                fontSize: 16, fontWeight: FontWeight.w600, color: _text)),
         const SizedBox(height: 2),
-        Text('${widget.room.category} · Room ${widget.room.number} · Floor ${widget.room.floor}', style: GoogleFonts.poppins(fontSize: 12, color: const Color(0xFF6B7B7A))),
+        Text('${room.category} · Room ${room.number} · Floor ${room.floor}',
+            style: GoogleFonts.poppins(fontSize: 12, color: _muted)),
         const SizedBox(height: 3),
-        Text('${widget.distance} m · ${widget.room.building}', style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: const Color(0xFF007A6E))),
+        Text('${widget.distance} m · ${room.building}',
+            style: GoogleFonts.poppins(
+                fontSize: 12, fontWeight: FontWeight.w500, color: _primary)),
+
+        // ── PROFESSOR INFO BOX ───────────────────────────────────────────
+        if (hasProfInfo) ...[
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF0FAF7),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: _border),
+            ),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  if (room.professorsName != null)
+                    _profRow(
+                      Icons.person_outline_rounded,
+                      room.professorsName!,
+                      style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: _text),
+                    ),
+
+                  if (room.professorTitle != null)
+                    _profRow(Icons.school_outlined, room.professorTitle!),
+
+                  if (room.officeHours != null)
+                    _profRow(Icons.schedule_outlined,
+                        'Office hours: ${room.officeHours!}'),
+
+                  if (room.professorEmail != null)
+                    GestureDetector(
+                      onTap: () async {
+                        final uri = Uri(
+                            scheme: 'mailto', path: room.professorEmail);
+                        if (await canLaunchUrl(uri)) await launchUrl(uri);
+                      },
+                      child: _profRow(
+                        Icons.mail_outline_rounded,
+                        room.professorEmail!,
+                        style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            color: _primary,
+                            decoration: TextDecoration.underline),
+                      ),
+                    ),
+                ]),
+          ),
+        ],
+
+        // ── ACTION BUTTONS ───────────────────────────────────────────────
         const SizedBox(height: 10),
         Row(children: [
-          _Btn(i: Icons.directions_rounded, l: 'Directions', isActive: false, onTap: widget.onDirections),
+          _Btn(
+              i: Icons.directions_rounded,
+              l: 'Directions',
+              isActive: false,
+              onTap: widget.onDirections),
           const SizedBox(width: 8),
-          _Btn(i: Icons.share_outlined, l: 'Share', isActive: _isShareActive, onTap: () async {
-            setState(() => _isShareActive = true);
-            await Share.share('Check out ${widget.room.name} (Room ${widget.room.number}) at ${widget.room.building}');
-            if (mounted) setState(() => _isShareActive = false);
-          }),
+          _Btn(
+              i: Icons.share_outlined,
+              l: 'Share',
+              isActive: _isShareActive,
+              onTap: () async {
+                setState(() => _isShareActive = true);
+                await Share.share(
+                    'Check out ${room.name} (Room ${room.number}) '
+                        'at ${room.building}');
+                if (mounted) setState(() => _isShareActive = false);
+              }),
           const SizedBox(width: 8),
-          _Btn(i: widget.isSaved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded, l: widget.isSaved ? 'Saved' : 'Save', isActive: widget.isSaved, onTap: widget.onSave),
+          _Btn(
+              i: widget.isSaved
+                  ? Icons.bookmark_rounded
+                  : Icons.bookmark_outline_rounded,
+              l: widget.isSaved ? 'Saved' : 'Save',
+              isActive: widget.isSaved,
+              onTap: widget.onSave),
         ]),
+
         const SizedBox(height: 14),
-        Container(height: 0.5, color: const Color(0xFFE5EBEB))
-      ]));
+        Container(height: 0.5, color: _border),
+      ]),
+    );
+  }
+
+  Widget _profRow(IconData icon, String value, {TextStyle? style}) =>
+      Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Row(children: [
+          Icon(icon, size: 13, color: _muted),
+          const SizedBox(width: 6),
+          Expanded(child: Text(
+              value,
+              style: style ??
+                  GoogleFonts.poppins(fontSize: 11, color: _muted),
+              overflow: TextOverflow.ellipsis)),
+        ]),
+      );
 }
+
 
 class _Btn extends StatelessWidget {
   final IconData i; final String l; final bool isActive; final VoidCallback onTap;

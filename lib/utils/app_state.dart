@@ -8,7 +8,6 @@ import '/services/rooms_service.dart';
 
 class AppState extends ChangeNotifier {
   // Auth
-  // start empty — will be set after sign-in or sign-up
   String _userName = '';
   String _userEmail = '';
   String get userName => _userName;
@@ -16,7 +15,6 @@ class AppState extends ChangeNotifier {
 
   bool get isLoggedIn => _userEmail.isNotEmpty;
 
-  /// Set user fields from a Firebase [User]. Pass null to clear.
   void setUserFromAuth(User? user) {
     if (user == null) return clearUser();
     setUser(user.displayName ?? '', user.email ?? '');
@@ -32,6 +30,96 @@ class AppState extends ChangeNotifier {
     _userName = name;
     _userEmail = email;
     notifyListeners();
+  }
+
+  // ── UPDATE DISPLAY NAME ──────────────────────────────────────────────────
+  /// Updates the display name in Firebase Auth, Firestore, and local state.
+  Future<void> updateUserName(String newName) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    try {
+      // Update Firebase Auth profile
+      await user.updateDisplayName(newName);
+      // Update Firestore user document
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({'name': newName});
+      // Update local state
+      _userName = newName;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Failed to update username: $e');
+      rethrow; // Let the UI handle and show an error if needed
+    }
+  }
+
+  // ── UPDATE PASSWORD ──────────────────────────────────────────────────────
+  /// Re-authenticates with [currentPassword] then updates to [newPassword].
+  /// Throws a descriptive [Exception] on failure so the UI can show it.
+  Future<void> updatePassword(String currentPassword, String newPassword) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('No authenticated user found.');
+    if (user.email == null) throw Exception('User has no email address.');
+
+    try {
+      // Re-authenticate — required by Firebase before sensitive operations
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+      await user.reauthenticateWithCredential(credential);
+
+      // Now update the password
+      await user.updatePassword(newPassword);
+    } on FirebaseAuthException catch (e) {
+      debugPrint('FirebaseAuthException code: [${e.code}] msg: ${e.message}');
+      final raw = '${e.code} ${e.message ?? ''}'.toLowerCase();
+      if (raw.contains('wrong-password') ||
+          raw.contains('invalid-credential') ||
+          raw.contains('invalid_login_credentials') ||
+          raw.contains('auth credential is incorrect') ||
+          raw.contains('malformed or has expired')) {
+        throw Exception('Current password is incorrect.');
+      }
+      if (raw.contains('weak-password')) {
+        throw Exception('New password is too weak. Use at least 8 characters with uppercase, lowercase, number, and special character.');
+      }
+      if (raw.contains('requires-recent-login') || raw.contains('user-token-expired')) {
+        throw Exception('Session expired. Please sign out and sign back in, then try again.');
+      }
+      if (raw.contains('too-many-requests')) {
+        throw Exception('Too many failed attempts. Please wait a few minutes and try again.');
+      }
+      if (raw.contains('user-disabled')) {
+        throw Exception('This account has been disabled. Contact support.');
+      }
+      throw Exception('Password update failed. Please try again.');
+    } catch (e) {
+      debugPrint('Failed to update password (raw): $e');
+      final raw = e.toString().toLowerCase();
+      // Firebase sometimes bypasses FirebaseAuthException on newer SDKs
+      // and wraps the error in a PlatformException — catch by message content
+      if (raw.contains('invalid-credential') ||
+          raw.contains('invalid_login_credentials') ||
+          raw.contains('wrong-password') ||
+          raw.contains('signinwithpassword') ||
+          raw.contains('auth credential is incorrect') ||
+          raw.contains('malformed or has expired') ||
+          raw.contains('recaptchaaction')) {
+        throw Exception('Current password is incorrect.');
+      }
+      if (raw.contains('weak-password') || raw.contains('weak password')) {
+        throw Exception('New password is too weak. Use at least 8 characters with uppercase, lowercase, number, and special character.');
+      }
+      if (raw.contains('requires-recent-login') || raw.contains('token-expired')) {
+        throw Exception('Session expired. Please sign out and sign back in, then try again.');
+      }
+      if (raw.contains('too-many-requests') || raw.contains('too many')) {
+        throw Exception('Too many failed attempts. Please wait a few minutes and try again.');
+      }
+      throw Exception('Password update failed. Please try again.');
+    }
   }
 
   // Beacon / Location
@@ -107,9 +195,10 @@ class AppState extends ChangeNotifier {
   Future<void> _syncSavedRoomsToFirebase() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-        'savedRooms': _savedRooms.map((r) => r.number).toList(),
-      });
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({'savedRooms': _savedRooms.map((r) => r.number).toList()});
     }
   }
 
@@ -117,7 +206,10 @@ class AppState extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
     try {
-      final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
       final data = doc.data();
       if (data != null && data['savedRooms'] != null) {
         final numbers = List<String>.from(data['savedRooms']);
@@ -138,11 +230,8 @@ class AppState extends ChangeNotifier {
   List<String> get navigationHistory => _navigationHistory;
 
   void addToNavigationHistory(String roomNumber) {
-    // Remove if already exists (move to top)
     _navigationHistory.remove(roomNumber);
-    // Add to beginning
     _navigationHistory.insert(0, roomNumber);
-    // Keep only last 10
     if (_navigationHistory.length > 10) {
       _navigationHistory = _navigationHistory.sublist(0, 10);
     }
@@ -154,7 +243,10 @@ class AppState extends ChangeNotifier {
   Future<void> _syncHistoryToFirebase() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({
         'navigations': _navigationCount,
         'navigationHistory': _navigationHistory,
       });
@@ -165,10 +257,14 @@ class AppState extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
     try {
-      final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
       final data = doc.data();
       if (data != null) {
-        _navigationCount = data['navigations'] is int ? data['navigations'] as int : 0;
+        _navigationCount =
+        data['navigations'] is int ? data['navigations'] as int : 0;
         _navigationHistory = data['navigationHistory'] is List
             ? List<String>.from(data['navigationHistory'])
             : [];

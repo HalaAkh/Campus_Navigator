@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:location/location.dart' as gps;
 
 class BeaconModel {
   final String mac;
@@ -65,7 +67,41 @@ class StairConnections {
 class BeaconService extends ChangeNotifier {
   static final BeaconService _instance = BeaconService._internal();
   factory BeaconService() => _instance;
-  BeaconService._internal();
+
+  BeaconService._internal() {
+    _initHardwareMonitoring();
+  }
+  void _initHardwareMonitoring() {
+    FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
+      if (state == BluetoothAdapterState.off ||
+          state == BluetoothAdapterState.turningOff ||
+          state == BluetoothAdapterState.unauthorized) {
+        debugPrint('BLUETOOTH TURNED OFF: EXITING APP');
+        exit(0);
+      }
+    });
+
+    gps.Location location = gps.Location();
+    Timer.periodic(const Duration(seconds: 2), (timer) async {
+      try {
+        bool isEnabled = await location.serviceEnabled();
+        if (!isEnabled) {
+          debugPrint('LOCATION SERVICES DISABLED: EXITING APP');
+          exit(0);
+        }
+      } catch (_) {
+        // If the system service check fails, it's safer to exit in a nav app
+        exit(0);
+      }
+    });
+  }
+
+  Future<void> checkHardwareOrExit() async {
+    gps.Location location = gps.Location();
+    bool isLocationOn = await location.serviceEnabled();
+    BluetoothAdapterState btState = await FlutterBluePlus.adapterState.first;
+    if (!isLocationOn || btState != BluetoothAdapterState.on) exit(0);
+  }
 
   BeaconModel? _currentBeacon;
   bool _isScanning = false;
@@ -89,7 +125,6 @@ class BeaconService extends ChangeNotifier {
     try {
       final adapterState = await FlutterBluePlus.adapterState.first;
       if (adapterState != BluetoothAdapterState.on) {
-        debugPrint('Bluetooth OFF');
         _isScanning = false;
         notifyListeners();
         return [];
@@ -107,10 +142,7 @@ class BeaconService extends ChangeNotifier {
       subscription.cancel();
       for (final entry in rssiMap.entries) {
         final beacon = AppBeacons.getByMac(entry.key);
-        if (beacon != null) {
-          matched.add(DetectedBeacon(beacon: beacon, rssi: entry.value));
-          debugPrint('FOUND: ${beacon.location} RSSI:${entry.value}');
-        }
+        if (beacon != null) matched.add(DetectedBeacon(beacon: beacon, rssi: entry.value));
       }
     } catch (e) {
       debugPrint('BLE error: $e');
@@ -135,9 +167,7 @@ class BeaconService extends ChangeNotifier {
 
   void startContinuousScanning() {
     stopContinuousScanning();
-    // Scan immediately first
     detectCurrentLocation(durationSeconds: 3);
-    // Then scan every 5 seconds
     _continuousTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
       if (!_isScanning) await detectCurrentLocation(durationSeconds: 3);
     });
@@ -153,27 +183,12 @@ class BeaconService extends ChangeNotifier {
     final stairsUpper = stairsMac.toUpperCase();
     if (upper == stairsUpper) return 0;
     final beacons = floor == 4 ? AppBeacons.floor4 : AppBeacons.floor5;
-    final current = beacons.cast<BeaconModel?>().firstWhere(
-            (b) => b!.mac.toUpperCase() == upper, orElse: () => null);
+    final current = beacons.cast<BeaconModel?>().firstWhere((b) => b!.mac.toUpperCase() == upper, orElse: () => null);
     if (current != null && current.connections.any((c) => c.toUpperCase() == stairsUpper)) return 15;
     return 30;
   }
 
   String chooseBestStairs(String currentBeaconMac, int currentFloor) {
-    final primaryBeacon = currentFloor == 4
-        ? StairConnections.primary['floor4_beacon'] as String
-        : StairConnections.primary['floor5_beacon'] as String;
-    final secondaryBeacon = currentFloor == 4
-        ? StairConnections.secondary['floor4_beacon'] as String
-        : StairConnections.secondary['floor5_beacon'] as String;
-
-    // If already at a stairs beacon, use that one directly
-    if (currentBeaconMac.toUpperCase() == primaryBeacon.toUpperCase()) return 'primary';
-    if (currentBeaconMac.toUpperCase() == secondaryBeacon.toUpperCase()) return 'secondary';
-
-    // Otherwise pick based on which beacon the user is closest to
-    // Primary (elevator area) is closer from elevator beacon
-    // Secondary (408/511) is closer from junction beacons
     const elevatorBeacons = ['C6:2A:90:A1:99:CB', 'F4:7B:74:76:D5:8A'];
     if (elevatorBeacons.contains(currentBeaconMac.toUpperCase())) return 'primary';
     return 'secondary';
@@ -187,8 +202,5 @@ class BeaconService extends ChangeNotifier {
   }
 
   @override
-  void dispose() {
-    stopContinuousScanning();
-    super.dispose();
-  }
+  void dispose() { stopContinuousScanning(); super.dispose(); }
 }
