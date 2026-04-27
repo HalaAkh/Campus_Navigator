@@ -35,12 +35,22 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // Client-side validation
+    if (email.isEmpty) {
+      setState(() => _error = 'Please enter your email address.');
+      return;
+    }
+    if (password.isEmpty) {
+      setState(() => _error = 'Please enter your password.');
+      return;
+    }
+
     setState(() { _isLoading = true; _error = null; });
 
-    final result = await _authService.signIn(
-      _emailController.text,
-      _passwordController.text,
-    );
+    final result = await _authService.signIn(email, password);
 
     if (mounted) {
       setState(() => _isLoading = false);
@@ -110,6 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Error
                     if (_error != null) ...[
                       Container(
+                        width: double.infinity,
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: AppColors.destructive.withOpacity(0.1),

@@ -25,7 +25,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       icon: Icons.explore_rounded,
       color: const Color(0xFF007A6E),
       title: 'Locate Rooms',
-      body: 'Bluetooth beacons pinpoint your exact location inside Nicol Hall instantly.',
+      body: 'MOKO SMART Bluetooth Low Energy beacons pinpoint your exact location inside Nicol Hall instantly.',
     ),
     _OnboardingSlideData(
       icon: Icons.navigation_rounded,

@@ -82,21 +82,7 @@ class ProfileScreen extends StatelessWidget {
 
                 // inline error banner
                 if (inlineError != null) ...[
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.redAccent.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
-                    ),
-                    child: Row(children: [
-                      const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 16),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(inlineError!,
-                          style: GoogleFonts.poppins(fontSize: 12, color: Colors.redAccent))),
-                    ]),
-                  ),
+                  _InlineErrorBanner(message: inlineError!),
                   const SizedBox(height: 14),
                 ] else
                   const SizedBox(height: 8),
@@ -341,13 +327,10 @@ class ProfileScreen extends StatelessWidget {
               Row(children: [
                 Container(
                   width: 52, height: 52,
-                  decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient2,
-                      borderRadius: BorderRadius.circular(14)),
                   child: Center(child: Image.asset('assets/images/pin1.png',
                       width: 28, height: 28,
                       errorBuilder: (_, __, ___) =>
-                      const Icon(Icons.explore, color: Colors.white, size: 28))),
+                      const Icon(Icons.explore, color: Colors.white, size: 35))),
                 ),
                 const SizedBox(width: 14),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -360,16 +343,16 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 24),
 
               _aboutSection('What is Campus Navigator?',
-                  'Campus Navigator is a real-time indoor navigation app built for the Lebanese American University (LAU). It helps students, faculty, staff, and visitors locate and navigate to any room, office, or facility within campus buildings — quickly and effortlessly.'),
+                  'Campus Navigator is a real-time indoor navigation app built for LAU campus. It helps anyone with a valid LAU email locate and navigate to any room, office, or facility within campus buildings, quickly and effortlessly.'),
 
               _aboutSection('How does it work?',
-                  'The app uses Bluetooth Low Energy (BLE) beacons installed throughout the building to determine your live position indoors — where GPS cannot reach. Once your location is detected, an AI-powered engine generates accurate, step-by-step walking directions directly to your destination.'),
+                  'The app uses MOKO SMART Bluetooth Low Energy (BLE) beacons installed throughout the building to determine your live position indoors. Once your location is detected, an AI-powered engine generates accurate, step-by-step walking directions directly to your destination.'),
 
               _aboutSection('Key Features',
                   '• Live indoor positioning via BLE beacons\n• AI-generated turn-by-turn directions\n• Voice guidance (text-to-speech)\n• Floor-by-floor map with room labels\n• Save and share favorite rooms\n• Navigation history\n• Cross-floor routing via stairs or elevator'),
 
               _aboutSection('Coverage',
-                  'Currently covering Floors 4 and 5 of the Nicol Building, LAU Beirut — with 57 rooms and 6 BLE beacons. Expansion to additional buildings and floors is planned for future versions.'),
+                  'Currently covering Floors 4 and 5 of the Nicol Hall, LAU Beirut, with 57 rooms and 6 BLE beacons. Expansion to additional buildings and floors is planned for future versions.'),
 
               _aboutSection('Technology',
                   'Built with Flutter for cross-platform support. Powered by Firebase for real-time data, OpenAI GPT-4o-mini for intelligent routing, and the flutter_blue_plus package for Bluetooth beacon scanning.'),
@@ -387,7 +370,7 @@ class ProfileScreen extends StatelessWidget {
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text('Developed at LAU Beirut',
                         style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600, color: _text)),
-                    Text('Lebanese American University\nNicol Building, Beirut, Lebanon',
+                    Text('Nicol Hall, Beirut, Lebanon',
                         style: GoogleFonts.poppins(fontSize: 11, color: _muted)),
                   ])),
                 ]),
@@ -413,13 +396,13 @@ class ProfileScreen extends StatelessWidget {
     final sections = [
     _FAQSection('Getting Started', [
       _FAQ('What is Campus Navigator?',
-          'Campus Navigator is a free indoor navigation app for LAU Beirut. It guides you step-by-step to any room, office, lab, or facility inside Nicol Building — using Bluetooth beacons to know exactly where you are, even where GPS does not work.'),
+          'Campus Navigator v1.0.0 is a free indoor navigation app for LAU campus. It guides you step-by-step to any room, office, lab, or facility inside Nicol Hall, Floors 4 and 5, using MOKO SMART Bluetooth Low Energy beacons and OpenAI.'),
       _FAQ('Who can use the app?',
-          'Anyone at LAU — students, faculty, staff, and visitors. Simply create an account with your LAU email and you are ready to go.'),
+          'Anyone with a valid LAU email address can use the app. Simply create an account with your LAU email and you are ready to go.'),
       _FAQ('Which buildings and floors are covered?',
-          'Currently Floors 4 and 5 of Nicol Building, LAU Beirut — 57 rooms in total. More buildings and floors are planned for future updates.'),
+          'Currently Floors 4 and 5 of Nicol Hall, LAU Beirut campus, with a total of 57 rooms. More buildings and floors are planned for future updates.'),
       _FAQ('Do I need internet to navigate?',
-          'Yes, a connection is required when you first start navigation — the app contacts our AI engine to generate your route. Once the route is loaded, you can follow it offline.'),
+          'Yes, a connection is required when you first start navigation; the app contacts OpenAI engine to generate your route. Once the route is loaded, you can follow it offline.'),
     ]),
     _FAQSection('Navigation', [
     _FAQ('How do I navigate to a room?',
@@ -435,13 +418,9 @@ class ProfileScreen extends StatelessWidget {
     ]),
     _FAQSection('Location & Bluetooth', [
     _FAQ('Why does the app need Bluetooth?',
-    'Campus Navigator uses small Bluetooth beacons installed in the building to determine your indoor position. Without Bluetooth, the app cannot detect where you are and cannot guide you.'),
+    'Campus Navigator uses MOKO SMART Bluetooth Low Energy beacons installed in the building to determine your indoor position. Without Bluetooth, the app cannot detect where you are and cannot guide you.'),
     _FAQ('Why does the app need location permission?',
-    'Android requires location permission before an app can scan for nearby Bluetooth devices. The app does not track your GPS — it only uses this permission to enable the Bluetooth scan.'),
-    _FAQ('My position is not being detected.',
-    'Make sure Bluetooth is on and location permission is granted. Walk a few steps — the scan refreshes every 5 seconds. If the problem persists, close the app fully and reopen it.'),
-    _FAQ('The pin on the map is not moving.',
-    'The pin only moves when the beacon signal changes meaningfully to avoid jitter. If you are standing still, this is expected. Start walking and the pin will update.'),
+    'On both Android and iOS, the operating system requires location permission to scan for Bluetooth devices, even though the app does not use GPS or track your location outside the building. The permission is needed purely to detect which beacon is closest to you so the app can guide you to your destination. Your location data never leaves your device and is not stored or shared.'),
     ]),
     _FAQSection('Saved Rooms & History', [
     _FAQ('How do I save a room?',
@@ -521,6 +500,7 @@ class ProfileScreen extends StatelessWidget {
     String? selectedType;
     final msgCtrl = TextEditingController();
     final nameCtrl = TextEditingController();
+    String? inlineError;
 
     final types = [
       _FeedbackType('Bug Report', 'Something isn\'t working correctly'),
@@ -534,7 +514,7 @@ class ProfileScreen extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => StatefulBuilder(
+      builder: (modalCtx) => StatefulBuilder(
         builder: (ctx, setModal) => Padding(
           padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
           child: Container(
@@ -563,11 +543,10 @@ class ProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-                  Text('Your Name (optional)',
-                      style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: _text)),
-                  const SizedBox(height: 6),
-                  _buildTextField(nameCtrl, 'e.g. Ahmad Khalil', Icons.person_outline),
-                  const SizedBox(height: 20),
+                  if (inlineError != null) ...[
+                    _InlineErrorBanner(message: inlineError!),
+                    const SizedBox(height: 20),
+                  ],
 
                   Text('Feedback Type',
                       style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: _text)),
@@ -578,7 +557,7 @@ class ProfileScreen extends StatelessWidget {
                     children: types.map((t) {
                       final selected = selectedType == t.label;
                       return GestureDetector(
-                        onTap: () => setModal(() => selectedType = t.label),
+                        onTap: () => setModal(() => { selectedType = t.label, inlineError = null }),
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
@@ -619,6 +598,7 @@ class ProfileScreen extends StatelessWidget {
                     child: TextField(
                       controller: msgCtrl,
                       maxLines: 5,
+                      onChanged: (_) { if (inlineError != null) setModal(() => inlineError = null); },
                       style: GoogleFonts.poppins(fontSize: 13, color: _text),
                       decoration: InputDecoration(
                         hintText: 'Describe your feedback in detail...',
@@ -640,25 +620,11 @@ class ProfileScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       if (selectedType == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Please select a feedback type.',
-                              style: GoogleFonts.poppins(fontSize: 13)),
-                          backgroundColor: const Color(0xFFF59E0B),
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                        ));
+                        setModal(() => inlineError = 'Please select a feedback type.');
                         return;
                       }
                       if (msgCtrl.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Please write a message.',
-                              style: GoogleFonts.poppins(fontSize: 13)),
-                          backgroundColor: const Color(0xFFF59E0B),
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                        ));
+                        setModal(() => inlineError = 'Please write a message.');
                         return;
                       }
                       final senderName = nameCtrl.text.trim().isNotEmpty
@@ -737,7 +703,7 @@ class ProfileScreen extends StatelessWidget {
             color: _primary,
             onTap: () => _launchEmail(
                 to: _contactEmail,
-                subject: 'Campus Navigator — Inquiry',
+                subject: 'Campus Navigator | Inquiry',
                 body: 'Hello,\n\n'),
           ),
           const SizedBox(height: 12),
@@ -889,25 +855,6 @@ class ProfileScreen extends StatelessWidget {
                       style: GoogleFonts.poppins(
                           fontSize: 12, color: Colors.white.withValues(alpha: 0.75))),
                 ]),
-                const Spacer(),
-                if (beacon != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(9999),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
-                    ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Container(width: 6, height: 6,
-                          decoration: const BoxDecoration(
-                              color: Color(0xFF6EE7B7), shape: BoxShape.circle)),
-                      const SizedBox(width: 6),
-                      Text('Floor ${beacon.floor}',
-                          style: GoogleFonts.poppins(
-                              fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white)),
-                    ]),
-                  ),
               ]),
             ),
             Positioned(bottom: -36, child: Container(
@@ -946,7 +893,7 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(width: 10),
               _StatTile(
                 value: beacon != null ? 'F${beacon.floor}' : '--',
-                label: 'You are here',
+                label: 'Position',
                 isLive: beacon != null,
               ),
             ]),
@@ -1083,7 +1030,7 @@ class ProfileScreen extends StatelessWidget {
                 fontSize: 14, fontWeight: FontWeight.w500, color: Colors.redAccent)),
           ),
           const SizedBox(height: 6),
-          Text('v1.0.0 · LAU Beirut Campus',
+          Text('Campus Navigator · v1.0.0',
               style: GoogleFonts.poppins(
                   fontSize: 10, color: _muted.withValues(alpha: 0.6))),
           const SizedBox(height: 80),
@@ -1157,6 +1104,31 @@ class _StatTile extends StatelessWidget {
       ]),
     ),
   );
+}
+
+// ── INLINE ERROR BANNER ─────────────────────────────────────────────────────
+class _InlineErrorBanner extends StatelessWidget {
+  final String message;
+  const _InlineErrorBanner({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFEF2F2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFFCA5A5)),
+      ),
+      child: Row(children: [
+        const Icon(Icons.error_outline_rounded, color: Color(0xFFEF4444), size: 18),
+        const SizedBox(width: 10),
+        Expanded(child: Text(message,
+            style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: const Color(0xFFB91C1C)))),
+      ]),
+    );
+  }
 }
 
 // ── DATA MODELS ─────────────────────────────────────────────────────────────

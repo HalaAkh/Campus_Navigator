@@ -42,25 +42,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _handleSignUp() async {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
     final password = _passwordController.text;
     final confirm = _confirmController.text;
 
+    // Validation Order: Name -> Email -> Password -> Confirm
+    if (name.isEmpty) {
+      setState(() => _error = 'Please enter your full name.');
+      return;
+    }
+    if (email.isEmpty) {
+      setState(() => _error = 'Please enter your email address.');
+      return;
+    }
+    if (!_authService.isValidLauEmail(email)) {
+      setState(() => _error = 'Please enter a valid LAU email address.');
+      return;
+    }
+    if (password.isEmpty) {
+      setState(() => _error = 'Please enter a password.');
+      return;
+    }
     if (!_isPasswordComplex(password)) {
       setState(() => _error = 'Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (!@#\$&*~).');
       return;
     }
-
+    if (confirm.isEmpty) {
+      setState(() => _error = 'Please confirm your password.');
+      return;
+    }
     if (password != confirm) {
       setState(() => _error = 'Passwords do not match.');
       return;
     }
 
     setState(() { _isLoading = true; _error = null; });
-    final result = await _authService.signUp(
-      _nameController.text,
-      _emailController.text,
-      password,
-    );
+    final result = await _authService.signUp(name, email, password);
     if (mounted) {
       setState(() => _isLoading = false);
       if (result.success) {
@@ -226,15 +244,40 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _emailController = TextEditingController();
   bool _sent = false;
+  bool _isLoading = false;
+  String? _error;
   final _authService = AuthService();
+
+  Future<void> _handleReset() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      setState(() => _error = 'Please enter your email address.');
+      return;
+    }
+    if (!_authService.isValidLauEmail(email)) {
+      setState(() => _error = 'Please enter a valid LAU email address.');
+      return;
+    }
+
+    setState(() { _isLoading = true; _error = null; });
+    final result = await _authService.sendPasswordReset(email);
+    if (mounted) {
+      setState(() => _isLoading = false);
+      if (result.success) {
+        setState(() => _sent = true);
+      } else {
+        setState(() => _error = result.error);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.card,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           child: Column(
             children: [
               Align(
@@ -244,17 +287,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   icon: const Icon(Icons.arrow_back, color: AppColors.foreground),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(height: 60),
               Container(
-                width: 80,
-                height: 80,
+                width: 100,
+                height: 100,
                 decoration: const BoxDecoration(
                   gradient: AppColors.primaryGradient,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.mail_outline, size: 40, color: Colors.white),
+                child: const Icon(Icons.mail_outline, size: 50, color: Colors.white),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               Text('Reset Password', style: AppTextStyles.headingBold(24)),
               const SizedBox(height: 8),
               Text(
@@ -263,6 +306,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
+              if (_error != null) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.destructive.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(_error!, style: AppTextStyles.bodyMedium(13, color: AppColors.destructive)),
+                ),
+                const SizedBox(height: 16),
+              ],
               if (!_sent) ...[
                 TextField(
                   controller: _emailController,
@@ -273,13 +328,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                GradientButton(
-                  label: 'Send Reset Link',
-                  onPressed: () async {
-                    await _authService.sendPasswordReset(_emailController.text);
-                    setState(() => _sent = true);
-                  },
-                ),
+                _isLoading 
+                  ? const CircularProgressIndicator(color: AppColors.primary)
+                  : GradientButton(
+                      label: 'Send Reset Link',
+                      onPressed: _handleReset,
+                    ),
               ] else ...[
                 Container(
                   padding: const EdgeInsets.all(16),
@@ -300,7 +354,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
               ],
-              const Spacer(),
+              const SizedBox(height: 60),
               TextButton(
                 onPressed: widget.onBack,
                 child: Text('Back to Sign In',
@@ -342,11 +396,25 @@ class VerifyEmailScreen extends StatefulWidget {
 class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   int _countdown = 45;
   bool _canResend = false;
+  Timer? _verificationTimer;
+  final _authService = AuthService();
 
   @override
   void initState() {
     super.initState();
     _startCountdown();
+    // Check verification status every 3 seconds automatically
+    _verificationTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      _checkVerificationStatus();
+    });
+  }
+
+  Future<void> _checkVerificationStatus() async {
+    await _authService.reloadUser();
+    if (_authService.isEmailVerified) {
+      _verificationTimer?.cancel();
+      if (mounted) widget.onVerified();
+    }
   }
 
   void _startCountdown() async {
@@ -358,15 +426,22 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   }
 
   @override
+  void dispose() {
+    _verificationTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.card,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(32),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const SizedBox(height: 40),
               Stack(
                 alignment: Alignment.topRight,
                 children: [
@@ -409,7 +484,8 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
               const SizedBox(height: 32),
               OutlinedPillButton(
                 label: 'Resend Email',
-                onPressed: _canResend ? () {
+                onPressed: _canResend ? () async {
+                  await _authService.resendVerificationEmail();
                   setState(() { _countdown = 45; _canResend = false; });
                   _startCountdown();
                 } : () {},
@@ -422,9 +498,12 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                   'Resend in 0:${_countdown.toString().padLeft(2, '0')}',
                   style: AppTextStyles.bodySemiBold(14, color: AppColors.accent),
                 ),
-              const SizedBox(height: 32),
-              GradientButton(label: 'I\'ve verified — Continue', onPressed: widget.onVerified),
+              const SizedBox(height: 40),
+              const Center(child: CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2.5)),
               const SizedBox(height: 16),
+              Text('Waiting for verification...',
+                  style: AppTextStyles.bodyMedium(14, color: AppColors.mutedForeground)),
+              const SizedBox(height: 60),
               TextButton(
                 onPressed: widget.onBack,
                 child: Text('Wrong email? Go back',
