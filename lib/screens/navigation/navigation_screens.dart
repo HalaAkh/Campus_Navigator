@@ -39,7 +39,7 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
   int? _prevRssi;
 
   final FlutterTts _tts = FlutterTts();
-  final DraggableScrollableController _sheetCtrl = DraggableScrollableController();
+  late DraggableScrollableController _sheetCtrl;
 
   static const _primary = Color(0xFF007A6E);
   static const _text = Color(0xFF1C2B2A);
@@ -449,6 +449,7 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
     _pulseAnim = Tween<double>(begin: 0.7, end: 1.4).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
     _routeCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
     _routeAnim = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _routeCtrl, curve: Curves.easeInOut));
+    _sheetCtrl = DraggableScrollableController();
     _tts.setVolume(1.0);
     _loadRoute();
   }
@@ -458,6 +459,9 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
     _tts.stop();
     _pulseCtrl.dispose();
     _routeCtrl.dispose();
+    if (_sheetCtrl.isAttached) {
+      _sheetCtrl.reset();
+    }
     _sheetCtrl.dispose();
     BeaconService().stopContinuousScanning();
     super.dispose();
@@ -968,6 +972,13 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
               ]))));
 
   Widget _buildActiveSheet(RoomModel? room, BeaconService svc) {
+    if (_sheetCtrl.isAttached) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_sheetCtrl.isAttached) {
+          _sheetCtrl = DraggableScrollableController();
+        }
+      });
+    }
     final has = _result != null && _result!.success && _result!.path.isNotEmpty;
     final total = has ? _result!.path.length : 1;
 

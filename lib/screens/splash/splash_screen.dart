@@ -201,7 +201,7 @@ class _SplashScreenState extends State<SplashScreen>
                     'CAMPUS NAVIGATOR',
                     style: GoogleFonts.poppins(
                       fontSize: 20,
-                      fontWeight: FontWeight.w300, // Very light font weight
+                      fontWeight: FontWeight.w400, // Very light font weight
                       color: Colors.white,
                       letterSpacing: 3.5, // Increased spacing for a light, elegant look
                     ),
