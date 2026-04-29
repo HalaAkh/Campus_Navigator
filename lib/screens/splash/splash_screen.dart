@@ -13,21 +13,17 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
 
-  // Phase 1: pin fades + scales in to normal size
   late AnimationController _entryCtrl;
   late Animation<double> _entryAlpha;
   late Animation<double> _entryScale;
 
-  // Phase 2: slow 3D Y-axis rotation — one full turn (2π), 1600ms
   late AnimationController _spinCtrl;
   late Animation<double> _spinAngle;
 
-  // Phase 3: settle — tiny bounce down then lock
   late AnimationController _settleCtrl;
   late Animation<double> _settleY;
   late Animation<double> _settleScale;
 
-  // Phase 4: name, tagline, dots
   late AnimationController _nameCtrl;
   late Animation<double> _nameAlpha;
   late Animation<double> _nameY;
@@ -43,7 +39,6 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // PHASE 1: fade + scale 0.4 → 1.0, 500ms
     _entryCtrl = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
     _entryAlpha = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -51,14 +46,11 @@ class _SplashScreenState extends State<SplashScreen>
     _entryScale = Tween<double>(begin: 0.4, end: 1.0).animate(
         CurvedAnimation(parent: _entryCtrl, curve: Curves.easeOut));
 
-    // PHASE 2: slow full Y-axis spin — 360° over 1600ms, linear so every
-    // degree is visible
     _spinCtrl = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 1600));
     _spinAngle = Tween<double>(begin: 0.0, end: math.pi * 2.0).animate(
         CurvedAnimation(parent: _spinCtrl, curve: Curves.easeInOut));
 
-    // PHASE 3: settle — pin drops 10px then bounces back to place, 450ms
     _settleCtrl = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 450));
     _settleY = TweenSequence<double>([
@@ -81,7 +73,6 @@ class _SplashScreenState extends State<SplashScreen>
       TweenSequenceItem(tween: Tween(begin: 0.97, end: 1.0), weight: 25),
     ]).animate(_settleCtrl);
 
-    // Text & dots
     _nameCtrl = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
     _nameAlpha = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -108,34 +99,21 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _runSequence() async {
-    // T=0: pin appears
     _entryCtrl.forward();
     await Future.delayed(const Duration(milliseconds: 500));
-
-    // T=500ms: slow visible 3D spin
     _spinCtrl.forward();
     await Future.delayed(const Duration(milliseconds: 1600));
-
-    // T=2100ms: settle into place with a small drop-bounce
     _settleCtrl.forward();
     await Future.delayed(const Duration(milliseconds: 200));
-
-    // T=2300ms: name slides in
     _nameCtrl.forward();
     await Future.delayed(const Duration(milliseconds: 300));
-
-    // T=2600ms: tagline
     _taglineCtrl.forward();
     await Future.delayed(const Duration(milliseconds: 300));
-
-    // T=2900ms: staggered bouncing dots
     for (int i = 0; i < 3; i++) {
       Future.delayed(Duration(milliseconds: i * 150), () {
         if (mounted) _dotControllers[i].repeat(reverse: true);
       });
     }
-
-    // T=4500ms: navigate
     await Future.delayed(const Duration(milliseconds: 1600));
     if (mounted) widget.onComplete();
   }
@@ -162,9 +140,9 @@ class _SplashScreenState extends State<SplashScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF114C44),
-              Color(0xFF249C8F),
-              Color(0xFF4DD0E1),
+              Color(0xFF114C44), // Original deep teal
+              Color(0xFF249C8F), // Original medium teal
+              Color(0xFF4DD0E1), // Original light cyan
             ],
           ),
         ),
@@ -172,8 +150,6 @@ class _SplashScreenState extends State<SplashScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
-            // ── PIN ───────────────────────────────────────────────────────
             AnimatedBuilder(
               animation: Listenable.merge(
                   [_entryCtrl, _spinCtrl, _settleCtrl]),
@@ -201,8 +177,8 @@ class _SplashScreenState extends State<SplashScreen>
                           ..rotateY(angle),
                         child: Image.asset(
                           'assets/images/pin.png',
-                          width: 150,
-                          height: 150,
+                          width: 180,
+                          height: 200,
                           fit: BoxFit.contain,
                           filterQuality: FilterQuality.high,
                           isAntiAlias: true,
@@ -214,10 +190,7 @@ class _SplashScreenState extends State<SplashScreen>
                 );
               },
             ),
-
             const SizedBox(height: 8),
-
-            // ── App name ──────────────────────────────────────────────────
             AnimatedBuilder(
               animation: _nameCtrl,
               builder: (_, __) => Opacity(
@@ -227,19 +200,17 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Text(
                     'CAMPUS NAVIGATOR',
                     style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w300, // Very light font weight
                       color: Colors.white,
+                      letterSpacing: 3.5, // Increased spacing for a light, elegant look
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
               ),
             ),
-
-            const SizedBox(height: 10),
-
-            // ── Tagline ───────────────────────────────────────────────────
+            const SizedBox(height: 8),
             AnimatedBuilder(
               animation: _taglineCtrl,
               builder: (_, __) => Opacity(
@@ -249,9 +220,10 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Text(
                     'Find your way, always!',
                     style: GoogleFonts.poppins(
-                      fontSize: 13,
+                      fontSize: 12,
                       fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w300,
+                      letterSpacing: 1 ,
                       color: const Color(0xFFCFE3DE),
                     ),
                     textAlign: TextAlign.center,
@@ -259,12 +231,8 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
               ),
             ),
-
             const SizedBox(height: 50),
-
-            // ── Bouncing dots ─────────────────────────────────────────────
             const _BouncingDots(),
-
             const SizedBox(height: 48),
           ],
         ),
@@ -273,10 +241,8 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-// ── Bouncing dots — unchanged ──────────────────────────────────────────────
 class _BouncingDots extends StatefulWidget {
   const _BouncingDots();
-
   @override
   State<_BouncingDots> createState() => _BouncingDotsState();
 }

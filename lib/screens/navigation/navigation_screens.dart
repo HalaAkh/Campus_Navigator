@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -109,6 +110,12 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
     ],
     'C8:93:08:09:B2:CA→C6:2A:90:A1:99:CB': [
       Offset(0.25, 0.41), Offset(0.25, 0.28), Offset(0.41, 0.28),
+    ],
+    'C8:93:08:09:B2:CA→E5:65:DD:D0:91:EC': [
+      Offset(0.25, 0.41), Offset(0.25, 0.28), Offset(0.65, 0.28), Offset(0.65, 0.55), Offset(0.57, 0.55),
+    ],
+    'F3:55:BD:A3:65:2E→C7:A4:5A:D0:74:D8': [
+      Offset(0.25, 0.38), Offset(0.25, 0.28), Offset(0.65, 0.28), Offset(0.65, 0.55), Offset(0.57, 0.55),
     ],
     'F4:7B:74:76:D5:8A→C7:A4:5A:D0:74:D8': [
       Offset(0.41, 0.28), Offset(0.65, 0.28), Offset(0.65, 0.55), Offset(0.57, 0.55),
@@ -241,7 +248,7 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
       final isJunction = stairsEntry.beaconMac.toUpperCase() == 'E5:65:DD:D0:91:EC' ||
           stairsEntry.beaconMac.toUpperCase() == 'C7:A4:5A:D0:74:D8';
       // Back stairs are to the RIGHT of the junction — draw slightly past it
-      return isJunction ? const Offset(0.70, 0.55) : const Offset(0.41, 0.28);
+      return isJunction ? const Offset(0.44, 0.55) : const Offset(0.41, 0.28);
     }
 
     for (int i = 0; i < steps.length; i++) {
@@ -291,9 +298,6 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
 
     bool isLeftWing(String d) => d.startsWith('42') || d.startsWith('43') ||
         (d.startsWith('52') && d.length == 3 && int.tryParse(d) != null && int.parse(d) >= 526);
-    // Main corridor rooms on the RIGHT side between elevator and junction
-    // 5WC is Men's Toilet — right side, reachable directly from elevator
-    // 5WC2 is Women's Toilet near 511 junction — treated as bottom-left
     bool isMainCorridor(String d) => ['401','402','403','404','419','418','417','416',
       '501','502','503','521','520',
       '522','523','524','525',
@@ -305,46 +309,106 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
     bool isBottomLeft(String d) => ['406','407','504','505','506','507','508','509','510','5WC2'].contains(d);
 
     if (isLeftWing(dest)) {
-      if (!isFromLeftWing) _routeWaypoints.add(topLeftCorner);
+      if (isFromJunction) {
+        // Junction → left wing: go up-right to top-right, across to top-left, then down
+        _routeWaypoints.add(Offset(topRightCorner.dx, 0.55));
+        _routeWaypoints.add(topRightCorner);
+        _routeWaypoints.add(topLeftCorner);
+      } else if (!isFromLeftWing) {
+        // Elevator → left wing: go left along top to top-left corner
+        _routeWaypoints.add(topLeftCorner);
+      }
+      // Left wing → left wing: go straight down, no corners needed
       _routeWaypoints.add(destPos);
+
     } else if (isMainCorridor(dest)) {
-      if (isFromLeftWing) _routeWaypoints.add(topLeftCorner);
-      if (!isFromJunction) {
-        // From elevator: go right along top to topRightCorner, then down to room
+      if (isFromLeftWing) {
+        // Left wing → main corridor: up to top-left, across to top-right, then down to room
+        _routeWaypoints.add(topLeftCorner);
         _routeWaypoints.add(topRightCorner);
         _routeWaypoints.add(destPos);
-      } else {
-        // From junction going BACK through corridor (511→502, 511→520, etc.)
-        // The corridor runs vertically between x=0.57 and x=0.70.
-        // Walk along the corridor CENTER (x=0.63) upward to the room's y-level,
-        // then move horizontally to the room.
+      } else if (isFromJunction) {
+        // Junction → main corridor: walk back through corridor center
         const corridorCenterX = 0.63;
-        _routeWaypoints.add(const Offset(corridorCenterX, 0.55)); // step into corridor
-        _routeWaypoints.add(Offset(corridorCenterX, destPos.dy)); // up to room level
+        _routeWaypoints.add(const Offset(corridorCenterX, 0.55));
+        _routeWaypoints.add(Offset(corridorCenterX, destPos.dy));
+        _routeWaypoints.add(destPos);
+      } else {
+        // Elevator → main corridor: go right along top, then down to room
+        _routeWaypoints.add(topRightCorner);
         _routeWaypoints.add(destPos);
       }
+
     } else if (isBottomRight(dest)) {
-      if (!isFromJunction) {
-        if (isFromLeftWing) _routeWaypoints.add(topLeftCorner);
-        _routeWaypoints.addAll([topRightCorner, bottomJunction]);
-      }
-      _routeWaypoints.addAll([bottomRightElbow, destPos]);
-    } else if (isBottomLeft(dest)) {
-      if (!isFromJunction) {
-        if (isFromLeftWing) _routeWaypoints.add(topLeftCorner);
-        _routeWaypoints.addAll([topRightCorner, bottomJunction]);
-      }
-      _routeWaypoints.addAll([bottomLeftElbow, destPos]);
-    } else if (dest == '408' || dest == '511') {
-      if (!isFromJunction) {
-        if (isFromLeftWing) _routeWaypoints.add(topLeftCorner);
-        _routeWaypoints.addAll([topRightCorner, Offset(topRightCorner.dx, 0.55)]);
-      }
-      _routeWaypoints.add(destPos);
-    } else {
-      if (isFromLeftWing) _routeWaypoints.add(topLeftCorner);
       if (isFromJunction) {
-        _routeWaypoints.addAll([Offset(topRightCorner.dx, 0.55), topRightCorner]);
+        // Already at junction — go directly to right elbow then room
+        _routeWaypoints.add(bottomRightElbow);
+        _routeWaypoints.add(destPos);
+      } else if (isFromLeftWing) {
+        // Left wing → bottom right: up to top-left, across top, down to junction,
+        // right elbow, then straight down to room's y-level, then across to room
+        _routeWaypoints.add(topLeftCorner);
+        _routeWaypoints.add(topRightCorner);
+        _routeWaypoints.add(bottomJunction);
+        _routeWaypoints.add(bottomRightElbow);
+        _routeWaypoints.add(Offset(bottomRightElbow.dx, destPos.dy));
+        _routeWaypoints.add(destPos);
+      } else {
+        // Elevator → bottom right: across top, down to junction, right elbow,
+        // straight down to room's y-level, then across to room
+        _routeWaypoints.add(topRightCorner);
+        _routeWaypoints.add(bottomJunction);
+        _routeWaypoints.add(bottomRightElbow);
+        _routeWaypoints.add(Offset(bottomRightElbow.dx, destPos.dy));
+        _routeWaypoints.add(destPos);
+      }
+
+    } else if (isBottomLeft(dest)) {
+      if (isFromJunction) {
+        // Already at junction — go directly to left elbow then room
+        _routeWaypoints.add(bottomLeftElbow);
+        _routeWaypoints.add(destPos);
+      } else if (isFromLeftWing) {
+        _routeWaypoints.add(topLeftCorner);
+        _routeWaypoints.add(topRightCorner);
+        _routeWaypoints.add(bottomJunction);
+        _routeWaypoints.add(bottomLeftElbow);
+        _routeWaypoints.add(Offset(bottomLeftElbow.dx, destPos.dy));
+        _routeWaypoints.add(destPos);
+      } else {
+        _routeWaypoints.add(topRightCorner);
+        _routeWaypoints.add(bottomJunction);
+        _routeWaypoints.add(bottomLeftElbow);
+        _routeWaypoints.add(Offset(bottomLeftElbow.dx, destPos.dy));
+        _routeWaypoints.add(destPos);
+      }
+
+    } else if (dest == '408' || dest == '511') {
+      if (isFromJunction) {
+        // Already at junction — destination IS the junction
+        _routeWaypoints.add(destPos);
+      } else if (isFromLeftWing) {
+        // Left wing → 408/511: up to top-left, across top, down to junction
+        _routeWaypoints.add(topLeftCorner);
+        _routeWaypoints.add(topRightCorner);
+        _routeWaypoints.add(Offset(topRightCorner.dx, 0.55));
+        _routeWaypoints.add(destPos);
+      } else {
+        // Elevator → 408/511: across top, down to junction
+        _routeWaypoints.add(topRightCorner);
+        _routeWaypoints.add(Offset(topRightCorner.dx, 0.55));
+        _routeWaypoints.add(destPos);
+      }
+
+    } else {
+      // Fallback
+      if (isFromLeftWing) {
+        _routeWaypoints.add(topLeftCorner);
+        _routeWaypoints.add(topRightCorner);
+      } else if (isFromJunction) {
+        _routeWaypoints.add(Offset(topRightCorner.dx, 0.55));
+        _routeWaypoints.add(topRightCorner);
+        _routeWaypoints.add(topLeftCorner);
       }
       _routeWaypoints.add(destPos);
     }
@@ -402,8 +466,7 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
   Future<void> _loadRoute() async {
     final svc = BeaconService();
     BeaconModel? b = svc.currentBeacon ?? await svc.detectCurrentLocation(durationSeconds: 5);
-    const apiKey = String.fromEnvironment('OPENAI_API_KEY', defaultValue: '');
-    if (apiKey.isEmpty) {
+    final apiKey = dotenv.env['OPENAI_API_KEY'] ?? '';    if (apiKey.isEmpty) {
       setState(() {
         _state = _NavState.preview;
         _error = 'Demo mode';
@@ -622,7 +685,8 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
 
               if (_lastSpokenMac != beacon.mac) {
                 _lastSpokenMac = beacon.mac;
-                if (!_stairsTransitionFired || _currentFloor == _destFloor) {
+                // Don't speak the last step here — it will be shown on arrived panel
+                if ((!_stairsTransitionFired || _currentFloor == _destFloor) && !isLastStep) {
                   _speak(stepData.instruction);
                 }
               }
@@ -634,7 +698,7 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
                 Future.delayed(const Duration(seconds: 3), () {
                   if (mounted && _state == _NavState.active &&
                       beacon.mac.toUpperCase() == stepData.beaconMac.toUpperCase()) {
-                    _speak("${stepData.instruction}. You have arrived.");
+                    _speak("You have arrived.");
                     setState(() => _state = _NavState.arrived);
                     BeaconService().stopContinuousScanning();
                   }
@@ -1043,11 +1107,7 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
     // that single instruction IS the only guidance the user gets.
     // For multi-step routes, hide it only when the destination sits
     // exactly on a beacon (408/511) because the user is already there.
-    const roomsOnBeacon = {'408', '511'};
-    final destIsOnBeacon = roomsOnBeacon.contains(widget.roomNumber);
-    final showFinalDirection = lastStep != null &&
-        (isOneStep || (!destIsOnBeacon && lastStep.beaconMac != 'STAIRS'));
-
+    final showFinalDirection = lastStep != null && lastStep.beaconMac != 'STAIRS';
     return Positioned.fill(
       child: Container(
         color: Colors.black.withValues(alpha: 0.55),

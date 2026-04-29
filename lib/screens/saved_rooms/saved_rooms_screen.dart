@@ -108,57 +108,102 @@ class _SavedRoomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
+      margin: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.fromLTRB(12, 16, 12, 16),      decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: _border),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Room info row
+        // 1. Room Header (Number & Name)
         Row(children: [
           Container(
-            width: 44, height: 44,
-            decoration: BoxDecoration(color: _primary.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(10)),
-            child: Center(child: Text(room.number, style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w700, color: _primary))),
+            width: 46, height: 46,
+            decoration: BoxDecoration(color: _primary.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(12)),
+            child: Center(child: Text(room.number, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w700, color: _primary))),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 14),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(room.name, style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: _text)),
+            Text(room.name, style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w700, color: _text)),
             Text('${room.category} · Floor ${room.floor} · ${room.building}',
-                style: GoogleFonts.poppins(fontSize: 11, color: _muted)),
+                style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w500, color: _muted)),
           ])),
         ]),
-        const SizedBox(height: 12),
 
-        // Action buttons
+        // 2. Professor Info (If applicable)
+        if (room.hasProfessorInfo) ...[
+          const SizedBox(height: 12),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            if (room.professorsName != null)
+              _InfoRow(icon: Icons.person_outline_rounded, label: 'Professor', value: room.professorsName!),
+            if (room.professorTitle != null)
+              _InfoRow(icon: Icons.school_outlined, label: 'Title', value: room.professorTitle!),
+            if (room.professorEmail != null)
+              _InfoRow(icon: Icons.alternate_email_rounded, label: 'Email', value: room.professorEmail!),
+            if (room.officeHours != null)
+              _InfoRow(icon: Icons.schedule_rounded, label: 'Office Hours', value: room.officeHours!),
+          ]),
+        ],
+
+        // 3. Description (Full Name used as description)
+        if (room.fullName.isNotEmpty &&
+            room.fullName != room.name &&
+            room.hasProfessorInfo) ...[
+          const SizedBox(height: 12),
+          Text(room.fullName,
+              style: GoogleFonts.poppins(fontSize: 12, color: _muted, height: 1.5)),
+        ],
+
+        const SizedBox(height: 16),
+        Container(height: 1, color: _border.withValues(alpha: 0.5)),
+        const SizedBox(height: 14),
+
+        // 4. Action buttons
         Row(children: [
-          _ActionBtn(
+          Expanded(child: _ActionBtn(
             icon: Icons.directions_rounded,
             label: 'Directions',
             color: _primary,
             onTap: onDirections,
-          ),
-          const SizedBox(width: 8),
-          _ActionBtn(
+          )),
+          const SizedBox(width: 6),
+          Expanded(child: _ActionBtn(
             icon: Icons.share_outlined,
             label: 'Share',
             color: _primary,
             onTap: onShare,
-          ),
-          const Spacer(),
-          _ActionBtn(
+          )),
+          const SizedBox(width: 6),
+          Expanded(child: _ActionBtn(
             icon: Icons.bookmark_remove_outlined,
             label: 'Remove',
             color: const Color(0xFFEF4444),
             onTap: onRemove,
-          ),
+          )),
         ]),
       ]),
     );
   }
+}
+
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String label, value;
+  const _InfoRow({required this.icon, required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 6),
+    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Icon(icon, size: 14, color: const Color(0xFF007A6E)),
+      const SizedBox(width: 8),
+      Expanded(child: RichText(text: TextSpan(children: [
+        TextSpan(text: '$label: ', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w700, color: const Color(0xFF1C2B2A))),
+        TextSpan(text: value, style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w400, color: const Color(0xFF1C2B2A))),
+      ]))),
+    ]),
+  );
 }
 
 class _ActionBtn extends StatelessWidget {
@@ -185,9 +230,10 @@ class _ActionBtn extends StatelessWidget {
         splashColor: color.withValues(alpha: 0.2),
         highlightColor: color.withValues(alpha: 0.1),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: 14, color: color),
               const SizedBox(width: 4),
@@ -195,7 +241,7 @@ class _ActionBtn extends StatelessWidget {
                 label,
                 style: GoogleFonts.poppins(
                   fontSize: 11,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                   color: color,
                 ),
               ),
