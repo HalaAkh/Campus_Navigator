@@ -435,7 +435,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _FAQ('How do I remove a saved room?',
     'Go to the Saved tab and tap Remove on the room you want to delete. Changes sync to your account automatically.'),
     _FAQ('Where can I see my navigation history?',
-    'Your last 10 navigations appear in the Recent section on your Profile screen. Tap any item to navigate there again directly.'),
+    'Your last navigations appear in the Recent section on your Profile screen. Tap any item to navigate there again directly.'),
     ]),
     _FAQSection('Account', [
     _FAQ('How do I change my display name?',
