@@ -147,8 +147,8 @@ class _NavigateSearchScreenState extends State<NavigateSearchScreen> {
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   const Icon(Icons.navigation_rounded, color: Colors.white, size: 18),
                   const SizedBox(width: 8),
-                  Text('Start Navigation to ${prefilledRoom.name}',
-                      style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white),
+                  Text('Start Navigation',
+                      style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
                       overflow: TextOverflow.ellipsis),
                 ]),
               ),

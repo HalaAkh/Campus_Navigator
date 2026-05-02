@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../widgets/common/widgets.dart';
 import '/utils/app_state.dart';
 import '/data/rooms.dart';
@@ -36,7 +37,7 @@ class SavedRoomsNavScreen extends StatelessWidget {
           child: Row(children: [
             Image.asset('assets/images/pin1.png', width: 28, height: 28, fit: BoxFit.scaleDown, filterQuality: FilterQuality.high),
             const SizedBox(width: 10),
-            Text('Saved Rooms', style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w700, color: _text)),
+            Text('Saved Rooms', style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w700, color: _text)),
           ]),
         ),
         Container(height: 0.5, color: _border),
@@ -48,13 +49,18 @@ class SavedRoomsNavScreen extends StatelessWidget {
               : ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             itemCount: saved.length,
-            itemBuilder: (_, i) => _SavedRoomCard(
-              room: saved[i],
-              onDirections: () => onNavigateToRoom(saved[i].number),
-              onRemove: () => appState.toggleSavedRoom(saved[i].number),
-              onShare: () => Share.share(
-                  'Check out ${saved[i].name} (Room ${saved[i].number}) on Floor ${saved[i].floor} at ${saved[i].building}'),
-            ),
+            itemBuilder: (_, i) {
+              // 1. Define the room correctly (Reverse order: newest first)
+              final room = saved[saved.length - 1 - i];
+
+              return _SavedRoomCard(
+                room: room, // 2. Pass the defined room
+                onDirections: () => onNavigateToRoom(room.number), // 3. Use room.number
+                onRemove: () => appState.toggleSavedRoom(room.number), // 4. Use room.number
+                onShare: () => Share.share(
+                    'Check out ${room.name} (Room ${room.number}) on Floor ${room.floor} at ${room.building}'),
+              );
+            },
           ),
         ),
       ]),
@@ -105,6 +111,16 @@ class _SavedRoomCard extends StatelessWidget {
   static const _muted = Color(0xFF6B7B7A);
   static const _border = Color(0xFFE5EBEB);
 
+  Future<void> _launchEmail(String email) async {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+    if (!await launchUrl(emailLaunchUri)) {
+      debugPrint('Could not launch email app');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -133,14 +149,19 @@ class _SavedRoomCard extends StatelessWidget {
 
         // 2. Professor Info (If applicable)
         if (room.hasProfessorInfo) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: 15),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             if (room.professorsName != null)
               _InfoRow(icon: Icons.person_outline_rounded, label: 'Professor', value: room.professorsName!),
             if (room.professorTitle != null)
               _InfoRow(icon: Icons.school_outlined, label: 'Title', value: room.professorTitle!),
             if (room.professorEmail != null)
-              _InfoRow(icon: Icons.alternate_email_rounded, label: 'Email', value: room.professorEmail!),
+              _InfoRow(
+                icon: Icons.alternate_email_rounded,
+                label: 'Email',
+                value: room.professorEmail!,
+                onTap: () => _launchEmail(room.professorEmail!),
+              ),
             if (room.officeHours != null)
               _InfoRow(icon: Icons.schedule_rounded, label: 'Office Hours', value: room.officeHours!),
           ]),
@@ -190,19 +211,46 @@ class _SavedRoomCard extends StatelessWidget {
 class _InfoRow extends StatelessWidget {
   final IconData icon;
   final String label, value;
-  const _InfoRow({required this.icon, required this.label, required this.value});
+  final VoidCallback? onTap;
+
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(bottom: 6),
-    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Icon(icon, size: 14, color: const Color(0xFF007A6E)),
-      const SizedBox(width: 8),
-      Expanded(child: RichText(text: TextSpan(children: [
-        TextSpan(text: '$label: ', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w700, color: const Color(0xFF1C2B2A))),
-        TextSpan(text: value, style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w400, color: const Color(0xFF1C2B2A))),
-      ]))),
-    ]),
+    child: GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque, // Makes the whole row area catch the tap
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Icon(icon, size: 14, color: const Color(0xFF007A6E)),
+        const SizedBox(width: 8),
+        Expanded(
+          child: RichText(
+            text: TextSpan(children: [
+              TextSpan(
+                  text: '$label: ',
+                  style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w700, color: const Color(0xFF1C2B2A))
+              ),
+              TextSpan(
+                text: value,
+                style: GoogleFonts.poppins(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w400,
+                  // If it's clickable, show it in primary color and underlined
+                  color: onTap != null ? const Color(0xFF007A6E) : const Color(0xFF1C2B2A),
+                  decoration: onTap != null ? TextDecoration.underline : null,
+                ),
+              ),
+            ]),
+          ),
+        ),
+      ]),
+    ),
   );
 }
 

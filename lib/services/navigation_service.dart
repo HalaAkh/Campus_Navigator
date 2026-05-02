@@ -131,109 +131,109 @@ From Elevator → Room 422:
 
 From Elevator → Room 421:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT from the elevator. Pass Room 423, Room 422. Room 421 is the THIRD door on your LEFT."
+  "Rotate RIGHT from the elevator. Pass Rooms 423, 422. Room 421 is the THIRD door on your LEFT."
 
 From Elevator → Room 420:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT from the elevator. Pass Room 423, Room 422, Room 421. Room 420 is the FOURTH door on your LEFT."
+  "Rotate RIGHT from the elevator. Pass Rooms 423, 422, 421. Room 420 is the FOURTH door on your LEFT."
 
 From Elevator → Room 401:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Room 401 is the FIRST door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Room 401 is the FIRST door on your RIGHT."
 
 From Elevator → Room 402:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass Room 401. Room 402 is the SECOND door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass Room 401 on your RIGHT. Room 402 is the SECOND door on your RIGHT."
 
 From Elevator → Room 403:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass Room 401, Room 402. Room 403 is the THIRD door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass Rooms 401, 402 on your RIGHT. Room 403 is the THIRD door on your RIGHT."
 
 From Elevator → Room 404:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass Room 401, Room 402, Room 403. Room 404 is the FOURTH door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass Rooms 401, 402, 403 on your RIGHT. Room 404 is the FOURTH door on your RIGHT."
 
 From Elevator → WOMEN'S TOILET (4WC2):
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. WOMEN'S TOILET (4WC2) is the FIRST door on your LEFT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. WOMEN'S TOILET (4WC2) is the FIRST door on your LEFT."
 
 From Elevator → Room 419:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass WOMEN'S TOILET (4WC2) on your LEFT. Room 419 is the NEXT door on your LEFT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass WOMEN'S TOILET (4WC2) on your LEFT. Room 419 is the NEXT door on your LEFT."
 
 From Elevator → Room 418:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass WOMEN'S TOILET (4WC2) and Room 419 on your LEFT. Room 418 is the NEXT door on your LEFT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass WOMEN'S TOILET (4WC2) and Room 419 on your LEFT. Room 418 is the NEXT door on your LEFT."
 
 From Elevator → Room 417:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass WOMEN'S TOILET (4WC2), Room 419, Room 418 on your LEFT. Room 417 is the NEXT door on your LEFT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass WOMEN'S TOILET (4WC2), Rooms 419, 418 on your LEFT. Room 417 is the NEXT door on your LEFT."
 
 From Elevator → Room 416:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass WOMEN'S TOILET (4WC2), Room 419, Room 418, Room 417 on your LEFT. Room 416 is the NEXT door on your LEFT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass WOMEN'S TOILET (4WC2), Rooms 419, Room 418, 417 on your LEFT. Room 416 is the NEXT door on your LEFT."
 
 From Elevator → MEN'S TOILET (4WC):
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass WOMEN'S TOILET (4WC2), Room 419, Room 418, Room 417, Room 416 on your LEFT and Room 401, Room 402, Room 403, Room 404 on your RIGHT. MEN'S TOILET (4WC) is on your LEFT after Room 416."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Pass WOMEN'S TOILET (4WC2), Rooms 419, 418, 417, 416 on your LEFT. MEN'S TOILET (4WC) is on your LEFT after Room 416."
 
 From Elevator → Room 408:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor. Room 408 is FACING YOU at the far end."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor. Room 408 is FACING YOU at the far end."
 
 From Elevator → Room 409:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor to Room 408 at the far end."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor until you REACH Room 408 at the far end."
   Step 2 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Room 409 is the FIRST door on your RIGHT."
+  "At Room 408, turn LEFT. Room 409 is the FIRST door on your RIGHT."
 
 From Elevator → Room 410:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor to Room 408 at the far end."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor until you REACH Room 408 at the far end."
   Step 2 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Pass 409. Room 410 is the SECOND door on your RIGHT."
+  "At Room 408, turn LEFT. Pass Room 409. Room 410 is the SECOND door on your RIGHT."
 
 From Elevator → Room 411:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor to Room 408 at the far end."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor until you REACH Room 408 at the far end."
   Step 2 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Pass Room 409, Room 410. Room 411 is the THIRD door on your RIGHT."
+  "At Room 408, turn LEFT. Pass Rooms 409, 410. Room 411 is the THIRD door on your RIGHT."
 
 From Elevator → Room 415:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor to Room 408 at the far end."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor until you REACH Room 408 at the far end."
   Step 2 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Room 415 is the FIRST door on your LEFT."
+  "At Room 408, turn LEFT. Room 415 is the FIRST door on your LEFT."
 
 From Elevator → Room 414:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor to Room 408 at the far end."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor until you REACH Room 408 at the far end."
   Step 2 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Pass Room 415. Room 414 is the SECOND door on your LEFT."
+  "At Room 408, turn LEFT. Pass Room 415. Room 414 is the SECOND door on your LEFT."
 
 From Elevator → Room 413:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor to Room 408 at the far end."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor until you REACH Room 408 at the far end."
   Step 2 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Pass Room 415, Room 414. Room 413 is the THIRD door on your LEFT."
+  "At Room 408, turn LEFT. Pass Rooms 415, 414. Room 413 is the THIRD door on your LEFT."
 
 From Elevator → Room 412:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor to Room 408 at the far end."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor until you REACH Room 408 at the far end."
   Step 2 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Walk to the far end. Room 412 is the LAST Room on your LEFT."
+  "At Room 408, turn LEFT. Walk to the far end. Room 412 is the LAST Room on your LEFT."
 
 From Elevator → Room 407:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor to Room 408 at the far end."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor until you REACH Room 408 at the far end."
   Step 2 | E5:65:DD:D0:91:EC right
-  "Turn RIGHT at Room 408 junction past the Back Stairs. Room 407 is on your LEFT just before Room 406 at the far end."
+  "At Room 408, turn RIGHT past the Back Stairs. Room 407 is on your LEFT just before Room 406 at the far end."
 
 From Elevator → Room 406:
   Step 1 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, Room 422, Room 421, Room 422, Room 421, Room 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor to Room 408 at the far end."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 422, 421, 420 on your LEFT, turn RIGHT at Room 420 into the main corridor. Walk the full corridor until you REACH Room 408 at the far end."
   Step 2 | E5:65:DD:D0:91:EC right
-  "Turn RIGHT at Room 408 junction past the Back Stairs. Room 406 is FACING YOU at the end."
+  "At Room 408, turn RIGHT past the Back Stairs. Room 406 is FACING YOU at the end."
 
 From Elevator → Room 424:
   Step 1 | C6:2A:90:A1:99:CB left
@@ -251,25 +251,25 @@ From Elevator → Room 426:
   Step 1 | C6:2A:90:A1:99:CB left
   "Turn LEFT from the elevator into the left offices corridor."
   Step 2 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425. Room 426 is the THIRD door on your RIGHT."
+  "Pass Rooms 424, 425. Room 426 is the THIRD door on your RIGHT."
 
 From Elevator → Room 427:
   Step 1 | C6:2A:90:A1:99:CB left
   "Turn LEFT from the elevator into the left offices corridor."
   Step 2 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425, Room 426. Room 427 is the FOURTH door on your RIGHT."
+  "Pass Rooms 424, 425, 426. Room 427 is the FOURTH door on your RIGHT."
 
 From Elevator → Room 428:
   Step 1 | C6:2A:90:A1:99:CB left
   "Turn LEFT from the elevator into the left offices corridor."
   Step 2 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425, Room 426, Room 427. Room 428 is the FIFTH door on your RIGHT."
+  "Pass Rooms 424, 425, 426, 427. Room 428 is the FIFTH door on your RIGHT."
 
 From Elevator → Room 429:
   Step 1 | C6:2A:90:A1:99:CB left
   "Turn LEFT from the elevator into the left offices corridor."
   Step 2 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425, Room 426, Room 427, Room 428. Room 429 is the SIXTH door on your RIGHT."
+  "Pass Rooms 424, 425, 426, 427, 428. Room 429 is the SIXTH door on your RIGHT."
 
 From Elevator → Room 430:
   Step 1 | C6:2A:90:A1:99:CB left
@@ -291,7 +291,7 @@ From Room 408 → Room 410:
 
 From Room 408 → Room 411:
   Step 1 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Pass Room 409, Room 410. Room 411 is the THIRD door on your RIGHT."
+  "Turn LEFT at Room 408 junction. Pass Rooms 409, 410. Room 411 is the THIRD door on your RIGHT."
 
 From Room 408 → Room 415:
   Step 1 | E5:65:DD:D0:91:EC left
@@ -303,7 +303,7 @@ From Room 408 → Room 414:
 
 From Room 408 → Room 413:
   Step 1 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Pass Room 415, Room 414. Room 413 is the THIRD door on your LEFT."
+  "Turn LEFT at Room 408 junction. Pass Rooms 415, 414. Room 413 is the THIRD door on your LEFT."
 
 From Room 408 → Room 412:
   Step 1 | E5:65:DD:D0:91:EC left
@@ -319,27 +319,27 @@ From Room 408 → Room 406:
 
 From Room 408 → Room 401:
   Step 1 | E5:65:DD:D0:91:EC forward
-  "Walk BACK into the main corridor ; Room 401 is the LAST door on your LEFT before the elevator turn."
+  "Walk BACK into the main corridor; Room 401 is the LAST door on your LEFT before the elevator turn."
 
 From Room 408 → Room 402:
   Step 1 | E5:65:DD:D0:91:EC forward
-  "Walk BACK into the main corridor ; Room 402 is the THIRD door on your LEFT."
+  "Walk BACK into the main corridor; Room 402 is the THIRD door on your LEFT."
 
 From Room 408 → Room 403:
   Step 1 | E5:65:DD:D0:91:EC forward
-  "Walk BACK into the main corridor ; Room 403 is the SECOND door on your LEFT."
+  "Walk BACK into the main corridor; Room 403 is the SECOND door on your LEFT."
 
 From Room 408 → Room 404:
   Step 1 | E5:65:DD:D0:91:EC forward
-  "Walk BACK into the main corridor ; Room 404 is the FIRST door on your LEFT."
+  "Walk BACK into the main corridor; Room 404 is the FIRST door on your LEFT."
 
 From Room 408 → WOMEN'S TOILET (4WC2):
   Step 1 | E5:65:DD:D0:91:EC forward
-  "Walk BACK into the main corridor ; WOMEN'S TOILET (4WC2) is the LAST room on your RIGHT before the elevator turn."
+  "Walk BACK into the main corridor; WOMEN'S TOILET (4WC2) is the LAST room on your RIGHT before the elevator turn."
 
 From Room 408 → MEN'S TOILET (4WC):
   Step 1 | E5:65:DD:D0:91:EC forward
-  "Walk BACK into the main corridor . MEN'S TOILET (4WC) is the FIRST door on your RIGHT."
+  "Walk BACK into the main corridor. MEN'S TOILET (4WC) is the FIRST door on your RIGHT."
 
 From Room 408 → Room 419:
   Step 1 | E5:65:DD:D0:91:EC forward
@@ -403,7 +403,7 @@ From Room 408 → Room 426:
   Step 2 | C6:2A:90:A1:99:CB left
   "At the elevator, turn LEFT into the left offices corridor."
   Step 3 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425. Room 426 is the THIRD door on your RIGHT."
+  "Pass Rooms 424, 425. Room 426 is the THIRD door on your RIGHT."
 
 From Room 408 → Room 427:
   Step 1 | E5:65:DD:D0:91:EC forward
@@ -411,7 +411,7 @@ From Room 408 → Room 427:
   Step 2 | C6:2A:90:A1:99:CB left
   "At the elevator, turn LEFT into the left offices corridor."
   Step 3 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425, Room 426. Room 427 is the FOURTH door on your RIGHT."
+  "Pass Rooms 424, 425, 426. Room 427 is the FOURTH door on your RIGHT."
 
 From Room 408 → Room 428:
   Step 1 | E5:65:DD:D0:91:EC forward
@@ -419,7 +419,7 @@ From Room 408 → Room 428:
   Step 2 | C6:2A:90:A1:99:CB left
   "At the elevator, turn LEFT into the left offices corridor."
   Step 3 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425, Room 426, Room 427. Room 428 is the FIFTH door on your RIGHT."
+  "Pass Rooms 424, 425, 426, 427. Room 428 is the FIFTH door on your RIGHT."
 
 From Room 408 → Room 429:
   Step 1 | E5:65:DD:D0:91:EC forward
@@ -427,7 +427,7 @@ From Room 408 → Room 429:
   Step 2 | C6:2A:90:A1:99:CB left
   "At the elevator, turn LEFT into the left offices corridor."
   Step 3 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425, Room 426, Room 427, Room 428. Room 429 is the SIXTH door on your RIGHT."
+  "Pass Rooms 424, 425, 426, 427, 428. Room 429 is the SIXTH door on your RIGHT."
 
 From Room 408 → Room 430:
   Step 1 | E5:65:DD:D0:91:EC forward
@@ -436,6 +436,42 @@ From Room 408 → Room 430:
   "At the elevator, turn LEFT into the left offices corridor."
   Step 3 | C8:93:08:09:B2:CA forward
   "Walk to the end. Room 430 is the LAST door on your RIGHT."
+  
+  ⚠️ IMPORTANT — DIRECTION DEPENDS ON HOW YOU ENTERED LEFT OFFICES:
+- If you came FROM THE ELEVATOR (walking forward into corridor): rooms are on your RIGHT. Use paths below.
+- If you came FROM THE STAIRS (arriving from Floor 5): rooms are on your LEFT, in REVERSE ORDER. Use the "FROM STAIRS ARRIVAL" paths.
+
+══════════════════════════════════════════════
+ALL PATHS — FROM LEFT OFFICES (ARRIVED FROM STAIRS / FLOOR 5)
+══════════════════════════════════════════════
+
+From Left Offices (stairs arrival) → Room 430:
+  Step 1 | C8:93:08:09:B2:CA forward
+  "Room 430 is the FIRST door on your LEFT."
+
+From Left Offices (stairs arrival) → Room 429:
+  Step 1 | C8:93:08:09:B2:CA forward
+  "Pass Room 430. Room 429 is the SECOND door on your LEFT."
+
+From Left Offices (stairs arrival) → Room 428:
+  Step 1 | C8:93:08:09:B2:CA forward
+  "Pass Rooms 430, 429. Room 428 is the THIRD door on your LEFT."
+
+From Left Offices (stairs arrival) → Room 427:
+  Step 1 | C8:93:08:09:B2:CA forward
+  "Pass Rooms 430, 429, 428. Room 427 is the FOURTH door on your LEFT."
+
+From Left Offices (stairs arrival) → Room 426:
+  Step 1 | C8:93:08:09:B2:CA forward
+  "Pass Rooms 430, 429, 428, 427. Room 426 is the FIFTH door on your LEFT."
+
+From Left Offices (stairs arrival) → Room 425:
+  Step 1 | C8:93:08:09:B2:CA forward
+  "Pass Rooms 430, 429, 428, 427, 426. Room 425 is the SIXTH door on your LEFT."
+
+From Left Offices (stairs arrival) → Room 424:
+  Step 1 | C8:93:08:09:B2:CA forward
+  "Walk to the end. Room 424 is the LAST door on your LEFT."
   
 ══════════════════════════════════════════════
 ALL PATHS — FROM LEFT OFFICES
@@ -451,19 +487,19 @@ From Left Offices → Room 425:
 
 From Left Offices → Room 426:
   Step 1 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425. Room 426 is the THIRD door on your RIGHT."
+  "Pass Rooms 424, 425. Room 426 is the THIRD door on your RIGHT."
 
 From Left Offices → Room 427:
   Step 1 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425, Room 426. Room 427 is the FOURTH door on your RIGHT."
+  "Pass Rooms 424, 425, 426. Room 427 is the FOURTH door on your RIGHT."
 
 From Left Offices → Room 428:
   Step 1 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425, Room 426, Room 427. Room 428 is the FIFTH door on your RIGHT."
+  "Pass Rooms 424, 425, 426, 427. Room 428 is the FIFTH door on your RIGHT."
 
 From Left Offices → Room 429:
   Step 1 | C8:93:08:09:B2:CA forward
-  "Pass Room 424, Room 425, Room 426, Room 427, Room 428. Room 429 is the SIXTH door on your RIGHT."
+  "Pass Rooms 424, 425, 426, 427, 428. Room 429 is the SIXTH door on your RIGHT."
 
 From Left Offices → Room 430:
   Step 1 | C8:93:08:09:B2:CA forward
@@ -485,13 +521,13 @@ From Left Offices → Room 421:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT. Pass Room 423, Room 422. Room 421 is the THIRD door on your LEFT."
+  "Rotate RIGHT. Pass Rooms 423, 422. Room 421 is the THIRD door on your LEFT."
 
 From Left Offices → Room 420:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT. Pass Room 423, Room 422, Room 421. Room 420 is the FOURTH door on your LEFT."
+  "Rotate RIGHT. Pass Rooms 423, 422, 421. Room 420 is the FOURTH door on your LEFT."
 
 From Left Offices → Room 401:
   Step 1 | C8:93:08:09:B2:CA forward
@@ -509,13 +545,13 @@ From Left Offices → Room 403:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Pass Room 401, Room 402. Room 403 is the THIRD door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Pass Rooms 401, 402. Room 403 is the THIRD door on your RIGHT."
 
 From Left Offices → Room 404:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Pass Room 401, Room 402, Room 403. Room 404 is the FOURTH door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Pass Rooms 401, 402, 403. Room 404 is the FOURTH door on your RIGHT."
 
 From Left Offices → WOMEN'S TOILET (4WC2):
   Step 1 | C8:93:08:09:B2:CA forward
@@ -539,13 +575,13 @@ From Left Offices → Room 417:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Pass WOMEN'S TOILET (4WC2), Room 419, Room 418. Room 417 is the NEXT door on your LEFT."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Pass WOMEN'S TOILET (4WC2), Rooms 419, 418. Room 417 is the NEXT door on your LEFT."
 
 From Left Offices → Room 416:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Pass WOMEN'S TOILET (4WC2), Room 419, Room 418, Room 417. Room 416 is the NEXT door on your LEFT."
+  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Pass WOMEN'S TOILET (4WC2), Rooms 419, 418, 417. Room 416 is the NEXT door on your LEFT."
 
 From Left Offices → MEN'S TOILET (4WC):
   Step 1 | C8:93:08:09:B2:CA forward
@@ -563,73 +599,73 @@ From Left Offices → Room 409:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor to Room 408."
+  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor until you REACH Room 408."
   Step 3 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Room 409 is the FIRST door on your RIGHT."
+  "At Room 408, turn LEFT. Room 409 is the FIRST door on your RIGHT."
 
 From Left Offices → Room 410:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor to Room 408."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor until you REACH Room 408."
   Step 3 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Pass Room 409. Room 410 is the SECOND door on your RIGHT."
+  "At Room 408, turn LEFT. Pass Room 409. Room 410 is the SECOND door on your RIGHT."
 
 From Left Offices → Room 411:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor to Room 408."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor until you REACH Room 408."
   Step 3 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Pass Room 409, Room 410. Room 411 is the THIRD door on your RIGHT."
+  "At Room 408, turn LEFT. Pass Rooms 409, 410. Room 411 is the THIRD door on your RIGHT."
 
 From Left Offices → Room 415:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor to Room 408."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor until you REACH Room 408."
   Step 3 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Room 415 is the FIRST door on your LEFT."
+  "At Room 408, turn LEFT. Room 415 is the FIRST door on your LEFT."
 
 From Left Offices → Room 414:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor to Room 408."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor until you REACH Room 408."
   Step 3 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Pass Room 415. Room 414 is the SECOND door on your LEFT."
+  "At Room 408, turn LEFT. Pass Room 415. Room 414 is the SECOND door on your LEFT."
 
 From Left Offices → Room 413:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor to Room 408."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor until you REACH Room 408."
   Step 3 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Pass Room 415, Room 414. Room 413 is the THIRD door on your LEFT."
+  "At Room 408, turn LEFT. Pass Rooms 415, 414. Room 413 is the THIRD door on your LEFT."
 
 From Left Offices → Room 412:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor to Room 408."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor until you REACH Room 408."
   Step 3 | E5:65:DD:D0:91:EC left
-  "Turn LEFT at Room 408 junction. Walk to the far end. Room 412 is the LAST room on your LEFT."
+  "At Room 408, turn LEFT. Walk to the far end. Room 412 is the LAST room on your LEFT."
 
 From Left Offices → Room 407:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor to Room 408."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor until you REACH Room 408."
   Step 3 | E5:65:DD:D0:91:EC right
-  "Turn RIGHT at Room 408 junction past the Back Stairs. Room 407 is on your LEFT just before Room 406."
+  "At Room 408, turn RIGHT past the Back Stairs. Room 407 is on your LEFT just before Room 406."
 
 From Left Offices → Room 406:
   Step 1 | C8:93:08:09:B2:CA forward
   "Turn BACK and walk to the elevator."
   Step 2 | C6:2A:90:A1:99:CB right
-  "Rotate RIGHT, pass Room 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor to Room 408."
+  "Rotate RIGHT, pass Rooms 423, 422, 421, 420 on your LEFT, turn RIGHT at Room 420. Walk the full corridor until you REACH Room 408."
   Step 3 | E5:65:DD:D0:91:EC right
-  "Turn RIGHT at Room 408 junction past the Back Stairs. Walk to the end. Room 406 is FACING YOU."
+  "At Room 408, turn RIGHT past the Back Stairs. Walk to the end. Room 406 is FACING YOU."
 
 Output ONLY valid JSON — no markdown, no explanation:
 {"success":true,"path":[{"beacon_mac":"...","location":"...","floor":4,"instruction":"...","direction":"left/right/forward"}],"total_beacons":2,"total_distance_meters":30,"estimated_time_minutes":2,"accessibility_compliant":true}
@@ -716,135 +752,135 @@ From Elevator → Room 524:
 
 From Elevator → Room 523:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT. Pass Room 525, Room 524. Room 523 is the THIRD door on your LEFT."
+  "Rotate RIGHT. Pass Rooms 525, 524. Room 523 is the THIRD door on your LEFT."
 
 From Elevator → Room 522:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT. Pass Room 525, Room 524, Room 523. Room 522 is the FOURTH door on your LEFT."
+  "Rotate RIGHT. Pass Rooms 525, 524, 523. Room 522 is the FOURTH door on your LEFT."
 
 From Elevator → Room 501:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522 into the main corridor. Room 501 is the FIRST door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522 into the main corridor. Room 501 is the FIRST door on your RIGHT."
 
 From Elevator → Room 502:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Pass Room 501. Room 502 is the SECOND door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Pass Room 501. Room 502 is the SECOND door on your RIGHT."
 
 From Elevator → Room 503:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Pass Room 501, Room 502. Room 503 is the THIRD door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Pass Rooms 501, 502. Room 503 is the THIRD door on your RIGHT."
 
 From Elevator → Room 521:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Room 521 is the FIRST door on your LEFT."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Room 521 is the FIRST door on your LEFT."
 
 From Elevator → Room 520:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Pass Room 521. Room 520 is the SECOND door on your LEFT."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Pass Room 521. Room 520 is the SECOND door on your LEFT."
 
 From Elevator → MEN'S TOILET (5WC):
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Pass Room 521 and Room 520 on your LEFT. MEN'S TOILET (5WC) is on your LEFT after Room 520."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Pass Room 521 and Room 520 on your LEFT. MEN'S TOILET (5WC) is on your LEFT after Room 520."
 
 From Elevator → Room 511:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor. Room 511 is FACING YOU at the far end."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor. Room 511 is FACING YOU at the far end."
 
 From Elevator → WOMEN'S TOILET (5WC2):
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511 at the far end."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 at the far end."
   Step 2 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass the Back Stairs. WOMEN'S TOILET (5WC2) is immediately on your RIGHT after the stairs."
+  "At Room 511, turn RIGHT. Pass the Back Stairs. WOMEN'S TOILET (5WC2) is immediately on your RIGHT after the stairs."
 
 From Elevator → Room 504:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511 at the far end."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 at the far end."
   Step 2 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Back Stairs and WOMEN'S TOILET (5WC2) on your RIGHT. Room 504 is the FIRST door on your RIGHT after the toilet."
+  "At Room 511, turn RIGHT. Pass Back Stairs and WOMEN'S TOILET (5WC2) on your RIGHT. Room 504 is the FIRST door on your RIGHT after the toilet."
 
 From Elevator → Room 505:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Back Stairs, WOMEN'S TOILET (5WC2), Room 504. Room 505 is the SECOND door on your RIGHT."
+  "At Room 511, turn RIGHT. Pass Back Stairs, WOMEN'S TOILET (5WC2), Room 504. Room 505 is the SECOND door on your RIGHT."
 
 From Elevator → Room 506:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Back Stairs, WOMEN'S TOILET (5WC2), Room 504, Room 505. Room 506 is the THIRD door on your RIGHT."
+  "At Room 511, turn RIGHT. Pass Back Stairs, WOMEN'S TOILET (5WC2), Rooms 504, 505. Room 506 is the THIRD door on your RIGHT."
 
 From Elevator → Room 507:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Room 507 is FACING YOU at the end."
+  "At Room 511, turn RIGHT. Room 507 is FACING YOU at the end."
 
 From Elevator → Room 510:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Room 510 is the FIRST door on your LEFT."
+  "At Room 511, turn RIGHT. Room 510 is the FIRST door on your LEFT."
 
 From Elevator → Room 509:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Room 510. Room 509 is the SECOND door on your LEFT."
+  "At Room 511, turn RIGHT. Pass Room 510. Room 509 is the SECOND door on your LEFT."
 
 From Elevator → Room 508:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Room 510, Room 509. Room 508 is the THIRD door on your LEFT."
+  "At Room 511, turn RIGHT. Pass Rooms 510, 509. Room 508 is the THIRD door on your LEFT."
 
 From Elevator → Room 512:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Room 512 is the FIRST door on your RIGHT."
+  "At Room 511, turn LEFT. Room 512 is the FIRST door on your RIGHT."
 
 From Elevator → Room 513:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 512. Room 513 is the SECOND door on your RIGHT."
+  "At Room 511, turn LEFT. Pass Room 512. Room 513 is the SECOND door on your RIGHT."
 
 From Elevator → Room 514:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 512, Room 513. Room 514 is the THIRD door on your RIGHT."
+  "At Room 511, turn LEFT. Pass Rooms 512, 513. Room 514 is the THIRD door on your RIGHT."
 
 From Elevator → Room 515:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 512, Room 513, Room 514. Room 515 is the FOURTH door on your RIGHT."
+  "At Room 511, turn LEFT. Pass Rooms 512, 513, 514. Room 515 is the FOURTH door on your RIGHT."
 
 From Elevator → Room 516 (Journalism Lab):
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Walk the full corridor. Room 516 is FACING YOU at the end."
+  "At Room 511, turn LEFT. Walk the full corridor. Room 516 is FACING YOU at the end."
 
 From Elevator → Room 519:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Room 519 is the FIRST door on your LEFT."
+  "At Room 511, turn LEFT. Room 519 is the FIRST door on your LEFT."
 
 From Elevator → Room 518:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 519. Room 518 is the SECOND door on your LEFT."
+  "At Room 511, turn LEFT. Pass Room 519. Room 518 is the SECOND door on your LEFT."
 
 From Elevator → Room 517:
   Step 1 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, Room 524, Room 523, Room 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 2 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 519, Room 518. Room 517 is the THIRD door on your LEFT."
+  "At Room 511, turn LEFT. Pass Rooms 519, 518. Room 517 is the THIRD door on your LEFT."
 
 From Elevator → Room 526:
   Step 1 | F4:7B:74:76:D5:8A left
@@ -862,7 +898,7 @@ From Elevator → Room 528:
   Step 1 | F4:7B:74:76:D5:8A left
   "Turn LEFT from the elevator into the left offices corridor."
   Step 2 | F3:55:BD:A3:65:2E forward
-  "Pass Room 526, Room 527. Room 528 is the THIRD door on your RIGHT."
+  "Pass Rooms 526, 527. Room 528 is the THIRD door on your RIGHT."
 
 From Elevator → Room 529:
   Step 1 | F4:7B:74:76:D5:8A left
@@ -888,7 +924,7 @@ From Room 511 → Room 505:
 
 From Room 511 → Room 506:
   Step 1 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Back Stairs, WOMEN'S TOILET (5WC2), Room 504, Room 505. Room 506 is the THIRD door on your RIGHT."
+  "Turn RIGHT at Room 511. Pass Back Stairs, WOMEN'S TOILET (5WC2), Rooms 504, 505. Room 506 is the THIRD door on your RIGHT."
 
 From Room 511 → Room 507:
   Step 1 | C7:A4:5A:D0:74:D8 right
@@ -904,7 +940,7 @@ From Room 511 → Room 509:
 
 From Room 511 → Room 508:
   Step 1 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Room 510, Room 509. Room 508 is the THIRD door on your LEFT."
+  "Turn RIGHT at Room 511. Pass Rooms 510, 509. Room 508 is the THIRD door on your LEFT."
 
 From Room 511 → Room 512:
   Step 1 | C7:A4:5A:D0:74:D8 left
@@ -916,11 +952,11 @@ From Room 511 → Room 513:
 
 From Room 511 → Room 514:
   Step 1 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 512, Room 513. Room 514 is the THIRD door on your RIGHT."
+  "Turn LEFT at Room 511. Pass Rooms 512, 513. Room 514 is the THIRD door on your RIGHT."
 
 From Room 511 → Room 515:
   Step 1 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 512, Room 513, Room 514. Room 515 is the FOURTH door on your RIGHT."
+  "Turn LEFT at Room 511. Pass Rooms 512, 513, 514. Room 515 is the FOURTH door on your RIGHT."
 
 From Room 511 → Room 516 (Journalism Lab):
   Step 1 | C7:A4:5A:D0:74:D8 left
@@ -936,11 +972,11 @@ From Room 511 → Room 518:
 
 From Room 511 → Room 517:
   Step 1 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 519, Room 518. Room 517 is the THIRD door on your LEFT."
+  "Turn LEFT at Room 511. Pass Rooms 519, 518. Room 517 is the THIRD door on your LEFT."
 
 From Room 511 → MEN'S TOILET (5WC):
   Step 1 | C7:A4:5A:D0:74:D8 forward
-  "Walk BACK into the main corridor ; MEN'S TOILET (5WC) is the FIRST door on your RIGHT."
+  "Walk BACK into the main corridor; MEN'S TOILET (5WC) is the FIRST door on your RIGHT."
 
 From Room 511 → Room 501:
   Step 1 | C7:A4:5A:D0:74:D8 forward
@@ -948,11 +984,11 @@ From Room 511 → Room 501:
 
 From Room 511 → Room 502:
   Step 1 | C7:A4:5A:D0:74:D8 forward
-  "Walk BACK into the main corridor ; Room 502 is the SECOND door on your LEFT."
+  "Walk BACK into the main corridor; Room 502 is the SECOND door on your LEFT."
 
 From Room 511 → Room 503:
   Step 1 | C7:A4:5A:D0:74:D8 forward
-  "Walk BACK into the main corridor ; Room 503 is the FIRST door on your LEFT."
+  "Walk BACK into the main corridor; Room 503 is the FIRST door on your LEFT."
 
 From Room 511 → Room 520:
   Step 1 | C7:A4:5A:D0:74:D8 forward
@@ -964,31 +1000,31 @@ From Room 511 → Room 521:
 
 From Room 511 → Room 522:
   Step 1 | C7:A4:5A:D0:74:D8 forward
-  "Walk BACK into the elevator ."
+  "Walk BACK through the main corridor all the way into the ELEVATOR AREA."
   Step 2 | F4:7B:74:76:D5:8A left
   "Rotate LEFT. Room 522 is the FIRST door on your RIGHT."
 
 From Room 511 → Room 523:
   Step 1 | C7:A4:5A:D0:74:D8 forward
-  "Walk BACK into the elevator ."
+  "Walk BACK through the main corridor all the way into the ELEVATOR AREA."
   Step 2 | F4:7B:74:76:D5:8A left
   "Rotate LEFT. Room 523 is the SECOND door on your RIGHT."
 
 From Room 511 → Room 524:
   Step 1 | C7:A4:5A:D0:74:D8 forward
-  "Walk BACK into the elevator ."
+  "Walk BACK through the main corridor all the way into the ELEVATOR AREA."
   Step 2 | F4:7B:74:76:D5:8A left
   "Rotate LEFT. Pass 525. Room 524 is the THIRD door on your RIGHT."
 
 From Room 511 → Room 525:
   Step 1 | C7:A4:5A:D0:74:D8 forward
-  "Walk BACK into the elevator ."
+  "Walk BACK through the main corridor all the way into the ELEVATOR AREA."
   Step 2 | F4:7B:74:76:D5:8A left
   "Rotate LEFT. Room 525 is the LAST door on your RIGHT."
 
 From Room 511 → Room 526:
   Step 1 | C7:A4:5A:D0:74:D8 forward
-  "Walk BACK through the main corridor into the elevator."
+  "Walk BACK through the main corridor all the way into the ELEVATOR AREA."
   Step 2 | F4:7B:74:76:D5:8A left
   "At the elevator, turn LEFT into the left offices corridor."
   Step 3 | F3:55:BD:A3:65:2E forward
@@ -996,7 +1032,7 @@ From Room 511 → Room 526:
 
 From Room 511 → Room 527:
   Step 1 | C7:A4:5A:D0:74:D8 forward
-  "Walk BACK through the main corridor into the elevator."
+  "Walk BACK through the main corridor all the way into the ELEVATOR AREA."
   Step 2 | F4:7B:74:76:D5:8A left
   "At the elevator, turn LEFT into the left offices corridor."
   Step 3 | F3:55:BD:A3:65:2E forward
@@ -1004,15 +1040,15 @@ From Room 511 → Room 527:
 
 From Room 511 → Room 528:
   Step 1 | C7:A4:5A:D0:74:D8 forward
-  "Walk BACK through the main corridor into the elevator."
+  "Walk BACK through the main corridor all the way into the ELEVATOR AREA."
   Step 2 | F4:7B:74:76:D5:8A left
   "At the elevator, turn LEFT into the left offices corridor."
   Step 3 | F3:55:BD:A3:65:2E forward
-  "Pass Room 526, Room 527. Room 528 is the THIRD door on your RIGHT."
+  "Pass Rooms 526, 527. Room 528 is the THIRD door on your RIGHT."
 
 From Room 511 → Room 529:
   Step 1 | C7:A4:5A:D0:74:D8 forward
-  "Walk BACK through the main corridor into the elevator."
+  "Walk BACK through the main corridor all the way into the ELEVATOR AREA."
   Step 2 | F4:7B:74:76:D5:8A left
   "At the elevator, turn LEFT into the left offices corridor."
   Step 3 | F3:55:BD:A3:65:2E forward
@@ -1032,7 +1068,7 @@ From Left Offices → Room 527:
 
 From Left Offices → Room 528:
   Step 1 | F3:55:BD:A3:65:2E forward
-  "Pass Room 526, Room 527. Room 528 is the THIRD door on your RIGHT."
+  "Pass Rooms 526, 527. Room 528 is the THIRD door on your RIGHT."
 
 From Left Offices → Room 529:
   Step 1 | F3:55:BD:A3:65:2E forward
@@ -1054,43 +1090,43 @@ From Left Offices → Room 523:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT. Pass Room 525, Room 524. Room 523 is the THIRD door on your LEFT."
+  "Rotate RIGHT. Pass Rooms 525, 524. Room 523 is the THIRD door on your LEFT."
 
 From Left Offices → Room 522:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT. Pass Room 525, Room 524, Room 523. Room 522 is the FOURTH door on your LEFT."
+  "Rotate RIGHT. Pass Rooms 525, 524, 523. Room 522 is the FOURTH door on your LEFT."
 
 From Left Offices → Room 501:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Room 501 is the FIRST door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Room 501 is the FIRST door on your RIGHT."
 
 From Left Offices → Room 502:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Pass Room 501. Room 502 is the SECOND door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Pass Room 501. Room 502 is the SECOND door on your RIGHT."
 
 From Left Offices → Room 503:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Pass Room 501, Room 502. Room 503 is the THIRD door on your RIGHT."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Pass Rooms 501, 502. Room 503 is the THIRD door on your RIGHT."
 
 From Left Offices → Room 521:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Room 521 is the FIRST door on your LEFT."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Room 521 is the FIRST door on your LEFT."
 
 From Left Offices → Room 520:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Pass Room 521. Room 520 is the SECOND door on your LEFT."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Pass Room 521. Room 520 is the SECOND door on your LEFT."
 
 From Left Offices → MEN'S TOILET (5WC):
   Step 1 | F3:55:BD:A3:65:2E forward
@@ -1108,129 +1144,129 @@ From Left Offices → WOMEN'S TOILET (5WC2):
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Room 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 3 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass the Back Stairs. WOMEN'S TOILET (5WC2) is immediately on your RIGHT."
+  "At Room 511, turn RIGHT. Pass the Back Stairs. WOMEN'S TOILET (5WC2) is immediately on your RIGHT."
 
 From Left Offices → Room 504:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 3 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Back Stairs and WOMEN'S TOILET (5WC2). Room 504 is the FIRST door on your RIGHT."
+  "At Room 511, turn RIGHT. Pass Back Stairs and WOMEN'S TOILET (5WC2). Room 504 is the FIRST door on your RIGHT."
 
 From Left Offices → Room 505:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 3 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Back Stairs, WOMEN'S TOILET (5WC2), Room 504. Room 505 is the SECOND door on your RIGHT."
+  "At Room 511, Turn RIGHT. Pass Back Stairs, WOMEN'S TOILET (5WC2), Room 504. Room 505 is the SECOND door on your RIGHT."
 
 From Left Offices → Room 506:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511."
   Step 3 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Back Stairs, WOMEN'S TOILET (5WC2), Room 504, Room 505. Room 506 is the THIRD door on your RIGHT."
+  "At Room 511, turn RIGHT. Pass Back Stairs, WOMEN'S TOILET (5WC2), Rooms 504, 505. Room 506 is the THIRD door on your RIGHT."
 
 From Left Offices → Room 507:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Walk the full corridor. Room 507 is FACING YOU at the end."
+  "At Room 511, turn RIGHT. Walk the full corridor. Room 507 is FACING YOU at the end."
 
 From Left Offices → Room 510:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Room 510 is the FIRST door on your LEFT."
+  "At Room 511, turn RIGHT. Room 510 is the FIRST door on your LEFT."
 
 From Left Offices → Room 509:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Room 510. Room 509 is the SECOND door on your LEFT."
+  "At Room 511, turn RIGHT. Pass Room 510. Room 509 is the SECOND door on your LEFT."
 
 From Left Offices → Room 508:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 right
-  "Turn RIGHT at Room 511. Pass Room 510, Room 509. Room 508 is the THIRD door on your LEFT."
+  "At Room 511, turn RIGHT. Pass Room 510, Room 509. Room 508 is the THIRD door on your LEFT."
 
 From Left Offices → Room 512:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Room 512 is the FIRST door on your RIGHT."
+  "At Room 511, turn LEFT. Room 512 is the FIRST door on your RIGHT."
 
 From Left Offices → Room 513:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 512. Room 513 is the SECOND door on your RIGHT."
+  "At Room 511, turn LEFT. Pass Room 512. Room 513 is the SECOND door on your RIGHT."
 
 From Left Offices → Room 514:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 512, Room 513. Room 514 is the THIRD door on your RIGHT."
+  "At Room 511, turn LEFT. Pass Rooms 512, 513. Room 514 is the THIRD door on your RIGHT."
 
 From Left Offices → Room 515:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 512, Room 513, Room 514. Room 515 is the FOURTH door on your RIGHT."
+  "At Room 511, turn LEFT. Pass Rooms 512, 513, 514. Room 515 is the FOURTH door on your RIGHT."
 
 From Left Offices → Room 516:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Walk the full corridor. Room 516 is FACING YOU at the end."
+  "At Room 511, turn LEFT. Walk the full corridor. Room 516 is FACING YOU at the end."
 
 From Left Offices → Room 519:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Room 519 is the FIRST door on your LEFT."
+  "At Room 511, turn LEFT. Room 519 is the FIRST door on your LEFT."
 
 From Left Offices → Room 518:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 519. Room 518 is the SECOND door on your LEFT."
+  "At Room 511, turn LEFT. Pass Room 519. Room 518 is the SECOND door on your LEFT."
 
 From Left Offices → Room 517:
   Step 1 | F3:55:BD:A3:65:2E forward
   "Turn BACK and walk to the elevator."
   Step 2 | F4:7B:74:76:D5:8A right
-  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor to Room 511."
+  "Rotate RIGHT, pass Rooms 525, 524, 523, 522 on your LEFT, turn RIGHT at Room 522. Walk the full corridor until you REACH Room 511 in the end."
   Step 3 | C7:A4:5A:D0:74:D8 left
-  "Turn LEFT at Room 511. Pass Room 519, Room 518. Room 517 is the THIRD door on your LEFT."
+  "At Room 511, turn LEFT. Pass Rooms 519, 518. Room 517 is the THIRD door on your LEFT."
   
 Output ONLY valid JSON — no markdown, no explanation:
 {"success":true,"path":[{"beacon_mac":"...","location":"...","floor":5,"instruction":"...","direction":"left/right/forward"}],"total_beacons":2,"total_distance_meters":30,"estimated_time_minutes":2,"accessibility_compliant":true}
@@ -1246,12 +1282,12 @@ Output ONLY valid JSON — no markdown, no explanation:
           'Authorization': 'Bearer $apiKey'
         },
         body: jsonEncode({
-          'model': 'gpt-4o-mini',
+          'model': 'gpt-4o',
           'messages': [
             {'role': 'system', 'content': systemPrompt},
             {'role': 'user', 'content': jsonEncode(userRequest)},
           ],
-          'temperature': 0.1,
+          'temperature': 0,
           'max_tokens': 1500,
           'response_format': {'type': 'json_object'},
         }),
@@ -1267,6 +1303,11 @@ Output ONLY valid JSON — no markdown, no explanation:
           final steps = pathList
               .map((s) => NavigationStep.fromJson(s as Map<String, dynamic>))
               .toList();
+
+          print("AI returned ${steps.length} steps");
+          for (var s in steps) {
+            print("${s.beaconMac} | ${s.instruction}");
+          }
 
           return NavigationResult(
             success: true,
@@ -1291,16 +1332,53 @@ Output ONLY valid JSON — no markdown, no explanation:
     required int floor,
     required String destinationNumber,
     required String apiKey,
+    bool arrivedFromStairs = false,
   }) async {
+
+    // // ── HARDCODED: Arrived at Left Offices F4 from stairs → left offices rooms ──
+    // // Rooms are on LEFT in reverse order (430 first, 424 last)
+    // const leftOfficesF4 = 'C8:93:08:09:B2:CA';
+    // final leftOfficeRooms = ['424','425','426','427','428','429','430'];
+    // if (arrivedFromStairs &&
+    //     currentBeaconMac.toUpperCase() == leftOfficesF4.toUpperCase() &&
+    //     floor == 4 &&
+    //     leftOfficeRooms.contains(destinationNumber)) {
+    //   final Map<String, String> reversedInstrs = {
+    //     '430': 'Room 430 is the FIRST door on your LEFT.',
+    //     '429': 'Pass Room 430. Room 429 is the SECOND door on your LEFT.',
+    //     '428': 'Pass Room 430, Room 429. Room 428 is the THIRD door on your LEFT.',
+    //     '427': 'Pass Room 430, Room 429, Room 428. Room 427 is the FOURTH door on your LEFT.',
+    //     '426': 'Pass Room 430, Room 429, Room 428, Room 427. Room 426 is the FIFTH door on your LEFT.',
+    //     '425': 'Pass Room 430, Room 429, Room 428, Room 427, Room 426. Room 425 is the SIXTH door on your LEFT.',
+    //     '424': 'Walk to the end. Room 424 is the LAST door on your LEFT.',
+    //   };
+    //   return NavigationResult(
+    //     success: true,
+    //     path: [
+    //       NavigationStep(
+    //         beaconMac: leftOfficesF4,
+    //         location: 'Left Offices Corridor - Floor 4',
+    //         floor: 4,
+    //         instruction: reversedInstrs[destinationNumber] ?? 'Your room is in the left offices corridor on your LEFT.',
+    //         direction: 'forward',
+    //       ),
+    //     ],
+    //     totalBeacons: 1,
+    //     totalDistanceMeters: 20,
+    //     estimatedTimeMinutes: 1,
+    //     accessibilityCompliant: true,
+    //   );
+    // }
+
     final prompt = floor == 4 ? _floor4Prompt : _floor5Prompt;
 
     final beaconNames = {
-      'C6:2A:90:A1:99:CB': 'Elevator/Main Stairs Junction - Floor 4',
-      'E5:65:DD:D0:91:EC': 'Room 408 Junction - Floor 4',
-      'C8:93:08:09:B2:CA': 'Left Offices Corridor - Floor 4',
-      'F4:7B:74:76:D5:8A': 'Elevator/Main Stairs Junction - Floor 5',
-      'C7:A4:5A:D0:74:D8': 'Room 511 Junction - Floor 5',
-      'F3:55:BD:A3:65:2E': 'Left Offices Corridor - Floor 5',
+      'C6:2A:90:A1:99:CB': 'Elevator - Floor 4',
+      'E5:65:DD:D0:91:EC': 'Room 408 - Floor 4',
+      'C8:93:08:09:B2:CA': 'Left Offices - Floor 4',
+      'F4:7B:74:76:D5:8A': 'Elevator - Floor 5',
+      'C7:A4:5A:D0:74:D8': 'Room 511 - Floor 5',
+      'F3:55:BD:A3:65:2E': 'Left Offices - Floor 5',
     };
     final beaconLabel = beaconNames[currentBeaconMac] ?? beaconNames[currentBeaconMac.toUpperCase()] ?? currentBeaconMac;
 
@@ -1312,14 +1390,40 @@ Output ONLY valid JSON — no markdown, no explanation:
         : currentBeaconMac.toUpperCase() == 'C7:A4:5A:D0:74:D8' ? 'ALL PATHS — FROM ROOM 511 JUNCTION'
         : 'ALL PATHS — FROM LEFT OFFICES');
 
+    final arrivalContext = (arrivedFromStairs && currentBeaconMac == 'C8:93:08:09:B2:CA')
+        ? 'IMPORTANT: The user arrived at Left Offices from the stairs (coming down from Floor 5). '
+        'Rooms are on the LEFT side in REVERSE order starting from 430. '
+        'Use the "FROM STAIRS ARRIVAL" paths from the prompt.'
+        : '';
+
     final request = {
       'user_current_location': beaconLabel,
       'user_current_beacon_mac': currentBeaconMac,
       'destination_room': destinationNumber,
       'floor': floor,
-      'STRICT_INSTRUCTION': 'You MUST use ONLY the section "$sectionHeader" from the prompt. '
-          'Find the exact path "From ${beaconLabel.split(' - ')[0]} → ${_resolveDestLabel(destinationNumber)}" in that section. '
-          'Copy it exactly. Do NOT use any path from any other section.',
+      'arrival_context': arrivalContext,
+      'STRICT_INSTRUCTION':
+      'You MUST use ONLY the section "$sectionHeader" from the prompt. '
+          'Find the EXACT entry "From ${beaconLabel.split(' - ')[0]} → ${_resolveDestLabel(destinationNumber)}". '
+          'Copy the route EXACTLY. '
+          'Each source Step MUST become one separate JSON object in path[]. '
+          'Never combine two Steps into one object. '
+          'Never rewrite step count. '
+          'Never skip beacon transitions. '
+          'If a route contains Room 511 Junction beacon C7:A4:5A:D0:74:D8, it MUST appear as its own separate path object.'
+          'If source route has 3 steps, output exactly 3 objects. '
+          'If source route has 2 steps, output exactly 2 objects. '
+          'Beacon MAC for each object must match its original step. '
+          'Instructions must remain attached to their original beacon only.'
+          'Room numbers 424-430 are LEFT OFFICES rooms — they are NEVER reached by turning left at Room 408 junction. '
+          'From Room 408 Junction, reaching rooms 424-430 requires walking BACK to elevator first, then turning LEFT.'
+          'CRITICAL: Never repeat the same beacon_mac in two different path objects. '
+          'Each beacon MAC must appear EXACTLY ONCE in the path array. '
+          'If the route has 1 step, output exactly 1 object. '
+          'CRITICAL: Room 525 is in the ELEVATOR ZONE — it requires 2 steps: '
+          'step 1 beacon C7:A4:5A:D0:74:D8 walks to elevator, '
+          'step 2 beacon F4:7B:74:76:D5:8A rotates left to find Room 525. '
+          'Never use main corridor instructions for elevator zone rooms. ',
     };
     return _callOpenAI(prompt, request, apiKey);
   }
@@ -1349,15 +1453,19 @@ Output ONLY valid JSON — no markdown, no explanation:
         apiKey: apiKey,
       );
     }
+    const backStairsDestinations = {
+      '504','505','506','507','508','509','510','511',
+      '512','513','514','515','516','517','518','519','5WC2'
+    };
 
+    const leftOfficesF4 = 'C8:93:08:09:B2:CA';
     const elevatorF4 = 'C6:2A:90:A1:99:CB';
     const elevatorF5 = 'F4:7B:74:76:D5:8A';
     const junctionF4 = 'E5:65:DD:D0:91:EC';
     const junctionF5 = 'C7:A4:5A:D0:74:D8';
 
     final mac = currentBeaconMac.toUpperCase();
-    final isAtElevator = mac == elevatorF4.toUpperCase() ||
-        mac == elevatorF5.toUpperCase();
+    final isAtElevator = mac == elevatorF5.toUpperCase();
     final isAtJunction = mac == junctionF4.toUpperCase() ||
         mac == junctionF5.toUpperCase();
 
@@ -1386,14 +1494,30 @@ Output ONLY valid JSON — no markdown, no explanation:
       ));
       totalDistance += 10;
 
-      final destElevatorBeacon = destFloor == 4 ? elevatorF4 : elevatorF5;
+      final destArrivalBeacon = destFloor == 4 ? leftOfficesF4 : elevatorF5;
       final step3 = await navigateSameFloor(
-          currentBeaconMac: destElevatorBeacon,
+          currentBeaconMac: destArrivalBeacon,
           floor: destFloor,
           destinationNumber: destinationNumber,
-          apiKey: apiKey);
+          apiKey: apiKey,
+          arrivedFromStairs: destArrivalBeacon == leftOfficesF4);
       if (step3.success) {
-        path.addAll(step3.path);
+        final existingMacs = path
+            .where((s) => s.beaconMac != 'STAIRS')
+            .map((s) => s.beaconMac.toUpperCase())
+            .toSet();
+
+        // Deduplicate WITHIN step3 itself (catches OpenAI returning same step twice)
+        final seenInStep3 = <String>{};
+        final deduped = step3.path.where((s) {
+          final mac = s.beaconMac.toUpperCase();
+          if (existingMacs.contains(mac)) return false;
+          if (seenInStep3.contains(mac)) return false; // ← catches internal duplicates
+          seenInStep3.add(mac);
+          return true;
+        }).toList();
+
+        path.addAll(deduped);
         totalDistance += step3.totalDistanceMeters;
       }
 
@@ -1426,13 +1550,182 @@ Output ONLY valid JSON — no markdown, no explanation:
           destinationNumber: destinationNumber,
           apiKey: apiKey);
       if (step3.success) {
-        path.addAll(step3.path);
+        final existingMacs = path
+            .where((s) => s.beaconMac != 'STAIRS')
+            .map((s) => s.beaconMac.toUpperCase())
+            .toSet();
+
+        // Deduplicate WITHIN step3 itself (catches OpenAI returning same step twice)
+        final seenInStep3 = <String>{};
+        final deduped = step3.path.where((s) {
+          final mac = s.beaconMac.toUpperCase();
+          if (existingMacs.contains(mac)) return false;
+          if (seenInStep3.contains(mac)) return false; // ← catches internal duplicates
+          seenInStep3.add(mac);
+          return true;
+        }).toList();
+
+        path.addAll(deduped);
         totalDistance += step3.totalDistanceMeters;
       }
 
+    } else if (mac == leftOfficesF4.toUpperCase() && currentFloor == 4) {
+      // User is already at the stairs — go directly up
+      path.add(NavigationStep(
+        beaconMac: leftOfficesF4,
+        location: 'Main Stairs — Floor 4',
+        floor: 4,
+        instruction: 'You are at the main stairs. Take them UP to Floor 5.',
+        direction: 'up',
+      ));
+      totalDistance += 5;
+
+      path.add(NavigationStep(
+        beaconMac: 'STAIRS',
+        location: 'Main Stairs',
+        floor: '4→5',
+        instruction: 'Take the Main Stairs UP to Floor 5.',
+        direction: 'up',
+      ));
+      totalDistance += 10;
+
+      final step3 = await navigateSameFloor(
+          currentBeaconMac: elevatorF5,
+          floor: 5,
+          destinationNumber: destinationNumber,
+          apiKey: apiKey);
+      if (step3.success) {
+        final existingMacs = path
+            .where((s) => s.beaconMac != 'STAIRS')
+            .map((s) => s.beaconMac.toUpperCase())
+            .toSet();
+
+        // Deduplicate WITHIN step3 itself (catches OpenAI returning same step twice)
+        final seenInStep3 = <String>{};
+        final deduped = step3.path.where((s) {
+          final mac = s.beaconMac.toUpperCase();
+          if (existingMacs.contains(mac)) return false;
+          if (seenInStep3.contains(mac)) return false; // ← catches internal duplicates
+          seenInStep3.add(mac);
+          return true;
+        }).toList();
+
+        path.addAll(deduped);
+        totalDistance += step3.totalDistanceMeters;
+      }
+
+    } else if (mac == elevatorF4.toUpperCase() && currentFloor == 4) {
+
+      final useBackStairs = backStairsDestinations.contains(destinationNumber);
+
+      if (useBackStairs) {
+        // Route: Elevator F4 → walk to 408 junction → back stairs → 511 F5
+        path.add(NavigationStep(
+          beaconMac: elevatorF4,
+          location: 'Elevator / Main Stairs — Floor 4',
+          floor: 4,
+          instruction: 'Walk toward Room 408 junction to take the BACK STAIRS',
+          direction: 'right',
+        ));
+        totalDistance += 10;
+
+        path.add(NavigationStep(
+          beaconMac: junctionF4,
+          location: 'Room 408 Junction — Floor 4',
+          floor: 4,
+          instruction: 'Turn RIGHT toward the Back Stairs. Take them UP to Floor 5.',
+          direction: 'right',
+        ));
+        totalDistance += 10;
+
+        path.add(NavigationStep(
+          beaconMac: 'STAIRS',
+          location: 'Back Stairs',
+          floor: '4→5',
+          instruction: 'Take the Back Stairs UP to Floor 5.',
+          direction: 'up',
+        ));
+        totalDistance += 10;
+
+        final step3 = await navigateSameFloor(
+            currentBeaconMac: junctionF5,
+            floor: 5,
+            destinationNumber: destinationNumber,
+            apiKey: apiKey);
+        if (step3.success) {
+          final existingMacs = path
+              .where((s) => s.beaconMac != 'STAIRS')
+              .map((s) => s.beaconMac.toUpperCase())
+              .toSet();
+          final seenInStep3 = <String>{};
+          final deduped = step3.path.where((s) {
+            final m = s.beaconMac.toUpperCase();
+            if (existingMacs.contains(m)) return false;
+            if (seenInStep3.contains(m)) return false;
+            seenInStep3.add(m);
+            return true;
+          }).toList();
+          path.addAll(deduped);
+          totalDistance += step3.totalDistanceMeters;
+        }
+
+      } else {
+        // Route: Elevator F4 → main stairs (Left Offices F4) → Elevator F5
+        path.add(NavigationStep(
+          beaconMac: elevatorF4,
+          location: 'Elevator / Main Stairs — Floor 4',
+          floor: 4,
+          instruction: 'Turn LEFT toward the Left Offices corridor to take the MAIN STAIRS.',
+          direction: 'left',
+        ));
+        totalDistance += 5;
+
+        path.add(NavigationStep(
+          beaconMac: leftOfficesF4,
+          location: 'Main Stairs — Floor 4',
+          floor: 4,
+          instruction: 'You have reached the Main Stairs. Take them UP to Floor 5.',
+          direction: 'up',
+        ));
+        totalDistance += 5;
+
+        path.add(NavigationStep(
+          beaconMac: 'STAIRS',
+          location: 'Main Stairs',
+          floor: '4→5',
+          instruction: 'Take the Main Stairs UP to Floor 5.',
+          direction: 'up',
+        ));
+        totalDistance += 10;
+
+        final destArrivalBeacon = elevatorF5;
+        final step3 = await navigateSameFloor(
+            currentBeaconMac: destArrivalBeacon,
+            floor: 5,
+            destinationNumber: destinationNumber,
+            apiKey: apiKey);
+        if (step3.success) {
+          final existingMacs = path
+              .where((s) => s.beaconMac != 'STAIRS')
+              .map((s) => s.beaconMac.toUpperCase())
+              .toSet();
+          final seenInStep3 = <String>{};
+          final deduped = step3.path.where((s) {
+            final m = s.beaconMac.toUpperCase();
+            if (existingMacs.contains(m)) return false;
+            if (seenInStep3.contains(m)) return false;
+            seenInStep3.add(m);
+            return true;
+          }).toList();
+          path.addAll(deduped);
+          totalDistance += step3.totalDistanceMeters;
+        }
+      }
+
     } else {
-      final currentElevatorBeacon = currentFloor == 4 ? elevatorF4 : elevatorF5;
-      final elevatorDestRoom = currentFloor == 4 ? '423' : '525';
+      final currentElevatorBeacon = currentFloor == 4 ? leftOfficesF4 : elevatorF5;
+
+      final elevatorDestRoom = currentFloor == 4 ? '424' : '525';
       final step1 = await navigateSameFloor(
           currentBeaconMac: currentBeaconMac,
           floor: currentFloor,
@@ -1462,14 +1755,30 @@ Output ONLY valid JSON — no markdown, no explanation:
       ));
       totalDistance += 10;
 
-      final destElevatorBeacon = destFloor == 4 ? elevatorF4 : elevatorF5;
+      final destArrivalBeacon = destFloor == 4 ? leftOfficesF4 : elevatorF5;
       final step3 = await navigateSameFloor(
-          currentBeaconMac: destElevatorBeacon,
+          currentBeaconMac: destArrivalBeacon,
           floor: destFloor,
           destinationNumber: destinationNumber,
-          apiKey: apiKey);
+          apiKey: apiKey,
+          arrivedFromStairs: destArrivalBeacon == leftOfficesF4);
       if (step3.success) {
-        path.addAll(step3.path);
+        final existingMacs = path
+            .where((s) => s.beaconMac != 'STAIRS')
+            .map((s) => s.beaconMac.toUpperCase())
+            .toSet();
+
+        // Deduplicate WITHIN step3 itself (catches OpenAI returning same step twice)
+        final seenInStep3 = <String>{};
+        final deduped = step3.path.where((s) {
+          final mac = s.beaconMac.toUpperCase();
+          if (existingMacs.contains(mac)) return false;
+          if (seenInStep3.contains(mac)) return false; // ← catches internal duplicates
+          seenInStep3.add(mac);
+          return true;
+        }).toList();
+
+        path.addAll(deduped);
         totalDistance += step3.totalDistanceMeters;
       }
     }

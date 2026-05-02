@@ -34,6 +34,18 @@ class AuthService {
       });
     }
   }
+  Future<void> saveUserToFirestore() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+      'uid': user.uid,
+      'name': user.displayName ?? '',
+      'email': user.email ?? '',
+      'createdAt': FieldValue.serverTimestamp(),
+      'emailVerified': true,
+    }, SetOptions(merge: true)); // merge:true avoids overwriting if doc exists
+  }
 
   bool isValidLauEmail(String email) {
     final emailLower = email.toLowerCase().trim();

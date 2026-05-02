@@ -8,7 +8,7 @@ import '../../widgets/common/widgets.dart';
 import '/services/beacon_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final ValueChanged<int> onTabChange;
   final VoidCallback onSettings;
   final VoidCallback onSavedRooms;
@@ -17,13 +17,6 @@ class ProfileScreen extends StatelessWidget {
   final VoidCallback onFeedback;
   final VoidCallback onSignOut;
   final ValueChanged<String> onNavigateToRoom;
-
-  static const _primary = Color(0xFF007A6E);
-  static const _text = Color(0xFF1C2B2A);
-  static const _muted = Color(0xFF6B7B7A);
-  static const _border = Color(0xFFE5EBEB);
-  static const _bg = Color(0xFFF7FAFA);
-  static const _contactEmail = 'hala.elakhrass@lau.edu';
 
   const ProfileScreen({
     super.key,
@@ -36,6 +29,20 @@ class ProfileScreen extends StatelessWidget {
     required this.onSignOut,
     required this.onNavigateToRoom,
   });
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool _showAllRecent = false;
+
+  static const _primary = Color(0xFF007A6E);
+  static const _text = Color(0xFF1C2B2A);
+  static const _muted = Color(0xFF6B7B7A);
+  static const _border = Color(0xFFE5EBEB);
+  static const _bg = Color(0xFFF7FAFA);
+  static const _contactEmail = 'hala.elakhrass@lau.edu';
 
   // ── EDIT PROFILE DIALOG ──────────────────────────────────────────────────
   void _showEditProfile(BuildContext context, AppState state) {
@@ -328,7 +335,7 @@ class ProfileScreen extends StatelessWidget {
                 Container(
                   width: 52, height: 52,
                   child: Center(child: Image.asset('assets/images/pin1.png',
-                      width: 28, height: 28,
+                      width: 28, height: 35,
                       errorBuilder: (_, __, ___) =>
                       const Icon(Icons.explore, color: Colors.white, size: 35))),
                 ),
@@ -336,7 +343,7 @@ class ProfileScreen extends StatelessWidget {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text('Campus Navigator',
                       style: GoogleFonts.poppins(fontSize: 17, fontWeight: FontWeight.w700, color: _text)),
-                  Text('Version 1.0.0  ·  LAU Beirut',
+                  Text('Version 1  ·  LAU Beirut',
                       style: GoogleFonts.poppins(fontSize: 12, color: _muted)),
                 ]),
               ]),
@@ -396,7 +403,7 @@ class ProfileScreen extends StatelessWidget {
     final sections = [
     _FAQSection('Getting Started', [
       _FAQ('What is Campus Navigator?',
-          'Campus Navigator v1.0.0 is a free indoor navigation app for LAU campus. It guides you step-by-step to any room, office, lab, or facility inside Nicol Hall, Floors 4 and 5, using MOKO SMART Bluetooth Low Energy beacons and OpenAI.'),
+          'Campus Navigator v1 is a free indoor navigation app for LAU campus. It guides you step-by-step to any room, office, lab, or facility inside Nicol Hall, Floors 4 and 5, using MOKO SMART Bluetooth Low Energy beacons and OpenAI.'),
       _FAQ('Who can use the app?',
           'Anyone with a valid LAU email address can use the app. Simply create an account with your LAU email and you are ready to go.'),
       _FAQ('Which buildings and floors are covered?',
@@ -636,7 +643,7 @@ class ProfileScreen extends StatelessWidget {
                         body: 'Feedback Type: $selectedType\n'
                             'From: $senderName\n\n'
                             '${msgCtrl.text.trim()}\n\n'
-                            '---\nSent from Campus Navigator App v1.0.0',
+                            '---\nSent from Campus Navigator App v1',
                       );
                       Navigator.pop(ctx);
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -691,7 +698,7 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 20),
           Text('Contact Us', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w700, color: _text)),
           const SizedBox(height: 4),
-          Text('We\'d love to hear from you.',
+          Text('We\'d love to hear from you!',
               style: GoogleFonts.poppins(fontSize: 12, color: _muted)),
           const SizedBox(height: 24),
 
@@ -706,15 +713,7 @@ class ProfileScreen extends StatelessWidget {
                 subject: 'Campus Navigator | Inquiry',
                 body: 'Hello,\n\n'),
           ),
-          const SizedBox(height: 12),
-          _contactTile(
-            context,
-            icon: Icons.school_outlined,
-            label: 'LAU Beirut Campus',
-            subtitle: 'Nicol Building, Beirut, Lebanon',
-            color: const Color(0xFF1A56A0),
-            onTap: () {},
-          ),
+
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(14),
@@ -902,8 +901,7 @@ class ProfileScreen extends StatelessWidget {
 
           // ── SAVED ROOMS PREVIEW ───────────────────────────
           if (state.savedRooms.isNotEmpty) ...[
-            _SectionHeader(title: 'Saved Rooms', actionLabel: 'See all', onAction: onSavedRooms),
-            SizedBox(
+            _SectionHeader(title: 'Saved Rooms', actionLabel: 'See all', onAction: () => widget.onTabChange(2)),            SizedBox(
               height: 80,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -912,7 +910,7 @@ class ProfileScreen extends StatelessWidget {
                 itemBuilder: (context, i) {
                   final room = state.savedRooms[i];
                   return GestureDetector(
-                    onTap: () => onNavigateToRoom(room.number),
+                    onTap: () => widget.onNavigateToRoom(room.number),
                     child: Container(
                       width: 80,
                       margin: const EdgeInsets.only(right: 10),
@@ -929,8 +927,7 @@ class ProfileScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                               color: _primary.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(10)),
-                          child: const Icon(Icons.meeting_room_outlined, color: _primary, size: 18),
-                        ),
+                          child: const Icon(Icons.bookmark_rounded, color: _primary, size: 18),                        ),
                         const SizedBox(height: 6),
                         Text(room.number, style: GoogleFonts.poppins(
                             fontSize: 11, fontWeight: FontWeight.w700, color: _text)),
@@ -945,13 +942,19 @@ class ProfileScreen extends StatelessWidget {
 
           // ── RECENT NAVIGATIONS ────────────────────────────
           if (state.navigationHistory.isNotEmpty) ...[
-            _SectionHeader(title: 'Recent', actionLabel: '', onAction: () {}),
+            _SectionHeader(
+              title: 'Recent',
+              actionLabel: _showAllRecent ? 'Show less' : 'See all',
+              onAction: () => setState(() => _showAllRecent = !_showAllRecent),
+            ),
             Padding(padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                children: state.navigationHistory.take(3).map((roomNum) {
+                children: state.navigationHistory
+                    .take(_showAllRecent ? state.navigationHistory.length : 3)
+                    .map((roomNum) {
                   final room = RoomsService().getRoomByNumber(roomNum);
                   return GestureDetector(
-                    onTap: () => onNavigateToRoom(roomNum),
+                    onTap: () => widget.onNavigateToRoom(roomNum),
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 8),
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -1024,13 +1027,13 @@ class ProfileScreen extends StatelessWidget {
 
           // Sign out
           TextButton.icon(
-            onPressed: onSignOut,
+            onPressed: widget.onSignOut,
             icon: const Icon(Icons.logout_rounded, size: 16, color: Colors.redAccent),
             label: Text('Sign Out', style: GoogleFonts.poppins(
                 fontSize: 14, fontWeight: FontWeight.w500, color: Colors.redAccent)),
           ),
           const SizedBox(height: 6),
-          Text('Campus Navigator · v1.0.0',
+          Text('Campus Navigator · v1',
               style: GoogleFonts.poppins(
                   fontSize: 10, color: _muted.withValues(alpha: 0.6))),
           const SizedBox(height: 80),
@@ -1038,9 +1041,9 @@ class ProfileScreen extends StatelessWidget {
       ]),
 
       bottomNavigationBar: AppBottomTabBar(currentIndex: 3, onTap: (i) {
-        if (i == 0) onTabChange(0);
-        if (i == 1) onTabChange(1);
-        if (i == 2) onTabChange(2);
+        if (i == 0) widget.onTabChange(0);
+        if (i == 1) widget.onTabChange(1);
+        if (i == 2) widget.onTabChange(2);
       }),
     );
   }

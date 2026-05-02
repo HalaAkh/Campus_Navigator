@@ -413,7 +413,10 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     await _authService.reloadUser();
     if (_authService.isEmailVerified) {
       _verificationTimer?.cancel();
-      if (mounted) widget.onVerified();
+      if (mounted) {
+        await _authService.saveUserToFirestore();
+        widget.onVerified();
+      }
     }
   }
 

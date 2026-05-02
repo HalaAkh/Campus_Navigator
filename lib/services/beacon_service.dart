@@ -23,7 +23,8 @@ class BeaconModel {
 class DetectedBeacon {
   final BeaconModel beacon;
   final int rssi;
-  DetectedBeacon({required this.beacon, required this.rssi});
+  final double smoothedRssi;
+  DetectedBeacon({required this.beacon, required this.rssi, required this.smoothedRssi});
 }
 
 class AppBeacons {
@@ -35,7 +36,7 @@ class AppBeacons {
 
   static const List<BeaconModel> floor5 = [
     BeaconModel(mac: 'F4:7B:74:76:D5:8A', location: 'Floor 5 - Elevator/Stairs Junction- 5th Floor', floor: 5, type: 'elevator', connections: ['F3:55:BD:A3:65:2E', 'C7:A4:5A:D0:74:D8']),
-    BeaconModel(mac: 'F3:55:BD:A3:65:2E', location: 'Floor 5 - Left Office Corridor- 5th Floor', floor: 5, type: 'corridor', connections: ['F4:7B:74:76:D5:8A']),
+    BeaconModel(mac: 'F3:55:BD:A3:65:2E', location: 'Floor 5 - Left Offices Corridor', floor: 5, type: 'corridor', connections: ['F4:7B:74:76:D5:8A']),
     BeaconModel(mac: 'C7:A4:5A:D0:74:D8', location: 'Floor 5 - Room 511 Junction Area', floor: 5, type: 'corridor', connections: ['F4:7B:74:76:D5:8A']),
   ];
 
@@ -71,12 +72,16 @@ class BeaconService extends ChangeNotifier {
   BeaconService._internal() {
     _initHardwareMonitoring();
   }
+
+  StreamSubscription? _scanSubscription;
+  final Map<String, double> _emaRssi = {}; 
+  static const double _alpha = 0.85; // Faster tracking of movement
+  
   void _initHardwareMonitoring() {
     FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
       if (state == BluetoothAdapterState.off ||
           state == BluetoothAdapterState.turningOff ||
           state == BluetoothAdapterState.unauthorized) {
-        debugPrint('BLUETOOTH TURNED OFF: EXITING APP');
         exit(0);
       }
     });
@@ -85,14 +90,8 @@ class BeaconService extends ChangeNotifier {
     Timer.periodic(const Duration(seconds: 2), (timer) async {
       try {
         bool isEnabled = await location.serviceEnabled();
-        if (!isEnabled) {
-          debugPrint('LOCATION SERVICES DISABLED: EXITING APP');
-          exit(0);
-        }
-      } catch (_) {
-        // If the system service check fails, it's safer to exit in a nav app
-        exit(0);
-      }
+        if (!isEnabled) exit(0);
+      } catch (_) { exit(0); }
     });
   }
 
@@ -105,102 +104,109 @@ class BeaconService extends ChangeNotifier {
 
   BeaconModel? _currentBeacon;
   bool _isScanning = false;
-  int _signalStrength = 0;
   List<DetectedBeacon> _nearbyBeacons = [];
-  Timer? _continuousTimer;
   int? _currentRssi;
-  int? get currentRssi => _currentRssi;
 
   BeaconModel? get currentBeacon => _currentBeacon;
   bool get isScanning => _isScanning;
-  int get signalStrength => _signalStrength;
   List<DetectedBeacon> get nearbyBeacons => _nearbyBeacons;
+  int? get currentRssi => _currentRssi;
   int get currentFloor => _currentBeacon?.floor ?? 4;
-  int get activeBeaconCount => _nearbyBeacons.length;
 
-  Future<List<DetectedBeacon>> scanBleBeacons({int durationSeconds = 5}) async {
+  void startContinuousScanning() async {
+    await stopContinuousScanning();
     _isScanning = true;
+    _emaRssi.clear();
     notifyListeners();
-    final List<DetectedBeacon> matched = [];
-    try {
-      final adapterState = await FlutterBluePlus.adapterState.first;
-      if (adapterState != BluetoothAdapterState.on) {
-        _isScanning = false;
-        notifyListeners();
-        return [];
+
+    await FlutterBluePlus.startScan(
+      androidScanMode: AndroidScanMode.lowLatency,
+      continuousUpdates: true,
+    );
+
+    _scanSubscription = FlutterBluePlus.scanResults.listen((results) {
+      final now = DateTime.now();
+      final List<DetectedBeacon> currentMatches = [];
+
+      for (var r in results) {
+        if (now.difference(r.timeStamp).inMilliseconds > 1000) continue;
+        if (r.rssi < -85) continue;
+
+        final mac = r.device.remoteId.str.toUpperCase().replaceAll('-', ':');
+        final beacon = AppBeacons.getByMac(mac);
+        if (beacon == null) continue;
+
+        double currentEma = _emaRssi[mac] ?? r.rssi.toDouble();
+        double updatedEma = (_alpha * r.rssi) + ((1 - _alpha) * currentEma);
+        _emaRssi[mac] = updatedEma;
+
+        currentMatches.add(DetectedBeacon(
+          beacon: beacon,
+          rssi: r.rssi,
+          smoothedRssi: updatedEma,
+        ));
       }
-      final Map<String, int> rssiMap = {};
-      final subscription = FlutterBluePlus.scanResults.listen((results) {
-        for (final r in results) {
-          final mac = r.device.remoteId.str.toUpperCase().replaceAll('-', ':');
-          rssiMap[mac] = r.rssi;
+
+      if (currentMatches.isNotEmpty) {
+        currentMatches.sort((a, b) => b.smoothedRssi.compareTo(a.smoothedRssi));
+        _nearbyBeacons = currentMatches;
+
+        final strongest = currentMatches.first;
+        bool changed = false;
+        
+        if (_currentBeacon == null || strongest.beacon.mac != _currentBeacon!.mac) {
+           double currentSmoothed = _emaRssi[_currentBeacon?.mac] ?? -100.0;
+           if (strongest.smoothedRssi > (currentSmoothed + 2.0)) {
+              _currentBeacon = strongest.beacon;
+              changed = true;
+           }
         }
-      });
-      await FlutterBluePlus.startScan(timeout: Duration(seconds: durationSeconds));
-      await Future.delayed(Duration(seconds: durationSeconds));
-      await FlutterBluePlus.stopScan();
-      subscription.cancel();
-      for (final entry in rssiMap.entries) {
-        final beacon = AppBeacons.getByMac(entry.key);
-        if (beacon != null) matched.add(DetectedBeacon(beacon: beacon, rssi: entry.value));
+
+        _currentRssi = strongest.smoothedRssi.toInt();
+        if (changed) notifyListeners();
       }
-    } catch (e) {
-      debugPrint('BLE error: $e');
-    }
-    _isScanning = false;
-    notifyListeners();
-    return matched;
+    });
   }
 
-  Future<BeaconModel?> detectCurrentLocation({int durationSeconds = 5}) async {
-    final detected = await scanBleBeacons(durationSeconds: durationSeconds);
-    if (detected.isEmpty) return null;
-    detected.sort((a, b) => b.rssi.compareTo(a.rssi));
-    final closest = detected.first;
-    _currentBeacon = closest.beacon;
-    _signalStrength = closest.rssi;
-    _currentRssi = closest.rssi;
-    _nearbyBeacons = detected;
+  Future<void> stopContinuousScanning() async {
+    await FlutterBluePlus.stopScan();
+    await _scanSubscription?.cancel();
+    _scanSubscription = null;
+    _isScanning = false;
+    notifyListeners();
+  }
+
+  Future<BeaconModel?> detectCurrentLocation({int durationSeconds = 3}) async {
+    final List<DetectedBeacon> matched = [];
+    final Map<String, int> rssiMap = {};
+    final sub = FlutterBluePlus.scanResults.listen((results) {
+      for (final r in results) {
+        final mac = r.device.remoteId.str.toUpperCase().replaceAll('-', ':');
+        rssiMap[mac] = r.rssi;
+      }
+    });
+    await FlutterBluePlus.startScan(
+      timeout: Duration(seconds: durationSeconds), 
+      androidScanMode: AndroidScanMode.lowLatency
+    );
+    await Future.delayed(Duration(seconds: durationSeconds));
+    await FlutterBluePlus.stopScan();
+    await sub.cancel();
+    for (final entry in rssiMap.entries) {
+      final b = AppBeacons.getByMac(entry.key);
+      if (b != null) matched.add(DetectedBeacon(beacon: b, rssi: entry.value, smoothedRssi: entry.value.toDouble()));
+    }
+    if (matched.isEmpty) return null;
+    matched.sort((a, b) => b.rssi.compareTo(a.rssi));
+    _currentBeacon = matched.first.beacon;
+    _currentRssi = matched.first.rssi;
     notifyListeners();
     return _currentBeacon;
   }
 
-  void startContinuousScanning() {
-    stopContinuousScanning();
-    detectCurrentLocation(durationSeconds: 3);
-    _continuousTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
-      if (!_isScanning) await detectCurrentLocation(durationSeconds: 3);
-    });
-  }
-
-  void stopContinuousScanning() {
-    _continuousTimer?.cancel();
-    _continuousTimer = null;
-  }
-
-  int calculateDistanceToStairs(String currentMac, String stairsMac, int floor) {
-    final upper = currentMac.toUpperCase();
-    final stairsUpper = stairsMac.toUpperCase();
-    if (upper == stairsUpper) return 0;
-    final beacons = floor == 4 ? AppBeacons.floor4 : AppBeacons.floor5;
-    final current = beacons.cast<BeaconModel?>().firstWhere((b) => b!.mac.toUpperCase() == upper, orElse: () => null);
-    if (current != null && current.connections.any((c) => c.toUpperCase() == stairsUpper)) return 15;
-    return 30;
-  }
-
-  String chooseBestStairs(String currentBeaconMac, int currentFloor) {
-    const elevatorBeacons = ['C6:2A:90:A1:99:CB', 'F4:7B:74:76:D5:8A'];
-    if (elevatorBeacons.contains(currentBeaconMac.toUpperCase())) return 'primary';
-    return 'secondary';
-  }
-
-  void setMockBeacon(BeaconModel beacon) {
-    _currentBeacon = beacon;
-    _signalStrength = -65;
-    _nearbyBeacons = [DetectedBeacon(beacon: beacon, rssi: -65)];
-    notifyListeners();
-  }
-
   @override
-  void dispose() { stopContinuousScanning(); super.dispose(); }
+  void dispose() {
+    stopContinuousScanning();
+    super.dispose();
+  }
 }

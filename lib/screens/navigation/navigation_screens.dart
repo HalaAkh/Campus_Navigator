@@ -3,6 +3,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '/services/beacon_service.dart';
 import '/services/navigation_service.dart';
 import '/data/rooms.dart';
@@ -111,6 +113,9 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
     'C8:93:08:09:B2:CA→C6:2A:90:A1:99:CB': [
       Offset(0.25, 0.41), Offset(0.25, 0.28), Offset(0.41, 0.28),
     ],
+    'C8:93:08:09:B2:CA→C8:93:08:09:B2:CA': [
+      Offset(0.25, 0.41),
+    ],
     'C8:93:08:09:B2:CA→E5:65:DD:D0:91:EC': [
       Offset(0.25, 0.41), Offset(0.25, 0.28), Offset(0.65, 0.28), Offset(0.65, 0.55), Offset(0.57, 0.55),
     ],
@@ -130,6 +135,27 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
       Offset(0.25, 0.38), Offset(0.25, 0.28), Offset(0.41, 0.28),
     ],
   };
+
+  Future<void> _logNavigation() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+      final room = RoomsService().getRoomByNumber(widget.roomNumber);
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('navigations')
+          .add({
+        'roomNumber': widget.roomNumber,
+        'roomName': room?.name ?? 'Room ${widget.roomNumber}',
+        'floor': room?.floor ?? (widget.roomNumber.startsWith('5') ? 5 : 4),
+        'building': room?.building ?? 'Nicol Hall',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      debugPrint('Failed to log navigation: $e');
+    }
+  }
 
   String _resolveDestinationName() {
     final room = RoomsService().getRoomByNumber(widget.roomNumber);
@@ -180,17 +206,24 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
   /// (spoken when they are at the starting-floor stairs beacon).
   String _buildStairsInstruction(String mac) {
     final up = mac.toUpperCase();
-    final isElevator = up == _elevatorF4.toUpperCase() ||
-        up == _elevatorF5.toUpperCase();
+    final isLeftOfficesF4 = up == 'C8:93:08:09:B2:CA';
+    final isElevatorF5 = up == _elevatorF5.toUpperCase();
+    final isJunction = up == _junctionF4.toUpperCase() ||
+        up == _junctionF5.toUpperCase();
     final goingUp = _destFloor > _currentFloor;
     final ud = goingUp ? 'UP' : 'DOWN';
-    if (isElevator) {
-      return 'You are at the elevator. '
-          'Take the Main Stairs or Elevator $ud to Floor $_destFloor — '
-          'they are right next to you.';
-    } else {
+
+    if (isLeftOfficesF4) {
+      return 'You are at the main stairs on Floor 4. '
+          'Take the stairs $ud to Floor $_destFloor.';
+    } else if (isElevatorF5) {
+      return 'You are at the elevator on Floor 5. '
+          'Take the elevator $ud to Floor $_destFloor.';
+    } else if (isJunction) {
       return 'You are at the junction. '
           'Turn RIGHT toward the Back Stairs and go $ud to Floor $_destFloor.';
+    } else {
+      return 'Take the stairs $ud to Floor $_destFloor.';
     }
   }
 
@@ -215,6 +248,12 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
       if (stepsToRender.isEmpty) {
         final b = BeaconService().currentBeacon;
         final startPos = b != null ? _beaconScreenPos(b.mac) : const Offset(0.41, 0.28);
+        // If user is at Left Offices F4 (stairs location), just show short upward arrow
+        final isAtLeftOfficesF4 = b?.mac.toUpperCase() == 'C8:93:08:09:B2:CA';
+        if (isAtLeftOfficesF4) {
+          _routeWaypoints = [startPos, Offset(startPos.dx, startPos.dy - 0.06)];
+          return;
+        }
         final stairsStep = allSteps[stairsIdx];
         final isMainStairs = stairsStep.location.toLowerCase().contains('main') ||
             stairsStep.location.toLowerCase().contains('elevator');
@@ -245,10 +284,15 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
     Offset _stairsEndPos() {
       if (stairsIdx <= 0) return const Offset(0.41, 0.28);
       final stairsEntry = allSteps[stairsIdx - 1];
-      final isJunction = stairsEntry.beaconMac.toUpperCase() == 'E5:65:DD:D0:91:EC' ||
-          stairsEntry.beaconMac.toUpperCase() == 'C7:A4:5A:D0:74:D8';
-      // Back stairs are to the RIGHT of the junction — draw slightly past it
-      return isJunction ? const Offset(0.44, 0.55) : const Offset(0.41, 0.28);
+      final mac = stairsEntry.beaconMac.toUpperCase();
+      final isJunction = mac == 'E5:65:DD:D0:91:EC' || mac == 'C7:A4:5A:D0:74:D8';
+      final isElevatorF5 = mac == 'F4:7B:74:76:D5:8A';
+      final isLeftOfficesF4 = mac == 'C8:93:08:09:B2:CA';
+      if (isJunction) return const Offset(0.44, 0.55);
+      if (isElevatorF5) return const Offset(0.25, 0.28);
+      if (isLeftOfficesF4) return const Offset(0.25, 0.35);
+
+      return const Offset(0.41, 0.28);
     }
 
     for (int i = 0; i < steps.length; i++) {
@@ -281,6 +325,11 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
       if (distinct.isEmpty || (distinct.last.dx - p.dx).abs() > 0.001 || (distinct.last.dy - p.dy).abs() > 0.001) {
         distinct.add(p);
       }
+    }
+    // If after deduplication we only have 1 point (user is already at stairs),
+    // add a small visual endpoint just above to show a short upward arrow
+    if (distinct.length == 1) {
+      distinct.add(Offset(distinct[0].dx, distinct[0].dy + 0.06));
     }
     _routeWaypoints = distinct;
   }
@@ -444,13 +493,14 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
   @override
   void initState() {
     super.initState();
-    _currentFloor = _destFloor;
+    _currentFloor = BeaconService().currentBeacon?.floor ?? _destFloor;
     _pulseCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500))..repeat(reverse: true);
     _pulseAnim = Tween<double>(begin: 0.7, end: 1.4).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
     _routeCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
     _routeAnim = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _routeCtrl, curve: Curves.easeInOut));
     _sheetCtrl = DraggableScrollableController();
     _tts.setVolume(1.0);
+    BeaconService().startContinuousScanning();
     _loadRoute();
   }
 
@@ -469,7 +519,7 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
 
   Future<void> _loadRoute() async {
     final svc = BeaconService();
-    BeaconModel? b = svc.currentBeacon ?? await svc.detectCurrentLocation(durationSeconds: 5);
+    BeaconModel? b = svc.currentBeacon ?? await svc.detectCurrentLocation(durationSeconds: 2);
     final apiKey = dotenv.env['OPENAI_API_KEY'] ?? '';    if (apiKey.isEmpty) {
       setState(() {
         _state = _NavState.preview;
@@ -499,6 +549,7 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
   void _start() async {
     final svc = context.read<BeaconService>();
     await svc.checkHardwareOrExit();
+    _logNavigation();
 
     // ── 1-STEP ROUTE: skip direction panel, show arrived immediately ─────
     final realSteps = _result?.path
@@ -548,7 +599,14 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
     final stairsIdx = _result?.path.indexWhere((s) => s.beaconMac == 'STAIRS') ?? -1;
     final afterStairsIdx = stairsIdx >= 0 ? stairsIdx + 1 : _step + 1;
 
-    // Switch map to destination floor immediately
+    // Recreate the sheet controller to avoid "already attached" crash
+    // when the active sheet rebuilds after the floor switch
+    if (_sheetCtrl.isAttached) {
+      _sheetCtrl.reset();
+    }
+    _sheetCtrl.dispose();
+    _sheetCtrl = DraggableScrollableController();
+
     setState(() {
       _currentFloor = _destFloor;
       _buildRouteWaypoints();
@@ -559,9 +617,15 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
     });
 
     // Speak the first instruction on the destination floor
+    // BUT if it's also the last step, don't speak it — it will show on arrived panel
     if (_result != null && afterStairsIdx < _result!.path.length) {
       final nextStep = _result!.path[afterStairsIdx];
-      _speak(nextStep.instruction);
+      final lastRealStepIndex = _result!.path.lastIndexWhere(
+              (s) => s.beaconMac != 'STAIRS');
+      final isLastStep = afterStairsIdx == lastRealStepIndex;
+      if (!isLastStep) {
+        _speak(nextStep.instruction);
+      }
       _lastSpokenMac = nextStep.beaconMac;
     }
   }
@@ -664,22 +728,6 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
                   (s) => s.beaconMac != 'STAIRS');
           final bool isLastStep = i == lastRealStepIndex;
 
-          // ── Only trigger arrival when ALL of these are true: ─────────────
-          // 1. This IS the last beacon in the path
-          // 2. We are already on the destination floor
-          // 3. The user has been at this beacon for at least 3 seconds
-          if (isLastStep && _currentFloor == _destFloor && _lastBeaconMatchTime != null) {
-            final sinceMatch = DateTime.now().difference(_lastBeaconMatchTime!);
-            if (sinceMatch.inSeconds >= 3) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (!mounted || _state != _NavState.active) return;
-                _speak("${stepData.instruction}. You have arrived.");
-                setState(() => _state = _NavState.arrived);
-                BeaconService().stopContinuousScanning();
-              });
-            }
-          }
-
           if (i != _step || _lastSpokenMac != beacon.mac) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (!mounted) return;
@@ -697,16 +745,10 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
 
               setState(() => _step = i);
 
-              // Arrived: fire after 3s dwell on last beacon
+              // Arrived: fire immediately on last beacon detection
               if (isLastStep && _currentFloor == _destFloor) {
-                Future.delayed(const Duration(seconds: 3), () {
-                  if (mounted && _state == _NavState.active &&
-                      beacon.mac.toUpperCase() == stepData.beaconMac.toUpperCase()) {
-                    _speak("You have arrived.");
-                    setState(() => _state = _NavState.arrived);
-                    BeaconService().stopContinuousScanning();
-                  }
-                });
+                _speak("${stepData.instruction}. You have arrived.");
+                setState(() => _state = _NavState.arrived);
               }
             });
           } else if (isLastStep && _currentFloor == _destFloor && _state == _NavState.active) {
@@ -716,11 +758,8 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
               if (!mounted || _state != _NavState.active) return;
               if (_lastBeaconMatchTime != null) {
                 final sinceMatch = DateTime.now().difference(_lastBeaconMatchTime!);
-                if (sinceMatch.inSeconds >= 3) {
-                  _speak("${stepData.instruction}. You have arrived.");
-                  setState(() => _state = _NavState.arrived);
-                  BeaconService().stopContinuousScanning();
-                }
+                _speak("${stepData.instruction}. You have arrived.");
+                setState(() => _state = _NavState.arrived);
               }
             });
           }
@@ -740,7 +779,6 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
               if (!mounted || _state != _NavState.active) return;
               _speak('You appear to be off route. Recalculating.');
               setState(() => _state = _NavState.offRoute);
-              BeaconService().stopContinuousScanning();
             });
           }
         }
@@ -987,6 +1025,10 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
       step = _result!.path[_step];
     }
 
+    final lastRealStepIndex = _result?.path.lastIndexWhere(
+            (s) => s.beaconMac != 'STAIRS') ?? -1;
+    final isLastRealStep = has && _step == lastRealStepIndex;
+
     // For the STAIRS virtual step, show a special direction
     final isStairsStep = step?.beaconMac == 'STAIRS';
     final String instr;
@@ -994,6 +1036,9 @@ class _NavigationScreenState extends State<NavigationScreen> with TickerProvider
     if (isStairsStep) {
       instr = step!.instruction;
       dir = step.direction;
+    } else if (isLastRealStep) {
+      instr = step?.instruction ?? '';
+      dir = step?.direction ?? 'forward';
     } else {
       instr = step?.instruction ?? 'Walking toward ${widget.roomNumber}...';
       dir = step?.direction ?? 'forward';

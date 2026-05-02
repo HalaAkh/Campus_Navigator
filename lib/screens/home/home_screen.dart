@@ -381,7 +381,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ])),
           GestureDetector(
-              onTap: () { _closeSheet(); widget.onNavigateToRoom(room.number); },
+              onTap: () {
+                _closeSheet();
+                context.read<AppState>().addToNavigationHistory(room.number);
+                widget.onNavigateToRoom(room.number);
+              },
               child: Container(
                   width: 40, height: 40,
                   decoration: BoxDecoration(
@@ -406,9 +410,68 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             _pinInfoRow(Icons.schedule_outlined, 'Office hours: ${room.officeHours!}'),
 
           if (room.professorEmail != null)
-            _pinInfoRow(Icons.mail_outline_rounded, room.professorEmail!,
-                isEmail: true),
+            GestureDetector(
+              onTap: () async {
+                final uri = Uri(scheme: 'mailto', path: room.professorEmail);
+                if (await canLaunchUrl(uri)) await launchUrl(uri);
+              },
+              child: _pinInfoRow(Icons.mail_outline_rounded, room.professorEmail!,
+                  isEmail: true),
+            ),
         ],
+
+        // ── SAVE & SHARE BUTTONS ─────────────────────────────────────────
+        const SizedBox(height: 12),
+        Container(height: 0.5, color: _border),
+        const SizedBox(height: 10),
+        Row(children: [
+          Expanded(child: GestureDetector(
+            onTap: () => context.read<AppState>().toggleSavedRoom(room.number),
+            child: Builder(builder: (ctx) {
+              final saved = context.watch<AppState>().isRoomSaved(room.number);
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(vertical: 9),
+                decoration: BoxDecoration(
+                  color: saved ? _primary.withValues(alpha: 0.08) : Colors.white,
+                  borderRadius: BorderRadius.circular(9999),
+                  border: Border.all(color: saved ? _primary.withValues(alpha: 0.3) : _border),
+                ),
+                child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Icon(
+                      saved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded,
+                      size: 15, color: saved ? _primary : _muted),
+                  const SizedBox(width: 5),
+                  Text(
+                      saved ? 'Saved' : 'Save',
+                      style: GoogleFonts.poppins(
+                          fontSize: 12, fontWeight: FontWeight.w500,
+                          color: saved ? _primary : _muted)),
+                ]),
+              );
+            }),
+          )),
+          const SizedBox(width: 8),
+          Expanded(child: GestureDetector(
+            onTap: () => Share.share(
+                'Check out ${room.name} (Room ${room.number}) on Floor ${room.floor} at ${room.building}'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 9),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(9999),
+                border: Border.all(color: _border),
+              ),
+              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Icon(Icons.share_outlined, size: 15, color: _muted),
+                const SizedBox(width: 5),
+                Text('Share',
+                    style: GoogleFonts.poppins(
+                        fontSize: 12, fontWeight: FontWeight.w500, color: _muted)),
+              ]),
+            ),
+          )),
+        ]),
       ]),
     );
   }
@@ -539,6 +602,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       isSaved: appState.isRoomSaved(room.number),
                       onDirections: () {
                         _closeCategory();
+                        context.read<AppState>().addToNavigationHistory(room.number);
                         widget.onNavigateToRoom(room.number);
                       },
                       onSave: () {

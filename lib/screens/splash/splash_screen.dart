@@ -13,43 +13,52 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
 
-  late AnimationController _entryCtrl;
-  late Animation<double> _entryAlpha;
-  late Animation<double> _entryScale;
+  // Phase 1 — pin fades in large (fills screen)
+  late AnimationController _fillCtrl;
+  late Animation<double> _fillAlpha;
+  late Animation<double> _fillScale;
 
+  // Phase 2 — pin rotates (3D Y-axis spin while still large)
   late AnimationController _spinCtrl;
   late Animation<double> _spinAngle;
 
+  // Phase 3 — pin shrinks from full-screen to final size
+  late AnimationController _shrinkCtrl;
+
+  // Phase 4 — settle bounce after shrink
   late AnimationController _settleCtrl;
   late Animation<double> _settleY;
   late Animation<double> _settleScale;
 
+  // Phase 5 — title fades in
   late AnimationController _nameCtrl;
   late Animation<double> _nameAlpha;
   late Animation<double> _nameY;
 
+  // Phase 6 — tagline fades in
   late AnimationController _taglineCtrl;
   late Animation<double> _taglineAlpha;
   late Animation<double> _taglineY;
-
-  late List<AnimationController> _dotControllers;
-  late List<Animation<double>> _dotAnims;
 
   @override
   void initState() {
     super.initState();
 
-    _entryCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
-    _entryAlpha = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _entryCtrl, curve: Curves.easeOut));
-    _entryScale = Tween<double>(begin: 0.4, end: 1.0).animate(
-        CurvedAnimation(parent: _entryCtrl, curve: Curves.easeOut));
+    _fillCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 700));
+    _fillAlpha = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _fillCtrl, curve: Curves.easeOut));
+    // Starts tiny, zooms up to fill screen
+    _fillScale = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _fillCtrl, curve: Curves.easeOut));
 
     _spinCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1600));
+        vsync: this, duration: const Duration(milliseconds: 1400));
     _spinAngle = Tween<double>(begin: 0.0, end: math.pi * 2.0).animate(
         CurvedAnimation(parent: _spinCtrl, curve: Curves.easeInOut));
+
+    _shrinkCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 700));
 
     _settleCtrl = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 450));
@@ -59,18 +68,18 @@ class _SplashScreenState extends State<SplashScreen>
               .chain(CurveTween(curve: Curves.easeIn)),
           weight: 40),
       TweenSequenceItem(
-          tween: Tween(begin: 14.0, end: -5.0)
+          tween: Tween(begin: 14.0, end: -6.0)
               .chain(CurveTween(curve: Curves.easeOut)),
           weight: 35),
       TweenSequenceItem(
-          tween: Tween(begin: -5.0, end: 0.0)
+          tween: Tween(begin: -6.0, end: 0.0)
               .chain(CurveTween(curve: Curves.easeIn)),
           weight: 25),
     ]).animate(_settleCtrl);
     _settleScale = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.06), weight: 40),
-      TweenSequenceItem(tween: Tween(begin: 1.06, end: 0.97), weight: 35),
-      TweenSequenceItem(tween: Tween(begin: 0.97, end: 1.0), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.08), weight: 40),
+      TweenSequenceItem(tween: Tween(begin: 1.08, end: 0.96), weight: 35),
+      TweenSequenceItem(tween: Tween(begin: 0.96, end: 1.0), weight: 25),
     ]).animate(_settleCtrl);
 
     _nameCtrl = AnimationController(
@@ -87,50 +96,41 @@ class _SplashScreenState extends State<SplashScreen>
     _taglineY = Tween<double>(begin: 10.0, end: 0.0).animate(
         CurvedAnimation(parent: _taglineCtrl, curve: Curves.easeOut));
 
-    _dotControllers = List.generate(3,
-            (_) => AnimationController(
-            vsync: this, duration: const Duration(milliseconds: 600)));
-    _dotAnims = _dotControllers
-        .map((c) => Tween<double>(begin: 0, end: -8).animate(
-        CurvedAnimation(parent: c, curve: Curves.easeInOut)))
-        .toList();
-
     _runSequence();
   }
 
   void _runSequence() async {
-    _entryCtrl.forward();
-    await Future.delayed(const Duration(milliseconds: 500));
-    _spinCtrl.forward();
-    await Future.delayed(const Duration(milliseconds: 1600));
+    await _fillCtrl.forward();
+    await Future.delayed(const Duration(milliseconds: 100));
+    await _spinCtrl.forward();
+    await Future.delayed(const Duration(milliseconds: 100));
+    await _shrinkCtrl.forward();
     _settleCtrl.forward();
     await Future.delayed(const Duration(milliseconds: 200));
     _nameCtrl.forward();
     await Future.delayed(const Duration(milliseconds: 300));
     _taglineCtrl.forward();
-    await Future.delayed(const Duration(milliseconds: 300));
-    for (int i = 0; i < 3; i++) {
-      Future.delayed(Duration(milliseconds: i * 150), () {
-        if (mounted) _dotControllers[i].repeat(reverse: true);
-      });
-    }
-    await Future.delayed(const Duration(milliseconds: 1600));
+    await Future.delayed(const Duration(milliseconds: 1500));
     if (mounted) widget.onComplete();
   }
 
   @override
   void dispose() {
-    _entryCtrl.dispose();
+    _fillCtrl.dispose();
     _spinCtrl.dispose();
+    _shrinkCtrl.dispose();
     _settleCtrl.dispose();
     _nameCtrl.dispose();
     _taglineCtrl.dispose();
-    for (var c in _dotControllers) c.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    const double finalSize = 220.0;
+    final double fullSize = screenSize.shortestSide * 1.5;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -140,100 +140,127 @@ class _SplashScreenState extends State<SplashScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF114C44), // Original deep teal
-              Color(0xFF249C8F), // Original medium teal
-              Color(0xFF4DD0E1), // Original light cyan
+              Color(0xFF114C44),
+              Color(0xFF249C8F),
+              Color(0xFF4DD0E1),
             ],
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
           children: [
-            AnimatedBuilder(
-              animation: Listenable.merge(
-                  [_entryCtrl, _spinCtrl, _settleCtrl]),
-              builder: (_, __) {
-                final double alpha = _entryAlpha.value.clamp(0.0, 1.0);
-                final double entryS = _entryScale.value;
-                final double settleS = _settleCtrl.isAnimating || _settleCtrl.isCompleted
-                    ? _settleScale.value
-                    : 1.0;
-                final double settleOffsetY = _settleCtrl.isAnimating || _settleCtrl.isCompleted
-                    ? _settleY.value
-                    : 0.0;
-                final double angle = _spinAngle.value;
 
-                return Opacity(
-                  opacity: alpha,
-                  child: Transform.translate(
-                    offset: Offset(0, settleOffsetY),
-                    child: Transform.scale(
-                      scale: entryS * settleS,
-                      child: Transform(
-                        alignment: Alignment.center,
-                        transform: Matrix4.identity()
-                          ..setEntry(3, 2, 0.001) // perspective
-                          ..rotateY(angle),
-                        child: Image.asset(
-                          'assets/images/pin.png',
-                          width: 180,
-                          height: 200,
-                          fit: BoxFit.contain,
-                          filterQuality: FilterQuality.high,
-                          isAntiAlias: true,
-                          semanticLabel: 'Campus Navigator Pin',
+            // ── PIN (centered on screen, can be any size) ────────────
+            Center(
+              child: AnimatedBuilder(
+                animation: Listenable.merge([
+                  _fillCtrl, _spinCtrl, _shrinkCtrl, _settleCtrl,
+                ]),
+                builder: (_, __) {
+                  final alpha = _fillAlpha.value.clamp(0.0, 1.0);
+                  final t = Curves.easeInOut.transform(_shrinkCtrl.value);
+                  final currentSize = fullSize + (finalSize - fullSize) * t;
+                  final settleOffsetY = (_settleCtrl.isAnimating || _settleCtrl.isCompleted)
+                      ? _settleY.value : 0.0;
+                  final settleS = (_settleCtrl.isAnimating || _settleCtrl.isCompleted)
+                      ? _settleScale.value : 1.0;
+                  final entryS = !_fillCtrl.isCompleted ? _fillScale.value : 1.0;
+                  final angle = _spinAngle.value;
+
+                  // As shrink goes 0→1, pin moves UP from center
+                  // so the whole group (pin + text) ends up centered
+                  final shrinkOffsetY = -80.0 * t; // moves up 80px as it shrinks
+
+                  return Opacity(
+                    opacity: alpha,
+                    child: Transform.translate(
+                      offset: Offset(0, shrinkOffsetY + settleOffsetY),
+                      child: Transform.scale(
+                        scale: entryS * settleS,
+                        child: Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.identity()
+                            ..setEntry(3, 2, 0.001)
+                            ..rotateY(angle),
+                          child: Image.asset(
+                            'assets/images/pin.png',
+                            width: currentSize,
+                            height: currentSize * (200 / 180),
+                            fit: BoxFit.contain,
+                            filterQuality: FilterQuality.high,
+                            isAntiAlias: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // ── TITLE + TAGLINE + DOTS (fixed at bottom) ─────────────
+            Positioned(
+              left: 0, right: 0,
+              bottom: MediaQuery.of(context).size.height * 0.38,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+
+                  AnimatedBuilder(
+                    animation: _nameCtrl,
+                    builder: (_, __) => Opacity(
+                      opacity: _nameAlpha.value,
+                      child: Transform.translate(
+                        offset: Offset(0, _nameY.value),
+                        child: Text(
+                          'CAMPUS NAVIGATOR',
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                            letterSpacing: 3,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 8),
-            AnimatedBuilder(
-              animation: _nameCtrl,
-              builder: (_, __) => Opacity(
-                opacity: _nameAlpha.value,
-                child: Transform.translate(
-                  offset: Offset(0, _nameY.value),
-                  child: Text(
-                    'CAMPUS NAVIGATOR',
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w400, // Very light font weight
-                      color: Colors.white,
-                      letterSpacing: 3.5, // Increased spacing for a light, elegant look
+
+                  const SizedBox(height: 4),
+
+                  AnimatedBuilder(
+                    animation: _taglineCtrl,
+                    builder: (_, __) => Opacity(
+                      opacity: _taglineAlpha.value,
+                      child: Transform.translate(
+                        offset: Offset(0, _taglineY.value),
+                        child: Text(
+                          'Find your way, always!',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: 1,
+                            color: const Color(0xFFCFE3DE),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                ),
+
+                  const SizedBox(height: 40),
+
+                  AnimatedBuilder(
+                    animation: _nameCtrl,
+                    builder: (_, __) => Opacity(
+                      opacity: _nameAlpha.value,
+                      child: const _BouncingDots(),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            AnimatedBuilder(
-              animation: _taglineCtrl,
-              builder: (_, __) => Opacity(
-                opacity: _taglineAlpha.value,
-                child: Transform.translate(
-                  offset: Offset(0, _taglineY.value),
-                  child: Text(
-                    'Find your way, always!',
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w300,
-                      letterSpacing: 1 ,
-                      color: const Color(0xFFCFE3DE),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 50),
-            const _BouncingDots(),
-            const SizedBox(height: 48),
+
           ],
         ),
       ),
@@ -260,7 +287,7 @@ class _BouncingDotsState extends State<_BouncingDots>
           (_) => AnimationController(
         vsync: this,
         duration: const Duration(milliseconds: 600),
-      )..repeat(reverse: true),
+      ),
     );
     for (int i = 0; i < 3; i++) {
       Future.delayed(Duration(milliseconds: i * 150), () {
