@@ -634,14 +634,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         setModal(() => inlineError = 'Please write a message.');
                         return;
                       }
-                      final senderName = nameCtrl.text.trim().isNotEmpty
-                          ? nameCtrl.text.trim()
-                          : 'Anonymous';
                       _launchEmail(
                         to: _contactEmail,
-                        subject: 'Campus Navigator Feedback — $selectedType',
-                        body: 'Feedback Type: $selectedType\n'
-                            'From: $senderName\n\n'
+                        subject: 'Campus Navigator Feedback | $selectedType',
+                        body: '\n'
                             '${msgCtrl.text.trim()}\n\n'
                             '---\nSent from Campus Navigator App v1',
                       );
