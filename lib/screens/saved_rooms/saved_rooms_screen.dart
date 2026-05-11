@@ -30,7 +30,7 @@ class SavedRoomsNavScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(children: [
-        // ── HEADER ──────────────────────────────────────
+        // HEADER
         Container(
           color: Colors.white,
           padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).padding.top + 16, 20, 16),
@@ -42,7 +42,7 @@ class SavedRoomsNavScreen extends StatelessWidget {
         ),
         Container(height: 0.5, color: _border),
 
-        // ── CONTENT ─────────────────────────────────────
+        // CONTENT
         Expanded(
           child: saved.isEmpty
               ? _buildEmpty()
@@ -50,13 +50,12 @@ class SavedRoomsNavScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             itemCount: saved.length,
             itemBuilder: (_, i) {
-              // 1. Define the room correctly (Reverse order: newest first)
               final room = saved[saved.length - 1 - i];
 
               return _SavedRoomCard(
-                room: room, // 2. Pass the defined room
-                onDirections: () => onNavigateToRoom(room.number), // 3. Use room.number
-                onRemove: () => appState.toggleSavedRoom(room.number), // 4. Use room.number
+                room: room,
+                onDirections: () => onNavigateToRoom(room.number),
+                onRemove: () => appState.toggleSavedRoom(room.number),
                 onShare: () => Share.share(
                     'Check out ${room.name} (Room ${room.number}) on Floor ${room.floor} at ${room.building}'),
               );
@@ -66,8 +65,8 @@ class SavedRoomsNavScreen extends StatelessWidget {
       ]),
       bottomNavigationBar: AppBottomTabBar(currentIndex: 2, onTap: (i) {
         if (i == 0) onTabChange(0);
-        if (i == 1) onTabChange(1); // Search
-        if (i == 3) onTabChange(3); // Profile
+        if (i == 1) onTabChange(1);
+        if (i == 3) onTabChange(3);
       }),
     );
   }
@@ -125,14 +124,14 @@ class _SavedRoomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.fromLTRB(12, 16, 12, 16),      decoration: BoxDecoration(
+      padding: const EdgeInsets.fromLTRB(12, 16, 12, 16),
+      decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: _border),
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // 1. Room Header (Number & Name)
         Row(children: [
           Container(
             width: 46, height: 46,
@@ -147,7 +146,6 @@ class _SavedRoomCard extends StatelessWidget {
           ])),
         ]),
 
-        // 2. Professor Info (If applicable)
         if (room.hasProfessorInfo) ...[
           const SizedBox(height: 15),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -167,7 +165,6 @@ class _SavedRoomCard extends StatelessWidget {
           ]),
         ],
 
-        // 3. Description (Full Name used as description)
         if (room.fullName.isNotEmpty &&
             room.fullName != room.name &&
             room.hasProfessorInfo) ...[
@@ -180,7 +177,6 @@ class _SavedRoomCard extends StatelessWidget {
         Container(height: 1, color: _border.withValues(alpha: 0.5)),
         const SizedBox(height: 14),
 
-        // 4. Action buttons
         Row(children: [
           Expanded(child: _ActionBtn(
             icon: Icons.directions_rounded,
@@ -241,7 +237,6 @@ class _InfoRow extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 11,
                   fontWeight: FontWeight.w400,
-                  // If it's clickable, show it in primary color and underlined
                   color: onTap != null ? const Color(0xFF007A6E) : const Color(0xFF1C2B2A),
                   decoration: onTap != null ? TextDecoration.underline : null,
                 ),

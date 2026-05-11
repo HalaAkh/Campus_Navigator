@@ -75,7 +75,7 @@ class BeaconService extends ChangeNotifier {
 
   StreamSubscription? _scanSubscription;
   final Map<String, double> _emaRssi = {}; 
-  static const double _alpha = 0.85; // Faster tracking of movement
+  static const double _alpha = 0.85;
   
   void _initHardwareMonitoring() {
     FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {

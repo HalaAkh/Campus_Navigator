@@ -68,7 +68,7 @@ class _SearchScreenState extends State<SearchScreen> {
       resizeToAvoidBottomInset: false,
       body: Stack(children: [
         Column(children: [
-          // ── SEARCH BAR ──────────────────────────────
+          // SEARCH BAR
           SafeArea(bottom: false,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
@@ -129,7 +129,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ]),
 
-        // ── BOTTOM TAB BAR ──────────────────────────
+        // BOTTOM TAB BAR
         if (!keyboardVisible)
           Positioned(bottom: 0, left: 0, right: 0,
             child: AppBottomTabBar(currentIndex: 1, onTap: (i) {
@@ -224,7 +224,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: isLink ? _primary : _text, // Highlight if it's a link
+                  color: isLink ? _primary : _text,
                   decoration: isLink ? TextDecoration.underline : null,
                 )
             ),

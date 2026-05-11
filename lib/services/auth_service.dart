@@ -44,7 +44,7 @@ class AuthService {
       'email': user.email ?? '',
       'createdAt': FieldValue.serverTimestamp(),
       'emailVerified': true,
-    }, SetOptions(merge: true)); // merge:true avoids overwriting if doc exists
+    }, SetOptions(merge: true));
   }
 
   bool isValidLauEmail(String email) {
@@ -63,8 +63,6 @@ class AuthService {
         password: password,
       );
 
-      // Removed the 'isUserRegistered' block from here.
-      // We allow the sign-in so they can finish registration/verification.
       return AuthResult.success(credential.user);
     } on FirebaseAuthException catch (e) {
       return AuthResult.failure(_handleFirebaseError(e));

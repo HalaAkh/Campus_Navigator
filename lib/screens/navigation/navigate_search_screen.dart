@@ -133,7 +133,6 @@ class _NavigateSearchScreenState extends State<NavigateSearchScreen> {
           ]),
         ),
 
-        // ── "Start Navigation" button if prefilled ──────
         if (widget.prefilledRoom != null && prefilledRoom != null)
           Container(
             color: Colors.white,
@@ -155,7 +154,7 @@ class _NavigateSearchScreenState extends State<NavigateSearchScreen> {
             ),
           ),
 
-        // ── ROOM LIST ───────────────────────────────────
+        // ROOM LIST
         Expanded(
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

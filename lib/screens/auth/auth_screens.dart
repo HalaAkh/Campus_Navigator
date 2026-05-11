@@ -9,9 +9,7 @@ import '../../utils/theme.dart';
 import '../../widgets/common/widgets.dart';
 import '../../services/auth_service.dart';
 
-// ============================================
 // SIGN UP SCREEN
-// ============================================
 class SignUpScreen extends StatefulWidget {
   final VoidCallback onSignUpSuccess;
   final VoidCallback onLogin;
@@ -229,9 +227,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
-// ============================================
 // FORGOT PASSWORD SCREEN
-// ============================================
 class ForgotPasswordScreen extends StatefulWidget {
   final VoidCallback onBack;
 
@@ -374,9 +370,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 }
 
-// ============================================
 // VERIFY EMAIL SCREEN
-// ============================================
 class VerifyEmailScreen extends StatefulWidget {
   final VoidCallback onVerified;
   final VoidCallback onBack;
@@ -520,10 +514,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   }
 }
 
-// ============================================
 // PERMISSIONS SCREEN
-// Simplified to trigger native OS dialogs directly
-// ============================================
 class PermissionsScreen extends StatefulWidget {
   final VoidCallback onPermissionsGranted;
   final VoidCallback onSkip;
@@ -546,21 +537,19 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
     setState(() => _isRequesting = true);
 
     try {
-      // 1. Request Location Permission (Native System Dialog)
       // Request Location Permission
       PermissionStatus locStatus = await Permission.locationWhenInUse.request();
       if (locStatus != PermissionStatus.granted) {
         exit(0);
         return;
       }
-// Request precise/fine location (triggers Precise/Approximate dialog on Android 12+)
+      // Request precise/fine location
       PermissionStatus preciseStatus = await Permission.location.request();
       if (preciseStatus != PermissionStatus.granted) {
         exit(0);
         return;
       }
 
-      // 2. Request Bluetooth Permissions (Native System Dialogs)
       // 2. Request Bluetooth Permissions (Native System Dialogs)
       Map<Permission, PermissionStatus> btStatuses = await [
         Permission.bluetoothScan,
@@ -597,7 +586,6 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
         serviceEnabled = await location.requestService();
         if (!serviceEnabled) {
           exit(0);
-          return;
         }
       }
     } catch (e) {
@@ -655,20 +643,16 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
   }
 }
 
-// ============================================
 // SYSTEM PERMISSION TRIGGERS
-// ============================================
 class PermissionDialogs {
-  /// Directly triggers native OS prompts
   static Future<void> showPermissionDialogs(BuildContext context) async {
-    // Request Location Permission
     // Request Location Permission
     PermissionStatus locStatus = await Permission.locationWhenInUse.request();
     if (locStatus != PermissionStatus.granted) {
       exit(0);
       return;
     }
-// Request precise/fine location (triggers Precise/Approximate dialog on Android 12+)
+    // Request precise/fine location (triggers Precise/Approximate dialog on Android 12+)
     PermissionStatus preciseStatus = await Permission.location.request();
     if (preciseStatus != PermissionStatus.granted) {
       exit(0);
@@ -708,7 +692,6 @@ class PermissionDialogs {
       serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
         exit(0);
-        return;
       }
     }
   }

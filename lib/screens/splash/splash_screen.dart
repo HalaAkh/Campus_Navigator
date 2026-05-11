@@ -13,29 +13,23 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
 
-  // Phase 1 — pin fades in large (fills screen)
   late AnimationController _fillCtrl;
   late Animation<double> _fillAlpha;
   late Animation<double> _fillScale;
 
-  // Phase 2 — pin rotates (3D Y-axis spin while still large)
   late AnimationController _spinCtrl;
   late Animation<double> _spinAngle;
 
-  // Phase 3 — pin shrinks from full-screen to final size
   late AnimationController _shrinkCtrl;
 
-  // Phase 4 — settle bounce after shrink
   late AnimationController _settleCtrl;
   late Animation<double> _settleY;
   late Animation<double> _settleScale;
 
-  // Phase 5 — title fades in
   late AnimationController _nameCtrl;
   late Animation<double> _nameAlpha;
   late Animation<double> _nameY;
 
-  // Phase 6 — tagline fades in
   late AnimationController _taglineCtrl;
   late Animation<double> _taglineAlpha;
   late Animation<double> _taglineY;
@@ -48,7 +42,6 @@ class _SplashScreenState extends State<SplashScreen>
         vsync: this, duration: const Duration(milliseconds: 700));
     _fillAlpha = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(parent: _fillCtrl, curve: Curves.easeOut));
-    // Starts tiny, zooms up to fill screen
     _fillScale = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(parent: _fillCtrl, curve: Curves.easeOut));
 
@@ -149,7 +142,6 @@ class _SplashScreenState extends State<SplashScreen>
         child: Stack(
           children: [
 
-            // ── PIN (centered on screen, can be any size) ────────────
             Center(
               child: AnimatedBuilder(
                 animation: Listenable.merge([
@@ -166,9 +158,7 @@ class _SplashScreenState extends State<SplashScreen>
                   final entryS = !_fillCtrl.isCompleted ? _fillScale.value : 1.0;
                   final angle = _spinAngle.value;
 
-                  // As shrink goes 0→1, pin moves UP from center
-                  // so the whole group (pin + text) ends up centered
-                  final shrinkOffsetY = -80.0 * t; // moves up 80px as it shrinks
+                  final shrinkOffsetY = -80.0 * t;
 
                   return Opacity(
                     opacity: alpha,
@@ -197,7 +187,6 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
 
-            // ── TITLE + TAGLINE + DOTS (fixed at bottom) ─────────────
             Positioned(
               left: 0, right: 0,
               bottom: MediaQuery.of(context).size.height * 0.38,

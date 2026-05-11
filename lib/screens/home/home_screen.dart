@@ -47,7 +47,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   static const _border = Color(0xFFE5EBEB);
   static const _bg = Color(0xFFF7FAFA);
 
-  // ── FLOOR 4 ROOM POSITIONS (matched to new map.png) ──────────────
   static const Map<String, Offset> _f4Rooms = {
     '424': Offset(0.25, 0.33), '425': Offset(0.25, 0.37),
     '426': Offset(0.25, 0.41), '427': Offset(0.25, 0.45),
@@ -69,7 +68,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     '407': Offset(0.47, 0.61), '406': Offset(0.42, 0.66),
   };
 
-  // ── FLOOR 5 ROOM POSITIONS (matched to new map.png) ──────────────
   static const Map<String, Offset> _f5Rooms = {
     '526': Offset(0.25, 0.33), '527': Offset(0.25, 0.38),
     '528': Offset(0.25, 0.43), '529': Offset(0.25, 0.48),
@@ -91,7 +89,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     '517': Offset(0.80, 0.71), '516': Offset(0.75, 0.81),
   };
 
-  // Beacon screen positions — matched to new room positions
   static const Map<String, Offset> _beaconPos = {
     'C6:2A:90:A1:99:CB': Offset(0.41, 0.28),  // F4 Elevator — near 422
     'E5:65:DD:D0:91:EC': Offset(0.57, 0.55),  // F4 Room 408
@@ -168,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     return Scaffold(
       body: Stack(children: [
-        // ── MAP ─────────────────────────────────────────
+        // MAP
         Positioned.fill(
           child: GestureDetector(
             onTap: () { if (_tappedRoom != null) _closeSheet(); },
@@ -177,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
 
-        // ── ROOM LABELS ─────────────────────────────────
+        // ROOM LABELS
         ...rooms.map((room) {
           final p = _getRoomPos(room.number);
           final selected = _tappedRoom?.number == room.number;
@@ -208,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           );
         }),
 
-        // ── LOCATION PIN — centered on beacon position ────
+        // LOCATION PIN
         if (beacon != null)
           Positioned(
             left: size.width * pos.dx - 20,
@@ -223,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ])),
           ),
 
-        // ── SEARCH BAR ──────────────────────────────────
+        // SEARCH BAR
         Positioned(top: 0, left: 0, right: 0,
           child: SafeArea(bottom: false,
             child: Padding(padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
@@ -260,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
 
-        // ── CATEGORY CHIPS ──────────────────────────────
+        // CATEGORY CHIPS
         if (_activeCategory == null)
           Positioned(top: 10, left: 0, right: 0,
               child: SafeArea(bottom: false,
@@ -274,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 _chipBtn('Toilets',    Icons.wc_outlined),
                               ]))))),
 
-        // ── FLOOR TOGGLE ────────────────────────────────
+        // FLOOR TOGGLE
         if (_activeCategory == null)
           Positioned(bottom: 75, left: 16,
               child: Container(padding: const EdgeInsets.all(3),
@@ -291,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 child: Center(child: Text('F$f', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w700, color: active ? Colors.white : _muted)))));
                       }).toList()))),
 
-        // ── FABs ────────────────────────────────────────
+        // FABs
         if (_activeCategory == null)
           Positioned(bottom: 75, right: 16,
               child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -308,14 +305,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         child: const Icon(Icons.directions_rounded, color: Colors.white, size: 24))),
               ])),
 
-        // ── ROOM DETAIL CARD ────────────────────────────
+        // ROOM DETAIL CARD
         if (_tappedRoom != null && _activeCategory == null)
           Positioned(bottom: 80, left: 16, right: 16,
               child: AnimatedBuilder(animation: _sheetAnim,
                   builder: (_, __) => Transform.translate(offset: Offset(0, 100 * (1 - _sheetAnim.value)),
                       child: Opacity(opacity: _sheetAnim.value.clamp(0.0, 1.0), child: _buildPinCard())))),
 
-        // ── BOTTOM NAV ──────────────────────────────────
+        // BOTTOM NAV
         Positioned(bottom: 0, left: 0, right: 0,
             child: AppBottomTabBar(currentIndex: 0, onTap: (i) {
               if (i == 1) widget.onSearchTap();   // ← Search tab
@@ -323,7 +320,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               if (i == 3) widget.onProfileTap();  // ← Profile tab
             })),
 
-        // ── CATEGORY SHEET ──────────────────────────────
+        // CATEGORY SHEET
         if (_activeCategory != null) _buildCategorySheet(size),
 
       ]),
@@ -350,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               offset: const Offset(0, 4))]),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
 
-        // ── TOP ROW ─────────────────────────────────────────────────────
+        // TOP ROW
         Row(children: [
           Container(
               width: 46, height: 46,
@@ -394,7 +391,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       color: Colors.white, size: 20))),
         ]),
 
-        // ── PROFESSOR DETAILS ────────────────────────────────────────────
+        // PROFESSOR DETAILS
         if (hasProfInfo) ...[
           const SizedBox(height: 12),
           Container(height: 0.5, color: _border),
@@ -420,7 +417,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
         ],
 
-        // ── SAVE & SHARE BUTTONS ─────────────────────────────────────────
+        // SAVE & SHARE BUTTONS
         const SizedBox(height: 12),
         Container(height: 0.5, color: _border),
         const SizedBox(height: 10),
@@ -493,9 +490,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-
-  // 1. Add this key to your _HomeScreenState variables at the top  final GlobalKey _sheetKey = GlobalKey();
-
   Widget _buildCategorySheet(Size size) {
     final rooms = _categoryRooms;
     final userPos = _userPos;
@@ -513,7 +507,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             return Material(
               color: Colors.transparent,
               child: Container(
-                margin: const EdgeInsets.only(bottom: 65), // Above bottom nav
+                margin: const EdgeInsets.only(bottom: 65),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -522,20 +516,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ],
                 ),
                 child: ListView.builder(
-                  // Attaching the controller here makes everything inside draggable
                   controller: scrollCtrl,
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  // Disable semantic indexing to prevent the 'parentDataDirty' crash
                   addSemanticIndexes: false,
-                  // +2 because we are adding the Handle and the Header as items
                   itemCount: rooms.length + 2,
                   itemBuilder: (context, index) {
-                    // ITEM 0: THE DRAG HANDLE (Now functional!)
                     if (index == 0) {
                       return Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        // Transparent background so the whole top area is a drag target
                         color: Colors.transparent,
                         child: Center(
                           child: Container(
@@ -549,7 +538,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       );
                     }
 
-                    // ITEM 1: THE HEADER (Title, Close Button, Chips)
                     if (index == 1) {
                       return Column(
                         mainAxisSize: MainAxisSize.min,
@@ -585,14 +573,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       );
                     }
 
-                    // REMAINING ITEMS: THE ROOM CARDS
-                    final room = rooms[index - 2]; // Adjust index
+                    final room = rooms[index - 2];
                     final roomPos = _getRoomPos(room.number);
                     final dx = roomPos.dx - userPos.dx;
                     final dy = roomPos.dy - userPos.dy;
                     final distance = (math.sqrt(dx * dx + dy * dy) * 100).toStringAsFixed(0);
 
-                    // Use watch to react to "Saved" state changes
                     final appState = context.watch<AppState>();
 
                     return _CategoryRoomCard(
@@ -652,7 +638,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         if (label != null) Text(label, style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: active ? _primary : _muted))]));
 }
 
-// ─── CATEGORY CARD ───────────────────────────────────────────────────────────
+// CATEGORY CARD
 class _CategoryRoomCard extends StatefulWidget {
   final RoomModel room;
   final String distance;
@@ -692,7 +678,7 @@ class _CategoryRoomCardState extends State<_CategoryRoomCard> {
             style: GoogleFonts.poppins(
                 fontSize: 12, fontWeight: FontWeight.w500, color: _primary)),
 
-        // ── PROFESSOR INFO BOX ───────────────────────────────────────────
+        // PROFESSOR INFO BOX
         if (hasProfInfo) ...[
           const SizedBox(height: 10),
           Container(
@@ -743,7 +729,7 @@ class _CategoryRoomCardState extends State<_CategoryRoomCard> {
           ),
         ],
 
-        // ── ACTION BUTTONS ───────────────────────────────────────────────
+        // ACTION BUTTONS
         const SizedBox(height: 10),
         Row(children: [
           _Btn(
@@ -793,7 +779,6 @@ class _CategoryRoomCardState extends State<_CategoryRoomCard> {
         ]),
       );
 }
-
 
 class _Btn extends StatelessWidget {
   final IconData i; final String l; final bool isActive; final VoidCallback onTap;

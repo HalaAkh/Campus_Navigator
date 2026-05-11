@@ -1335,41 +1335,6 @@ Output ONLY valid JSON — no markdown, no explanation:
     bool arrivedFromStairs = false,
   }) async {
 
-    // // ── HARDCODED: Arrived at Left Offices F4 from stairs → left offices rooms ──
-    // // Rooms are on LEFT in reverse order (430 first, 424 last)
-    // const leftOfficesF4 = 'C8:93:08:09:B2:CA';
-    // final leftOfficeRooms = ['424','425','426','427','428','429','430'];
-    // if (arrivedFromStairs &&
-    //     currentBeaconMac.toUpperCase() == leftOfficesF4.toUpperCase() &&
-    //     floor == 4 &&
-    //     leftOfficeRooms.contains(destinationNumber)) {
-    //   final Map<String, String> reversedInstrs = {
-    //     '430': 'Room 430 is the FIRST door on your LEFT.',
-    //     '429': 'Pass Room 430. Room 429 is the SECOND door on your LEFT.',
-    //     '428': 'Pass Room 430, Room 429. Room 428 is the THIRD door on your LEFT.',
-    //     '427': 'Pass Room 430, Room 429, Room 428. Room 427 is the FOURTH door on your LEFT.',
-    //     '426': 'Pass Room 430, Room 429, Room 428, Room 427. Room 426 is the FIFTH door on your LEFT.',
-    //     '425': 'Pass Room 430, Room 429, Room 428, Room 427, Room 426. Room 425 is the SIXTH door on your LEFT.',
-    //     '424': 'Walk to the end. Room 424 is the LAST door on your LEFT.',
-    //   };
-    //   return NavigationResult(
-    //     success: true,
-    //     path: [
-    //       NavigationStep(
-    //         beaconMac: leftOfficesF4,
-    //         location: 'Left Offices Corridor - Floor 4',
-    //         floor: 4,
-    //         instruction: reversedInstrs[destinationNumber] ?? 'Your room is in the left offices corridor on your LEFT.',
-    //         direction: 'forward',
-    //       ),
-    //     ],
-    //     totalBeacons: 1,
-    //     totalDistanceMeters: 20,
-    //     estimatedTimeMinutes: 1,
-    //     accessibilityCompliant: true,
-    //   );
-    // }
-
     final prompt = floor == 4 ? _floor4Prompt : _floor5Prompt;
 
     final beaconNames = {
@@ -1507,12 +1472,11 @@ Output ONLY valid JSON — no markdown, no explanation:
             .map((s) => s.beaconMac.toUpperCase())
             .toSet();
 
-        // Deduplicate WITHIN step3 itself (catches OpenAI returning same step twice)
         final seenInStep3 = <String>{};
         final deduped = step3.path.where((s) {
           final mac = s.beaconMac.toUpperCase();
           if (existingMacs.contains(mac)) return false;
-          if (seenInStep3.contains(mac)) return false; // ← catches internal duplicates
+          if (seenInStep3.contains(mac)) return false;
           seenInStep3.add(mac);
           return true;
         }).toList();
@@ -1555,12 +1519,11 @@ Output ONLY valid JSON — no markdown, no explanation:
             .map((s) => s.beaconMac.toUpperCase())
             .toSet();
 
-        // Deduplicate WITHIN step3 itself (catches OpenAI returning same step twice)
         final seenInStep3 = <String>{};
         final deduped = step3.path.where((s) {
           final mac = s.beaconMac.toUpperCase();
           if (existingMacs.contains(mac)) return false;
-          if (seenInStep3.contains(mac)) return false; // ← catches internal duplicates
+          if (seenInStep3.contains(mac)) return false;
           seenInStep3.add(mac);
           return true;
         }).toList();
@@ -1570,7 +1533,6 @@ Output ONLY valid JSON — no markdown, no explanation:
       }
 
     } else if (mac == leftOfficesF4.toUpperCase() && currentFloor == 4) {
-      // User is already at the stairs — go directly up
       path.add(NavigationStep(
         beaconMac: leftOfficesF4,
         location: 'Main Stairs — Floor 4',
@@ -1600,12 +1562,11 @@ Output ONLY valid JSON — no markdown, no explanation:
             .map((s) => s.beaconMac.toUpperCase())
             .toSet();
 
-        // Deduplicate WITHIN step3 itself (catches OpenAI returning same step twice)
         final seenInStep3 = <String>{};
         final deduped = step3.path.where((s) {
           final mac = s.beaconMac.toUpperCase();
           if (existingMacs.contains(mac)) return false;
-          if (seenInStep3.contains(mac)) return false; // ← catches internal duplicates
+          if (seenInStep3.contains(mac)) return false;
           seenInStep3.add(mac);
           return true;
         }).toList();
@@ -1619,7 +1580,6 @@ Output ONLY valid JSON — no markdown, no explanation:
       final useBackStairs = backStairsDestinations.contains(destinationNumber);
 
       if (useBackStairs) {
-        // Route: Elevator F4 → walk to 408 junction → back stairs → 511 F5
         path.add(NavigationStep(
           beaconMac: elevatorF4,
           location: 'Elevator / Main Stairs — Floor 4',
@@ -1670,7 +1630,6 @@ Output ONLY valid JSON — no markdown, no explanation:
         }
 
       } else {
-        // Route: Elevator F4 → main stairs (Left Offices F4) → Elevator F5
         path.add(NavigationStep(
           beaconMac: elevatorF4,
           location: 'Elevator / Main Stairs — Floor 4',
@@ -1768,12 +1727,11 @@ Output ONLY valid JSON — no markdown, no explanation:
             .map((s) => s.beaconMac.toUpperCase())
             .toSet();
 
-        // Deduplicate WITHIN step3 itself (catches OpenAI returning same step twice)
         final seenInStep3 = <String>{};
         final deduped = step3.path.where((s) {
           final mac = s.beaconMac.toUpperCase();
           if (existingMacs.contains(mac)) return false;
-          if (seenInStep3.contains(mac)) return false; // ← catches internal duplicates
+          if (seenInStep3.contains(mac)) return false;
           seenInStep3.add(mac);
           return true;
         }).toList();

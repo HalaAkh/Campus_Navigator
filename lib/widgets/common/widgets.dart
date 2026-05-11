@@ -50,9 +50,7 @@ class GradientButton extends StatelessWidget {
   }
 }
 
-// ============================================
 // AMBER BUTTON (accent CTA)
-// ============================================
 class AccentButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
@@ -86,9 +84,7 @@ class AccentButton extends StatelessWidget {
   }
 }
 
-// ============================================
 // OUTLINED BUTTON
-// ============================================
 class OutlinedPillButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
@@ -124,9 +120,7 @@ class OutlinedPillButton extends StatelessWidget {
   }
 }
 
-// ============================================
 // APP CARD
-// ============================================
 class AppCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -164,9 +158,7 @@ class AppCard extends StatelessWidget {
   }
 }
 
-// ============================================
 // GRADIENT HERO HEADER
-// ============================================
 class GradientHeader extends StatelessWidget {
   final Widget child;
   final double height;
@@ -195,9 +187,7 @@ class GradientHeader extends StatelessWidget {
   }
 }
 
-// ============================================
 // BEACON STATUS PILL
-// ============================================
 class BeaconStatusPill extends StatelessWidget {
   final bool active;
   final int floor;
@@ -243,9 +233,7 @@ class BeaconStatusPill extends StatelessWidget {
   }
 }
 
-// ============================================
 // ROOM LIST TILE
-// ============================================
 class RoomListTile extends StatelessWidget {
   final String number;
   final String name;
@@ -308,9 +296,7 @@ class RoomListTile extends StatelessWidget {
   }
 }
 
-// ============================================
 // CUSTOM TOGGLE SWITCH
-// ============================================
 class AppToggle extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
@@ -347,9 +333,7 @@ class AppToggle extends StatelessWidget {
   }
 }
 
-// ============================================
 // SETTINGS ROW
-// ============================================
 class SettingsRow extends StatelessWidget {
   final String label;
   final Widget trailing;
@@ -381,10 +365,7 @@ class SettingsRow extends StatelessWidget {
   }
 }
 
-// ============================================
 // BOTTOM TAB BAR
-// ============================================
-// REPLACE your AppBottomTabBar with this updated version:
 class AppBottomTabBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -451,9 +432,6 @@ class _Tab extends StatelessWidget {
   );
 }
 
-// ============================================
-// SHIMMER LOADING SKELETON
-// ============================================
 class ShimmerBox extends StatefulWidget {
   final double width;
   final double height;

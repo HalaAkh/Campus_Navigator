@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   static const _bg = Color(0xFFF7FAFA);
   static const _contactEmail = 'hala.elakhrass@lau.edu';
 
-  // ── EDIT PROFILE DIALOG ──────────────────────────────────────────────────
+  // EDIT PROFILE DIALOG
   void _showEditProfile(BuildContext context, AppState state) {
     final nameCtrl = TextEditingController(text: state.userName);
     final currentPassCtrl = TextEditingController();
@@ -156,14 +156,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       final typedCurrent = currentPass.isNotEmpty;
                       final typedConfirm = confirmPass.isNotEmpty;
 
-                      // ── Nothing changed ──────────────────────────────────
+                      // Nothing changed
                       if (!hasNameChange && !typedNew && !typedCurrent && !typedConfirm) {
                         setModal(() => inlineError = 'No changes to save.');
                         return;
                       }
 
-                      // ── Password field cross-checks ──────────────────────
-
+                      //  Password field cross-checks
                       // Entered new password but forgot current
                       if (typedNew && !typedCurrent) {
                         setModal(() => inlineError =
@@ -193,7 +192,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           return;
                         }
 
-                        // Complexity check — same rules as sign up
                         if (!isPasswordComplex(newPass)) {
                           setModal(() => inlineError =
                           'Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character (!@#\$&*~).');
@@ -208,7 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         }
                       }
 
-                      // ── Save ────────────────────────────────────────────
+                      //  Save
                       setModal(() { saving = true; inlineError = null; });
                       try {
                         if (hasNameChange) {
@@ -218,7 +216,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           await state.updatePassword(currentPass, newPass);
                         }
                         if (ctx.mounted) Navigator.pop(ctx);
-                        // Use root context for snackbar — sheet is closed now
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text('Profile updated successfully.',
                               style: GoogleFonts.poppins(fontSize: 13)),
@@ -228,7 +225,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               borderRadius: BorderRadius.circular(10)),
                         ));
                       } catch (e) {
-                        // Show Firebase/auth errors inline (sheet is still open)
                         setModal(() {
                           saving = false;
                           inlineError = e.toString().replaceFirst('Exception: ', '');
@@ -309,7 +305,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ── ABOUT SHEET ──────────────────────────────────────────────────────────
+  // ABOUT SHEET
   void _showAbout(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -398,7 +394,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ]),
   );
 
-  // ── HELP & FAQ SHEET ─────────────────────────────────────────────────────
+  //  HELP & FAQ SHEET
   void _showHelp(BuildContext context) {
     final sections = [
     _FAQSection('Getting Started', [
@@ -502,7 +498,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ),
     );
   }
-  // ── FEEDBACK SHEET ───────────────────────────────────────────────────────
+  //  FEEDBACK SHEET
   void _showFeedback(BuildContext context) {
     String? selectedType;
     final msgCtrl = TextEditingController();
@@ -676,7 +672,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ── CONTACT US SHEET ─────────────────────────────────────────────────────
+  // CONTACT US SHEET
   void _showContact(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -765,7 +761,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ── EMAIL LAUNCHER ───────────────────────────────────────────────────────
+  // EMAIL LAUNCHER
   static Future<void> _launchEmail({
     required String to,
     required String subject,
@@ -793,7 +789,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final badgeLabel = isProf ? 'LAU Professor' : isStudent ? 'LAU Student' : 'LAU Member';
     final badgeColor = isProf ? const Color(0xFF1A56A0) : _primary;
 
-    // Updated menu — 4 items only
     final menuItems = [
       _MenuItem(
         icon: Icons.person_outline_rounded,
@@ -827,7 +822,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Column(children: [
         Expanded(child: SingleChildScrollView(child: Column(children: [
 
-          // ── HEADER BANNER ────────────────────────────────
+          // HEADER BANNER
           Stack(clipBehavior: Clip.none, alignment: Alignment.bottomCenter, children: [
             Container(
               height: 150,
@@ -879,7 +874,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 20),
 
-          // ── STATS ROW ─────────────────────────────────────
+          // STATS ROW
           Padding(padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(children: [
               _StatTile(value: '${state.navigationCount}', label: 'Navigations'),
@@ -895,9 +890,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 20),
 
-          // ── SAVED ROOMS PREVIEW ───────────────────────────
+          // SAVED ROOMS PREVIEW
           if (state.savedRooms.isNotEmpty) ...[
-            _SectionHeader(title: 'Saved Rooms', actionLabel: 'See all', onAction: () => widget.onTabChange(2)),            SizedBox(
+            _SectionHeader(title: 'Saved Rooms', actionLabel: 'See all', onAction: () => widget.onTabChange(2)),
+            SizedBox(
               height: 80,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -923,7 +919,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           decoration: BoxDecoration(
                               color: _primary.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(10)),
-                          child: const Icon(Icons.bookmark_rounded, color: _primary, size: 18),                        ),
+                          child: const Icon(Icons.bookmark_rounded, color: _primary, size: 18),
+                        ),
                         const SizedBox(height: 6),
                         Text(room.number, style: GoogleFonts.poppins(
                             fontSize: 11, fontWeight: FontWeight.w700, color: _text)),
@@ -936,7 +933,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 20),
           ],
 
-          // ── RECENT NAVIGATIONS ────────────────────────────
+          // RECENT NAVIGATIONS
           if (state.navigationHistory.isNotEmpty) ...[
             _SectionHeader(
               title: 'Recent',
@@ -985,7 +982,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 20),
           ],
 
-          // ── MENU ──────────────────────────────────────────
+          // MENU
           Padding(padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Container(
               decoration: BoxDecoration(
@@ -1045,7 +1042,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-// ── SECTION HEADER ─────────────────────────────────────────────────────────
+// SECTION HEADER
 class _SectionHeader extends StatelessWidget {
   final String title, actionLabel;
   final VoidCallback onAction;
@@ -1069,7 +1066,7 @@ class _SectionHeader extends StatelessWidget {
   );
 }
 
-// ── STAT TILE ───────────────────────────────────────────────────────────────
+// STAT TILE
 class _StatTile extends StatelessWidget {
   final String value, label;
   final bool isLive;
@@ -1105,7 +1102,7 @@ class _StatTile extends StatelessWidget {
   );
 }
 
-// ── INLINE ERROR BANNER ─────────────────────────────────────────────────────
+// INLINE ERROR BANNER
 class _InlineErrorBanner extends StatelessWidget {
   final String message;
   const _InlineErrorBanner({required this.message});
@@ -1130,7 +1127,7 @@ class _InlineErrorBanner extends StatelessWidget {
   }
 }
 
-// ── DATA MODELS ─────────────────────────────────────────────────────────────
+// DATA MODELS
 class _MenuItem {
   final IconData icon;
   final String label;
@@ -1154,7 +1151,7 @@ class _FeedbackType {
   const _FeedbackType(this.label, this.subtitle);
 }
 
-// ── FAQ TILE (expandable) ───────────────────────────────────────────────────
+// FAQ TILE
 class _FAQTile extends StatefulWidget {
   final _FAQ faq;
   const _FAQTile({required this.faq});

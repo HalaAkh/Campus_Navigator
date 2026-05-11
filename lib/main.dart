@@ -14,26 +14,22 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
 
-  // Lock orientation to portrait
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Set system UI overlay style
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
   ));
 
-  // Initialize Firebase with a timeout to prevent hanging on startup
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     ).timeout(const Duration(seconds: 5));
     debugPrint('Firebase initialized successfully');
   } catch (e) {
-    // Firebase not configured or timed out — app will still run in demo mode
     debugPrint('Firebase init failed or timed out: $e');
   }
   await RoomsService().loadRooms();

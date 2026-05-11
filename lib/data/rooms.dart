@@ -10,9 +10,8 @@ class RoomModel {
   final bool active;
   final List<String> keywords;
 
-  // ── Professor / Office fields (optional — only set for office rooms) ──
   final String? professorsName;
-  final String? professorTitle;   // e.g. "Assistant Professor"
+  final String? professorTitle;
   final String? professorEmail;
   final String? officeHours;
 
@@ -39,7 +38,6 @@ class RoomModel {
     this.officeHours,
   });
 
-  /// Creates a copy with updated professor fields
   RoomModel copyWithProfessor({
     String? professorName,
     String? professorTitle,

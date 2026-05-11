@@ -5,9 +5,7 @@ import '../../utils/app_state.dart';
 import '../../widgets/common/widgets.dart';
 import '../../services/beacon_service.dart';
 
-// ============================================
 // SETTINGS SCREEN
-// ============================================
 class SettingsScreen extends StatelessWidget {
   final VoidCallback onBack;
 
@@ -241,9 +239,7 @@ class _Divider extends StatelessWidget {
       const Divider(height: 1, color: AppColors.border, indent: 16, endIndent: 16);
 }
 
-// ============================================
 // SAVED ROOMS SCREEN
-// ============================================
 class SavedRoomsScreen extends StatelessWidget {
   final VoidCallback onBack;
   final ValueChanged<String> onNavigate;
@@ -353,9 +349,7 @@ class SavedRoomsScreen extends StatelessWidget {
   }
 }
 
-// ============================================
 // HELP & FAQ SCREEN
-// ============================================
 class HelpScreen extends StatefulWidget {
   final VoidCallback onBack;
   const HelpScreen({super.key, required this.onBack});
@@ -488,9 +482,7 @@ class _FAQ {
   const _FAQ(this.q, this.a);
 }
 
-// ============================================
 // FEEDBACK SCREEN
-// ============================================
 class FeedbackScreen extends StatefulWidget {
   final VoidCallback onBack;
   final VoidCallback onHome;
@@ -641,9 +633,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   }
 }
 
-// ============================================
 // ABOUT SCREEN
-// ============================================
 class AboutScreen extends StatelessWidget {
   final VoidCallback onBack;
 

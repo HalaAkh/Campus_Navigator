@@ -32,8 +32,7 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ── UPDATE DISPLAY NAME ──────────────────────────────────────────────────
-  /// Updates the display name in Firebase Auth, Firestore, and local state.
+  // UPDATE DISPLAY NAME
   Future<void> updateUserName(String newName) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -50,27 +49,24 @@ class AppState extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('Failed to update username: $e');
-      rethrow; // Let the UI handle and show an error if needed
+      rethrow;
     }
   }
 
-  // ── UPDATE PASSWORD ──────────────────────────────────────────────────────
-  /// Re-authenticates with [currentPassword] then updates to [newPassword].
-  /// Throws a descriptive [Exception] on failure so the UI can show it.
+  // UPDATE PASSWORD
+
   Future<void> updatePassword(String currentPassword, String newPassword) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception('No authenticated user found.');
     if (user.email == null) throw Exception('User has no email address.');
 
     try {
-      // Re-authenticate — required by Firebase before sensitive operations
       final credential = EmailAuthProvider.credential(
         email: user.email!,
         password: currentPassword,
       );
       await user.reauthenticateWithCredential(credential);
 
-      // Now update the password
       await user.updatePassword(newPassword);
     } on FirebaseAuthException catch (e) {
       debugPrint('FirebaseAuthException code: [${e.code}] msg: ${e.message}');
@@ -98,8 +94,7 @@ class AppState extends ChangeNotifier {
     } catch (e) {
       debugPrint('Failed to update password (raw): $e');
       final raw = e.toString().toLowerCase();
-      // Firebase sometimes bypasses FirebaseAuthException on newer SDKs
-      // and wraps the error in a PlatformException — catch by message content
+
       if (raw.contains('invalid-credential') ||
           raw.contains('invalid_login_credentials') ||
           raw.contains('wrong-password') ||
@@ -122,7 +117,6 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  // Beacon / Location
   BeaconModel? _currentBeacon;
   bool _isScanning = false;
 

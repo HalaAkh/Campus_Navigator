@@ -18,8 +18,8 @@ import '/screens/saved_rooms/saved_rooms_screen.dart';
 enum AppRoute {
   splash, onboarding, login, signUp, forgotPassword, verifyEmail, permissions,
   home,
-  search,          // Google Maps "Search here" — simple search
-  navigateSearch,  // Directions search — origin + destination fields
+  search,
+  navigateSearch,
   navigate,
   savedRoomsNav,
   profile, settings, savedRooms, help, feedback, about,
@@ -85,19 +85,15 @@ class _AppNavigatorState extends State<AppNavigator> {
 
   void _signOut() { _auth.signOut(); _clearUser(); _goto(AppRoute.login); }
 
-  // Search tap → select room → show on home map (or navigate directly)
   void _onSearchRoomSelected(String num) {
-    // Go to navigate search with room pre-filled
     setState(() { _selectedRoom = num; _route = AppRoute.navigateSearch; });
   }
 
-  // Navigate search → start navigation
   void _startNavigation(String num) {
     context.read<AppState>().addToNavigationHistory(num);
     setState(() { _selectedRoom = num; _route = AppRoute.navigate; });
   }
 
-  // Home room tap (from map pin card) → go to navigate
   void _onHomeRoomNavigate(String num) {
     setState(() { _selectedRoom = num; _route = AppRoute.navigate; });
   }
@@ -133,7 +129,7 @@ class _AppNavigatorState extends State<AppNavigator> {
       case AppRoute.permissions:
         return PermissionsScreen(key: const ValueKey('perms'), onPermissionsGranted: () => _goto(AppRoute.home), onSkip: () => _goto(AppRoute.home));
 
-    // ─── MAIN ───
+    // MAIN
       case AppRoute.home:
         return HomeScreen(
           key: const ValueKey('home'),

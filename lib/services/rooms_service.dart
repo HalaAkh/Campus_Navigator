@@ -39,11 +39,8 @@ class RoomsService {
           accessibility: d['accessibility'] ?? '',
           active:        d['active']        ?? true,
           keywords:      List<String>.from(d['keywords'] ?? []),
-          // ── Professor / Office fields (optional) ──────────────────────
-          // These are only present in Firestore for office rooms.
-          // All four map to null when the field doesn't exist in the doc.
           professorsName:  d['professorsName']  as String?,
-          professorTitle: d['description']    as String?, // Firestore field is "description"
+          professorTitle: d['description']    as String?,
           professorEmail: d['email']          as String?,
           officeHours:    d['OfficeHours']    as String?,
         );
@@ -55,8 +52,6 @@ class RoomsService {
     }
   }
 
-  /// Search across all fields including professor info.
-  /// Used by SearchScreen to support searching by professor name, email, etc.
   List<RoomModel> search(String query) {
     if (query.isEmpty) return [];
     final q = query.toLowerCase().trim();
